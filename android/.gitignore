@@ -1,0 +1,78 @@
+gradle-wrapper.jar
+/.gradle
+/captures/
+/gradlew
+/gradlew.bat
+/local.properties
+GeneratedPluginRegistrant.java
+.cxx/
+
+# Remember to never publicly share your keystore.
+# See https://flutter.dev/to/reference-keystore
+key.properties
+**/*.keystore
+**/*.jks
+
+# Dart related
+.dart_tool/
+.packages
+.pub/
+build/
+flutter_*.png
+
+# Flutter dependencies
+.flutter-plugins
+.flutter-plugins-dependencies
+.metadata
+*.lock
+
+# IDE settings
+.idea/
+*.iml
+.vscode/
+
+# Android
+android/.gradle/
+android/captures/
+android/local.properties
+android/gradlew
+android/gradlew.bat
+android/.idea/
+
+# iOS & macOS
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework/
+ios/Flutter/Flutter.podspec
+ios/Runner.xcworkspace/
+macos/Pods/
+macos/.symlinks/
+macos/Flutter/Flutter.framework/
+macos/Flutter/Flutter.podspec
+macos/Runner.xcworkspace/
+
+# Xcode
+*.xcworkspace
+*.xcuserstate
+*.xcuserdatad
+*.xcodeproj/
+
+# Other
+*.log
+*.DS_Store
+*.lock
+
+# Web
+web/.dart_tool/
+web/build/
+
+# Windows
+windows/runner/Debug/
+windows/runner/Release/
+windows/runner/GeneratedPluginRegistrant.h
+windows/runner/GeneratedPluginRegistrant.cpp
+
+# Linux
+linux/flutter/ephemeral/
+linux/CMakeFiles/
+linux/Makefile
