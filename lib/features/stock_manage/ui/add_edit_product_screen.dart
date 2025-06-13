@@ -35,7 +35,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
   @override
   void initState() {
     super.initState();
+    //get all catogories and brands for showing dropdown
     fetchDropdownData();
+
+    //if edited for product, filled data in textfileds
     if (widget.productToEdit != null) {
       _productNameController.text = widget.productToEdit!.productName;
       _productCodeController.text = widget.productToEdit!.productCode;
@@ -842,7 +845,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     );
 
                     if (widget.productToEdit != null) {
-                      // 📝 Edit mode with confirmation
+                      //  edit mode with confirmation
                       final confirm = await showDialog<bool>(
                         context: context,
                         builder:
@@ -864,7 +867,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                               ],
                             ),
                       );
-
+                      //check, if product update
                       if (confirm == true) {
                         await ProductController.updateProduct(
                           addAndEditedProduct,
@@ -894,7 +897,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         Navigator.pop(context);
                       }
                     } else {
-                      // ➕ Add mode
+                      // product add call
                       await ProductController.addProduct(addAndEditedProduct);
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(

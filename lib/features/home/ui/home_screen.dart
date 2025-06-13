@@ -63,14 +63,13 @@ class HomeScreen extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder:
-                            (_) =>
+                            (context) =>
                                 const ProductsScreen(shouldFocusSearch: true),
                       ),
                     );
                   },
                   child: AbsorbPointer(
                     child: CustomSearchBar(
-                      controller: TextEditingController(),
                       hintText: 'Search products...',
                       onFilterTap: null,
                       showFilterIcon: false,
