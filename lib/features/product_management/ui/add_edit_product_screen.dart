@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:beatbox/core/app_colors.dart';
-import 'package:beatbox/features/stock_manage/controller/drop_down_data_controller.dart.dart';
-import 'package:beatbox/features/stock_manage/controller/product_controller.dart';
-import 'package:beatbox/features/stock_manage/model/product_model.dart';
+import 'package:beatbox/features/product_management/controller/drop_down_data_controller.dart.dart';
+import 'package:beatbox/features/product_management/controller/product_controller.dart';
+import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:beatbox/utils/image_picker_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

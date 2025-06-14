@@ -1,6 +1,6 @@
 import 'package:beatbox/core/app_colors.dart';
-import 'package:beatbox/features/stock_manage/controller/brand_controller.dart';
-import 'package:beatbox/features/stock_manage/model/brand_model.dart';
+import 'package:beatbox/features/product_management/controller/brand_controller.dart';
+import 'package:beatbox/features/product_management/model/brand_model.dart';
 import 'package:beatbox/utils/image_picker_utils.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';

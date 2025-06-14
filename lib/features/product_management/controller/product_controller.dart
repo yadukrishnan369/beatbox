@@ -1,4 +1,4 @@
-import 'package:beatbox/features/stock_manage/model/product_model.dart';
+import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:hive/hive.dart';
 import 'package:beatbox/core/notifiers/product_add_notifier.dart';
 

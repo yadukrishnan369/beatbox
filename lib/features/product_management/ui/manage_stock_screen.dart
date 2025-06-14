@@ -1,8 +1,8 @@
 import 'package:beatbox/core/app_colors.dart';
-import 'package:beatbox/features/stock_manage/widgets/add_brand_modal.dart';
-import 'package:beatbox/features/stock_manage/widgets/add_category_modal.dart';
-import 'package:beatbox/features/stock_manage/widgets/total_sale_card.dart';
-import 'package:beatbox/features/stock_manage/widgets/total_stock_card.dart';
+import 'package:beatbox/features/product_management/widgets/add_brand_modal.dart';
+import 'package:beatbox/features/product_management/widgets/add_category_modal.dart';
+import 'package:beatbox/features/product_management/widgets/total_sale_card.dart';
+import 'package:beatbox/features/product_management/widgets/total_stock_card.dart';
 import 'package:beatbox/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

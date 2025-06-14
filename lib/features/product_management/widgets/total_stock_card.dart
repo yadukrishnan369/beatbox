@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/core/app_colors.dart';
-import 'package:beatbox/features/stock_manage/model/product_model.dart';
+import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:beatbox/core/notifiers/product_add_notifier.dart';
 
 class TotalStockCard extends StatelessWidget {

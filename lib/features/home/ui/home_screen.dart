@@ -6,7 +6,7 @@ import 'package:beatbox/features/home/widgets/bottom_nav_bar.dart';
 import 'package:beatbox/features/home/widgets/category_section.dart';
 import 'package:beatbox/features/home/widgets/new_arrival_section.dart';
 import 'package:beatbox/features/home/widgets/summary_card.dart';
-import 'package:beatbox/features/stock_manage/ui/products_screen.dart';
+import 'package:beatbox/features/product_management/ui/products_screen.dart';
 import '../../../widgets/custom_search_bar.dart';
 
 class HomeScreen extends StatelessWidget {

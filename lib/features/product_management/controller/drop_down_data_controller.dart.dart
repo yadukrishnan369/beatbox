@@ -1,5 +1,5 @@
-import 'package:beatbox/features/stock_manage/model/brand_model.dart';
-import 'package:beatbox/features/stock_manage/model/category_model.dart';
+import 'package:beatbox/features/product_management/model/brand_model.dart';
+import 'package:beatbox/features/product_management/model/category_model.dart';
 import 'package:hive/hive.dart';
 
 class CategoryController {

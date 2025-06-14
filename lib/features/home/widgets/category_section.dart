@@ -3,7 +3,7 @@ import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:beatbox/features/stock_manage/model/category_model.dart';
+import 'package:beatbox/features/product_management/model/category_model.dart';
 import 'package:beatbox/core/notifiers/category_update_notifiers.dart';
 
 class CategorySection extends StatelessWidget {

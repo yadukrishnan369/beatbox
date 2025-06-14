@@ -1,6 +1,6 @@
 import 'package:beatbox/core/app_colors.dart';
-import 'package:beatbox/features/stock_manage/widgets/product_filter_sheet.dart';
-import 'package:beatbox/features/stock_manage/widgets/product_view_switcher.dart';
+import 'package:beatbox/features/product_management/widgets/product_filter_sheet.dart';
+import 'package:beatbox/features/product_management/widgets/product_view_switcher.dart';
 import 'package:beatbox/utils/product_utils.dart';
 import 'package:beatbox/widgets/custom_search_bar.dart';
 import 'package:flutter/material.dart';
