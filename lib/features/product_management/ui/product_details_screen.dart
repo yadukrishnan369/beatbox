@@ -18,9 +18,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   int quantity = 1;
   final PageController _pageController = PageController();
 
+  bool _isInitialized = false;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
+    if (_isInitialized) return; // check already initialized
+
     final args = ModalRoute.of(context)?.settings.arguments;
 
     if (args is ProductModel) {
@@ -31,6 +36,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             product.image2,
             product.image3,
           ].where((img) => img != null).toList();
+
+      _isInitialized = true;
     } else {
       Navigator.pop(context);
     }

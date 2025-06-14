@@ -85,7 +85,9 @@ class _StockManageScreenState extends State<StockManageScreen> {
               Navigator.pushNamed(context, AppRoutes.updateProduct);
             }),
             _productActionItem(Icons.history, 'Sales History', () {}),
-            _productActionItem(Icons.list_alt, 'Stock Entries', () {}),
+            _productActionItem(Icons.list_alt, 'Stock Entries', () {
+              Navigator.pushNamed(context, AppRoutes.stockEntry);
+            }),
           ],
         ),
       ),

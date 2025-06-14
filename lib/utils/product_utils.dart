@@ -15,6 +15,7 @@ class ProductUtils {
     filteredProductNotifier.value = allProducts;
   }
 
+  //filter by name and categories and brands of product screen
   static void filterProducts(
     String query, {
     List<String>? selectedCategories,
@@ -46,6 +47,42 @@ class ProductUtils {
                   : selectedBrands.contains(product.productBrand);
 
           return (matchName || matchCode) && matchCategory && matchBrand;
+        }).toList();
+
+    filteredProductNotifier.value = filtered;
+  }
+
+  //filter by name and dates range of stock entry screen
+  static void filterProductsByNameAndDate({
+    required String query,
+    DateTime? startDate,
+    DateTime? endDate,
+  }) {
+    final box = Hive.box<ProductModel>('productBox');
+    final allProducts =
+        box.values.toList()
+          ..sort((a, b) => b.createdDate.compareTo(a.createdDate));
+
+    final lowerQuery = query.toLowerCase().trim();
+
+    final filtered =
+        allProducts.where((product) {
+          final matchName =
+              lowerQuery.isEmpty
+                  ? true
+                  : product.productName.toLowerCase().contains(lowerQuery);
+
+          final matchDate =
+              (startDate == null || endDate == null)
+                  ? true
+                  : (product.createdDate.isAfter(
+                        startDate.subtract(const Duration(days: 1)),
+                      ) &&
+                      product.createdDate.isBefore(
+                        endDate.add(const Duration(days: 1)),
+                      ));
+
+          return matchName && matchDate;
         }).toList();
 
     filteredProductNotifier.value = filtered;

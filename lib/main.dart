@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:beatbox/features/auth/biometric_screen.dart';
 import 'package:beatbox/features/home/ui/home_screen.dart';
+import 'package:beatbox/features/product_management/ui/stock_entry_details_screen.dart';
+import 'package:beatbox/features/product_management/ui/stock_entry_screen.dart';
 import 'package:beatbox/features/splash/splash_screen.dart';
 import 'package:beatbox/features/product_management/controller/brand_controller.dart';
 import 'package:beatbox/features/product_management/controller/category_controller.dart';
@@ -126,6 +128,8 @@ class _MyAppState extends State<MyApp> {
             AppRoutes.currentStock: (context) => CurrentStockScreen(),
             AppRoutes.addProduct: (context) => AddProductScreen(),
             AppRoutes.updateProduct: (context) => UpdateProductScreen(),
+            AppRoutes.stockEntry: (context) => StockEntryScreen(),
+            AppRoutes.stockEntryDetails: (context) => StockEntryDetailsScreen(),
             AppRoutes.products: (context) => ProductsScreen(),
             AppRoutes.productDetails: (context) => ProductDetailsScreen(),
             AppRoutes.brandAndCategory: (context) => BrandAndCategoryScreen(),

@@ -6,6 +6,8 @@ import 'package:beatbox/features/product_management/ui/limited_stock_screen.dart
 import 'package:beatbox/features/product_management/ui/manage_stock_screen.dart';
 import 'package:beatbox/features/product_management/ui/product_details_screen.dart';
 import 'package:beatbox/features/product_management/ui/products_screen.dart';
+import 'package:beatbox/features/product_management/ui/stock_entry_details_screen.dart';
+import 'package:beatbox/features/product_management/ui/stock_entry_screen.dart';
 import 'package:beatbox/features/product_management/ui/update_delete_product_screen.dart';
 import 'package:flutter/material.dart';
 import '../features/splash/splash_screen.dart';
@@ -21,6 +23,8 @@ class AppRoutes {
   static const String currentStock = '/currentStock';
   static const String addProduct = '/addProduct';
   static const String updateProduct = '/updateProduct';
+  static const String stockEntry = '/stockEntry';
+  static const String stockEntryDetails = '/stockEntryDetails';
   static const String products = '/products';
   static const String productDetails = '/productDetails';
   static const String brandAndCategory = '/brandAndCategory';
@@ -35,6 +39,8 @@ class AppRoutes {
     currentStock: (context) => CurrentStockScreen(),
     addProduct: (context) => AddProductScreen(),
     updateProduct: (context) => UpdateProductScreen(),
+    stockEntry: (context) => StockEntryScreen(),
+    stockEntryDetails: (context) => StockEntryDetailsScreen(),
     products: (context) => ProductsScreen(),
     productDetails: (context) => ProductDetailsScreen(),
     brandAndCategory: (context) => BrandAndCategoryScreen(),
