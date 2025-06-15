@@ -101,15 +101,15 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
                       ),
                       _buildDetailRow(
                         'Purchase Price per item',
-                        '₹${product.purchaseRate.toStringAsFixed(2)}',
+                        '₹${product.purchaseRate.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
                       ),
                       _buildDetailRow(
                         'For sale per item',
-                        '₹${product.salePrice.toStringAsFixed(2)}',
+                        '₹${product.salePrice.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
                       ),
                       _buildDetailRow(
                         'Profit per item',
-                        '₹ ${profitPerItem.toStringAsFixed(2)}',
+                        '₹ ${profitPerItem.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
                       ),
                       SizedBox(height: 16.h),
                       Container(
@@ -132,7 +132,7 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
                                   ),
                                 ),
                                 Text(
-                                  '₹${totalValue.toStringAsFixed(2)}',
+                                  '₹${totalValue.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16.sp,
@@ -149,7 +149,7 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
                                     top: 4.h,
                                   ),
                                   child: Text(
-                                    '${product.purchaseRate.toStringAsFixed(2)} x ${product.productQuantity}',
+                                    '${product.purchaseRate.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} x ${product.productQuantity}',
                                     style: TextStyle(
                                       fontSize: 14.sp,
                                       color: AppColors.primary,
@@ -170,7 +170,7 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
                                   ),
                                 ),
                                 Text(
-                                  '₹${totalProfit.toStringAsFixed(2)}',
+                                  '₹${totalProfit.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16.sp,
@@ -187,7 +187,7 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
                                     top: 4.h,
                                   ),
                                   child: Text(
-                                    '${profitPerItem.toStringAsFixed(2)} x ${product.productQuantity}',
+                                    '${profitPerItem.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} x ${product.productQuantity}',
                                     style: TextStyle(
                                       fontSize: 14.sp,
                                       color: AppColors.primary,

@@ -9,6 +9,7 @@ import 'package:beatbox/features/product_management/ui/products_screen.dart';
 import 'package:beatbox/features/product_management/ui/stock_entry_details_screen.dart';
 import 'package:beatbox/features/product_management/ui/stock_entry_screen.dart';
 import 'package:beatbox/features/product_management/ui/update_delete_product_screen.dart';
+import 'package:beatbox/features/sales_management/ui/cart_screen.dart';
 import 'package:flutter/material.dart';
 import '../features/splash/splash_screen.dart';
 import '../features/auth/biometric_screen.dart';
@@ -28,6 +29,7 @@ class AppRoutes {
   static const String products = '/products';
   static const String productDetails = '/productDetails';
   static const String brandAndCategory = '/brandAndCategory';
+  static const String cart = '/cart';
 
   /// set each routes, its screen widget
   static Map<String, WidgetBuilder> get routes => {
@@ -44,6 +46,7 @@ class AppRoutes {
     products: (context) => ProductsScreen(),
     productDetails: (context) => ProductDetailsScreen(),
     brandAndCategory: (context) => BrandAndCategoryScreen(),
+    cart: (context) => const CartScreen(),
   };
 
   //tracking navigation and Pause/resume the app

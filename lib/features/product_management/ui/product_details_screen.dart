@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/product_management/model/product_model.dart';
+import 'package:beatbox/utils/cart_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -49,56 +50,31 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     super.dispose();
   }
 
-  void _incrementQty() => setState(() => quantity++);
-  void _decrementQty() => setState(() {
-    if (quantity > 1) quantity--;
-  });
+  void _incrementQty() {
+    setState(() {
+      quantity++;
+    });
+  }
+
+  void _decrementQty() {
+    setState(() {
+      if (quantity > 1) quantity--;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Details', style: TextStyle(fontSize: 20.sp))),
-      backgroundColor: Colors.grey[100],
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: SizedBox(
-          height: 55.h,
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.zero,
-              backgroundColor: Colors.transparent,
-              shadowColor: Colors.transparent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(35.r),
-              ),
-            ),
-            child: Ink(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.bottomNavColor,
-                    const Color.fromARGB(255, 144, 166, 177),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(35.r),
-              ),
-              child: Container(
-                alignment: Alignment.center,
-                height: 55.h,
-                child: Text(
-                  'Add to Cart',
-                  style: TextStyle(
-                    fontSize: 22.sp,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
+      backgroundColor: AppColors.white,
+      appBar: AppBar(
+        backgroundColor: AppColors.white,
+        elevation: 0,
+        title: Text(
+          'Product Details',
+          style: TextStyle(
+            fontSize: 22.sp,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
           ),
         ),
       ),
@@ -183,21 +159,27 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   SizedBox(height: 6.h),
                   Text(
                     '${product.productCategory} | ${product.productBrand} | code-${product.productCode}',
-                    style: TextStyle(fontSize: 14.sp, color: Colors.black54),
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: AppColors.textPrimary,
+                    ),
                   ),
                   SizedBox(height: 10.h),
                   Text(
-                    'MRP ₹ ${product.salePrice}',
+                    'MRP ₹ ${product.salePrice.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
-                      color: Colors.red,
+                      color: AppColors.error,
                     ),
                   ),
                   SizedBox(height: 10.h),
                   Text(
                     product.description,
-                    style: TextStyle(fontSize: 14.sp, color: Colors.black87),
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: AppColors.textPrimary,
+                    ),
                   ),
                   SizedBox(height: 16.h),
                   Row(
@@ -234,6 +216,51 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               ),
             ),
           ],
+        ),
+      ),
+      //add to cart buttom
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.all(16.w),
+        child: SizedBox(
+          height: 55.h,
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: () {
+              CartUtils.addProductToCart(product, quantity: quantity);
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              padding: EdgeInsets.zero,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(35.r),
+              ),
+            ),
+            child: Ink(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.bottomNavColor,
+                    const Color.fromARGB(255, 144, 166, 177),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(35.r),
+              ),
+              child: Container(
+                alignment: Alignment.center,
+                height: 55.h,
+                child: Text(
+                  'Add to Cart',
+                  style: TextStyle(
+                    fontSize: 22.sp,
+                    color: AppColors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );

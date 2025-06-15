@@ -1,10 +1,13 @@
 import 'dart:io';
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/core/notifiers/filter_product_notifier.dart';
+import 'package:beatbox/core/notifiers/product_add_notifier.dart';
 import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:beatbox/features/product_management/ui/add_edit_product_screen.dart';
+import 'package:beatbox/routes/app_routes.dart';
 import 'package:beatbox/utils/product_utils.dart';
 import 'package:beatbox/widgets/custom_search_bar.dart';
+import 'package:beatbox/widgets/empty_placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -113,51 +116,42 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomSearchBar(
-              controller: _searchController,
-              focusNode: _searchFocusNode,
-              onChanged: ProductUtils.filterProducts,
-            ),
+            if (productAddNotifier.value.isNotEmpty)
+              CustomSearchBar(
+                controller: _searchController,
+                focusNode: _searchFocusNode,
+                onChanged: ProductUtils.filterProducts,
+              ),
 
             // Products Label
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 8.h),
-              child: Text(
-                'Products',
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
+            if (productAddNotifier.value.isNotEmpty)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 22.w, vertical: 8.h),
+                child: Text(
+                  'Products',
+                  style: TextStyle(
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
               ),
-            ),
 
-            // Products List
+            // Product List or Empty View
             Expanded(
               child: ValueListenableBuilder<List<ProductModel>>(
                 valueListenable: filteredProductNotifier,
                 builder: (context, products, child) {
                   if (products.isEmpty) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.search_off,
-                            size: 64.sp,
-                            color: Colors.grey,
-                          ),
-                          SizedBox(height: 16.h),
-                          Text(
-                            'No products found',
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
+                    return EmptyPlaceholder(
+                      imagePath: 'assets/images/empty_product.png',
+                      message: 'No products found',
+                      imageSize: 200,
+                      actionIcon: Icons.add_box,
+                      actionText: 'Go to Add Product',
+                      onActionTap: () {
+                        Navigator.pushNamed(context, AppRoutes.addProduct);
+                      },
                     );
                   }
 

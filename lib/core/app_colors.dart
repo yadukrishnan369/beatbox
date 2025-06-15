@@ -8,7 +8,7 @@ class AppColors {
   static const Color backgroundPrimary = Color(0xFFECEFF1);
   static const Color liteGrey = Color(0xFFFAFAFA);
   static const Color textPrimary = Color(0xFF152223);
-  static const Color textDisabled = Color(0xFFADB5BD);
+  static const Color textDisabled = Color.fromARGB(255, 123, 127, 132);
   static const Color white = Colors.white;
   static const Color offWhite = Color(0xFFF5F5F5);
   static const Color cream = Color(0xFFFFFDE7);

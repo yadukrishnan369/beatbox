@@ -15,7 +15,7 @@ class CustomBottomNavBar extends StatelessWidget {
         Navigator.pushNamed(context, AppRoutes.stock);
         break;
       case 2:
-        Navigator.pushNamed(context, '/cart');
+        Navigator.pushNamed(context, AppRoutes.cart);
         break;
       case 3:
         Navigator.pushNamed(context, AppRoutes.products);

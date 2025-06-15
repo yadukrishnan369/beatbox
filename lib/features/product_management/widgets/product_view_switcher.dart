@@ -156,7 +156,8 @@ class ProductViewSwitcher extends StatelessWidget {
                                   ),
                                 ),
                                 TextSpan(
-                                  text: '${product.salePrice}',
+                                  text:
+                                      '${product.salePrice.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
                                   style: TextStyle(
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.bold,
@@ -237,7 +238,8 @@ class ProductViewSwitcher extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: '${product.salePrice}',
+                          text:
+                              '${product.salePrice.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.bold,

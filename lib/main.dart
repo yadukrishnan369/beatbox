@@ -3,6 +3,9 @@ import 'package:beatbox/features/auth/biometric_screen.dart';
 import 'package:beatbox/features/home/ui/home_screen.dart';
 import 'package:beatbox/features/product_management/ui/stock_entry_details_screen.dart';
 import 'package:beatbox/features/product_management/ui/stock_entry_screen.dart';
+import 'package:beatbox/features/sales_management/controller/cart_controller.dart';
+import 'package:beatbox/features/sales_management/model/cart_item_model.dart';
+import 'package:beatbox/features/sales_management/ui/cart_screen.dart';
 import 'package:beatbox/features/splash/splash_screen.dart';
 import 'package:beatbox/features/product_management/controller/brand_controller.dart';
 import 'package:beatbox/features/product_management/controller/category_controller.dart';
@@ -36,11 +39,15 @@ void main() async {
   Hive.registerAdapter(CategoryModelAdapter());
   Hive.registerAdapter(BrandModelAdapter());
   Hive.registerAdapter(ProductModelAdapter());
+  Hive.registerAdapter(CartItemModelAdapter());
 
   // initialize hive boxes
   await CategoryController.initBox();
   await BrandController.initBox();
   await ProductController.initBox();
+  await CartController.initBox();
+
+  print('🧪 CART ITEMS IN HIVE: ${CartController.getCartItems().length}');
 
   runApp(const MyApp());
 }
@@ -133,6 +140,7 @@ class _MyAppState extends State<MyApp> {
             AppRoutes.products: (context) => ProductsScreen(),
             AppRoutes.productDetails: (context) => ProductDetailsScreen(),
             AppRoutes.brandAndCategory: (context) => BrandAndCategoryScreen(),
+            AppRoutes.cart: (context) => CartScreen(),
           },
           // set fixed text size of user device settings
           builder: (context, child) {
