@@ -4,6 +4,7 @@ import 'package:beatbox/features/sales_management/controller/cart_controller.dar
 import 'package:beatbox/routes/app_routes.dart';
 import 'package:beatbox/utils/cart_utils.dart';
 import 'package:beatbox/widgets/empty_placeholder.dart';
+import 'package:beatbox/widgets/show_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:beatbox/core/notifiers/cart_update_notifier.dart';
 import 'package:beatbox/features/sales_management/model/cart_item_model.dart';
@@ -170,7 +171,16 @@ class _CartScreenState extends State<CartScreen> {
                   height: 55.h,
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      await showLoadingDialog(
+                        context,
+                        message: 'Process to bill',
+                        showSucess: false,
+                      );
+                      await Future.delayed(Duration(milliseconds: 1000), () {
+                        Navigator.pushNamed(context, AppRoutes.billing);
+                      });
+                    },
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.zero,
                       shape: RoundedRectangleBorder(

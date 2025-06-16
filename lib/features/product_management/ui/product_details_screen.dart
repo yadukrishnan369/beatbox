@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:beatbox/utils/cart_utils.dart';
+import 'package:beatbox/widgets/show_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -225,7 +226,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           height: 55.h,
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
+              await showLoadingDialog(
+                context,
+                message: "Adding to cart...",
+                showSucess: true,
+              );
+              await Future.delayed(const Duration(milliseconds: 2000));
               CartUtils.addProductToCart(product, quantity: quantity);
               Navigator.pop(context);
             },

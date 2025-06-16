@@ -43,7 +43,7 @@ class HomeScreen extends StatelessWidget {
                       IconButton(
                         onPressed: () {},
                         icon: Image.asset(
-                          'assets/icons/home_profile.png',
+                          AppImages.logo,
                           width: 30.w,
                           height: 30.h,
                         ),
