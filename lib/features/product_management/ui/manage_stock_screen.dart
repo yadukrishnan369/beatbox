@@ -59,7 +59,27 @@ class _StockManageScreenState extends State<StockManageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Manage Stock')),
+      appBar: AppBar(
+        title: Text(
+          'Manage Stock',
+          style: TextStyle(
+            fontSize: 22.sp,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        actions: [
+          SizedBox(
+            width: 70.w,
+            child: IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.appSettings);
+              },
+              icon: Icon(Icons.settings_outlined),
+            ),
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.w),
         child: Column(

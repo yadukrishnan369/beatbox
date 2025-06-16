@@ -5,6 +5,7 @@ import 'package:beatbox/features/product_management/ui/stock_entry_details_scree
 import 'package:beatbox/features/product_management/ui/stock_entry_screen.dart';
 import 'package:beatbox/features/sales_management/controller/cart_controller.dart';
 import 'package:beatbox/features/sales_management/model/cart_item_model.dart';
+import 'package:beatbox/features/app_settings_management/ui/app_settings_screen.dart';
 import 'package:beatbox/features/sales_management/ui/cart_screen.dart';
 import 'package:beatbox/features/splash/splash_screen.dart';
 import 'package:beatbox/features/product_management/controller/brand_controller.dart';
@@ -46,6 +47,8 @@ void main() async {
   await BrandController.initBox();
   await ProductController.initBox();
   await CartController.initBox();
+
+  await Hive.openBox('app_settings');
 
   print('🧪 CART ITEMS IN HIVE: ${CartController.getCartItems().length}');
 
@@ -140,6 +143,7 @@ class _MyAppState extends State<MyApp> {
             AppRoutes.products: (context) => ProductsScreen(),
             AppRoutes.productDetails: (context) => ProductDetailsScreen(),
             AppRoutes.brandAndCategory: (context) => BrandAndCategoryScreen(),
+            AppRoutes.appSettings: (context) => AppSettingsScreen(),
             AppRoutes.cart: (context) => CartScreen(),
           },
           // set fixed text size of user device settings
