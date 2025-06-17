@@ -26,199 +26,210 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: AppBar(
-        backgroundColor: AppColors.white,
-        elevation: 0,
-        title: Text(
-          'Cart',
-          style: TextStyle(
-            fontSize: 22.sp,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
-          ),
-        ),
-        actions: [
-          if (cartUpdatedNotifier.value.isNotEmpty)
-            Padding(
-              padding: EdgeInsets.only(right: 25.w, top: 10.h),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppColors.contColor,
-                  borderRadius: BorderRadius.circular(50.r),
-                ),
-                child: IconButton(
-                  icon: Icon(
-                    Icons.delete_forever_outlined,
-                    color: AppColors.error,
-                    size: 30.sp,
-                  ),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text('Confirmation'),
-                          content: Text(
-                            'Are you sure you want to clear all this cart items?',
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                CartUtils.clearEntireCart();
-                                Navigator.pop(context);
-                              },
-                              child: Text('Yes'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  },
-                ),
+    return ValueListenableBuilder<List<CartItemModel>>(
+      valueListenable: cartUpdatedNotifier,
+      builder: (context, cartItems, _) {
+        final isCartNotEmpty = cartItems.isNotEmpty;
+        final totalPrice = CartUtils.getTotalCartPrice();
+        final totalItems = CartUtils.getTotalCartQuantity();
+        return Scaffold(
+          backgroundColor: AppColors.white,
+          appBar: AppBar(
+            backgroundColor: AppColors.white,
+            elevation: 0,
+            title: Text(
+              'Cart',
+              style: TextStyle(
+                fontSize: 22.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
               ),
             ),
-        ],
-      ),
-      body: Padding(
-        padding: EdgeInsets.only(top: 30.h),
-        child: ValueListenableBuilder<List<CartItemModel>>(
-          valueListenable: cartUpdatedNotifier,
-          builder: (context, cartItems, child) {
-            if (cartItems.isEmpty) {
-              return EmptyPlaceholder(
-                imagePath: 'assets/images/empty_cart.webp',
-                message: 'Your cart is empty!',
-                imageSize: 300.w,
-                actionText: 'Explore Product',
-                actionIcon: Icons.shopping_cart,
-                onActionTap: () {
-                  Navigator.pushNamed(context, AppRoutes.products);
-                },
-              );
-            }
+            actions:
+                isCartNotEmpty
+                    ? [
+                      Padding(
+                        padding: EdgeInsets.only(right: 25.w, top: 10.h),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.contColor,
+                            borderRadius: BorderRadius.circular(50.r),
+                          ),
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.delete_forever_outlined,
+                              color: AppColors.error,
+                              size: 30.sp,
+                            ),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text('Confirmation'),
+                                    content: Text(
+                                      'Are you sure you want to clear all this cart items?',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          CartUtils.clearEntireCart();
+                                          cartUpdatedNotifier.value = [];
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text('Yes'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ]
+                    : [],
+          ),
 
-            final totalPrice = CartUtils.getTotalCartPrice();
-            final totalItems = CartUtils.getTotalCartQuantity();
-
-            return Column(
-              children: [
-                // cart Items List
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: _buildCartItem(cartItems),
-                  ),
-                ),
-                SizedBox(height: 15.h),
-
-                // bottom Section with Total
-                Padding(
-                  padding: EdgeInsets.only(
-                    top: 0.h,
-                    bottom: 0.h,
-                    right: 18.w,
-                    left: 18.w,
-                  ),
-                  child: Container(
-                    padding: EdgeInsets.only(top: 10.h, bottom: 10.h),
-                    decoration: BoxDecoration(
-                      color: AppColors.cardColor,
-                      borderRadius: BorderRadius.all(Radius.circular(10.r)),
-                    ),
-                    child: Column(
+          body: Padding(
+            padding: EdgeInsets.only(top: 30.h),
+            child:
+                cartItems.isEmpty
+                    ? EmptyPlaceholder(
+                      imagePath: 'assets/images/empty_cart.webp',
+                      message: 'Your cart is empty!',
+                      imageSize: 300.w,
+                      actionText: 'Explore Product',
+                      actionIcon: Icons.shopping_cart,
+                      onActionTap: () {
+                        Navigator.pushNamed(context, AppRoutes.products);
+                      },
+                    )
+                    : Column(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Text(
-                              'Total ($totalItems items)',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16.sp,
-                                color: AppColors.textPrimary,
+                        // Cart Items List
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            child: _buildCartItem(cartItems),
+                          ),
+                        ),
+                        SizedBox(height: 15.h),
+
+                        // Total Section
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: 0.h,
+                            bottom: 0.h,
+                            right: 18.w,
+                            left: 18.w,
+                          ),
+                          child: Container(
+                            padding: EdgeInsets.only(top: 10.h, bottom: 10.h),
+                            decoration: BoxDecoration(
+                              color: AppColors.cardColor,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10.r),
                               ),
                             ),
-                            Text(
-                              '₹ ${totalPrice.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18.sp,
-                                color: AppColors.success,
-                              ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text(
+                                      'Total ($totalItems items)',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16.sp,
+                                        color: AppColors.textPrimary,
+                                      ),
+                                    ),
+                                    Text(
+                                      '₹ ${totalPrice.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18.sp,
+                                        color: AppColors.success,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-      ),
-      bottomNavigationBar:
-          cartUpdatedNotifier.value.isNotEmpty
-              ? Padding(
-                padding: EdgeInsets.all(16.w),
-                child: SizedBox(
-                  height: 55.h,
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      await showLoadingDialog(
-                        context,
-                        message: 'Process to bill',
-                        showSucess: false,
-                      );
-                      await Future.delayed(Duration(milliseconds: 1000), () {
-                        Navigator.pushNamed(context, AppRoutes.billing);
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(35.r),
-                      ),
-                    ),
-                    child: Ink(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            AppColors.bottomNavColor,
-                            const Color.fromARGB(255, 144, 166, 177),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
+          ),
+
+          bottomNavigationBar:
+              isCartNotEmpty
+                  ? Padding(
+                    padding: EdgeInsets.all(16.w),
+                    child: SizedBox(
+                      height: 55.h,
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          await showLoadingDialog(
+                            context,
+                            message: 'Process to bill',
+                            showSucess: false,
+                          );
+                          await Future.delayed(
+                            Duration(milliseconds: 1000),
+                            () {
+                              Navigator.pushNamed(context, AppRoutes.billing);
+                            },
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(35.r),
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(35.r),
-                      ),
-                      child: Container(
-                        alignment: Alignment.center,
-                        height: 55.h,
-                        child: Text(
-                          'Proceed to Bill',
-                          style: TextStyle(
-                            fontSize: 22.sp,
-                            color: AppColors.white,
-                            fontWeight: FontWeight.bold,
+                        child: Ink(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                AppColors.bottomNavColor,
+                                const Color.fromARGB(255, 144, 166, 177),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(35.r),
+                          ),
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 55.h,
+                            child: Text(
+                              'Proceed to Bill',
+                              style: TextStyle(
+                                fontSize: 22.sp,
+                                color: AppColors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-              )
-              : null,
+                  )
+                  : null,
+        );
+      },
     );
   }
 
+  // cart list of items
   ListView _buildCartItem(List<CartItemModel> cartItems) {
     return ListView.builder(
       itemCount: cartItems.length,
@@ -359,10 +370,21 @@ class _CartScreenState extends State<CartScreen> {
                         GestureDetector(
                           onTap: () {
                             // increase quantity logic
-                            CartUtils.changeQuantity(
-                              item.product,
-                              item.quantity + 1,
-                            );
+                            if (item.quantity < item.product.productQuantity) {
+                              CartUtils.changeQuantity(
+                                item.product,
+                                item.quantity + 1,
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    "Only ${item.product.productQuantity} items available",
+                                  ),
+                                  backgroundColor: AppColors.error,
+                                ),
+                              );
+                            }
                           },
                           child: Container(
                             padding: EdgeInsets.all(4.r),

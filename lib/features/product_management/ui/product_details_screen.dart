@@ -45,22 +45,31 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     }
   }
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
   void _incrementQty() {
-    setState(() {
-      quantity++;
-    });
+    if (quantity < product.productQuantity) {
+      setState(() {
+        quantity++;
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Only ${product.productQuantity} items available"),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
   }
 
   void _decrementQty() {
     setState(() {
       if (quantity > 1) quantity--;
     });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
