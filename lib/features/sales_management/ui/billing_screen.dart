@@ -1,6 +1,13 @@
-import 'package:beatbox/core/app_colors.dart';
+import 'package:beatbox/utils/gst_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
+import 'package:beatbox/core/app_colors.dart';
+import 'package:beatbox/features/sales_management/model/cart_item_model.dart';
+import 'package:beatbox/features/sales_management/widgets/customer_info_section.dart';
+import 'package:beatbox/features/sales_management/widgets/invoice_info_section.dart';
+import 'package:beatbox/features/sales_management/widgets/items_table_section.dart';
+import 'package:beatbox/features/sales_management/widgets/billing_summary_section.dart';
 
 class BillingScreen extends StatefulWidget {
   const BillingScreen({super.key});
@@ -10,10 +17,87 @@ class BillingScreen extends StatefulWidget {
 }
 
 class _BillingScreenState extends State<BillingScreen> {
+  // Controllers
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController discountController = TextEditingController();
+
+  // Data
+  List<CartItemModel> cartItems = [];
+  double subtotal = 0.0;
+  double gst = 0.0;
+  double discount = 0.0;
+  double grandTotal = 0.0;
+  late String invoiceNumber;
+  late String billingDate;
+  final double gstRate = GSTUtils.getGSTRate() / 100;
+
+  @override
+  void initState() {
+    super.initState();
+    invoiceNumber =
+        'INV-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}';
+    billingDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
+    discountController.addListener(_updateDiscount);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is List<CartItemModel> && args.isNotEmpty) {
+      cartItems = args;
+      _calculateTotals();
+    }
+  }
+
+  void _calculateTotals() {
+    subtotal = cartItems.fold(
+      0,
+      (sum, item) => sum + (item.product.salePrice * item.quantity),
+    );
+    gst = subtotal * gstRate;
+    grandTotal = subtotal + gst - discount;
+    if (mounted) setState(() {});
+  }
+
+  void _updateDiscount() {
+    discount = double.tryParse(discountController.text) ?? 0.0;
+    if (discount > subtotal + gst) {
+      discount = subtotal + gst;
+      discountController.text = discount.toStringAsFixed(2);
+    }
+    _calculateTotals();
+  }
+
+  void _confirmBill() async {
+    if (nameController.text.trim().isEmpty) {
+      _showSnackBar("Please enter customer name!", isError: true);
+      return;
+    } else if (phoneController.text.trim().isEmpty) {
+      _showSnackBar("Please enter customer phone!", isError: true);
+      return;
+    }
+
+    try {
+      //bill confirmation logic
+      await Future.delayed(Duration(seconds: 1));
+      _showSnackBar("Bill confirmed successfully!", isError: false);
+      Future.delayed(Duration(seconds: 2), () => Navigator.pop(context));
+    } catch (e) {
+      _showSnackBar("Error: ${e.toString()}", isError: true);
+    }
+  }
+
+  void _showSnackBar(String message, {required bool isError}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? AppColors.error : AppColors.success,
+      ),
+    );
+  }
 
   @override
   void dispose() {
@@ -32,7 +116,7 @@ class _BillingScreenState extends State<BillingScreen> {
         backgroundColor: AppColors.white,
         elevation: 0,
         title: Text(
-          "Billing",
+          "Billing Invoice",
           style: TextStyle(
             fontSize: 22.sp,
             fontWeight: FontWeight.w600,
@@ -43,437 +127,49 @@ class _BillingScreenState extends State<BillingScreen> {
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.w),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // customer Information Section
-            _buildSectionHeader(Icons.person_outline, "Customer Info"),
-            SizedBox(height: 12.h),
-            Container(
-              padding: EdgeInsets.all(16.w),
-              decoration: BoxDecoration(
-                color: AppColors.contColor,
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Column(
-                children: [
-                  _buildTextField("Name", "customer name", nameController),
-                  SizedBox(height: 12.h),
-                  _buildTextField("Phone", "phone", phoneController),
-                  SizedBox(height: 12.h),
-                  _buildTextField("Email", "customer email", emailController),
-                ],
-              ),
+            CustomerInfoSection(
+              nameController: nameController,
+              phoneController: phoneController,
+              emailController: emailController,
             ),
-
             SizedBox(height: 24.h),
-
-            // Invoice Info Section
-            _buildSectionHeader(Icons.receipt_outlined, "Invoice Info"),
-            SizedBox(height: 12.h),
-            Container(
-              padding: EdgeInsets.all(16.w),
-              decoration: BoxDecoration(
-                color: AppColors.cardColor,
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Column(
-                children: [
-                  _buildInfoRow("Invoice Number", "[INV-XXXXXX]"),
-                  SizedBox(height: 8.h),
-                  _buildInfoRow("Date of Billing", "26-05-2025"),
-                ],
-              ),
+            InvoiceInfoSection(
+              invoiceNumber: invoiceNumber,
+              billingDate: billingDate,
+              itemCount: cartItems.length,
             ),
-
             SizedBox(height: 24.h),
-
-            // Item Details Section
-            _buildSectionHeader(Icons.inventory_2_outlined, "Item Details"),
-            SizedBox(height: 12.h),
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.contColor,
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Column(
-                children: [
-                  // Table Header
-                  Container(
-                    padding: EdgeInsets.all(16.w),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 3,
-                          child: Text(
-                            "Item",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14.sp,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Text(
-                            "Qty",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14.sp,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text(
-                            "Price",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14.sp,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Text(
-                            "Sub-total",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14.sp,
-                            ),
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Divider(height: 1.h, color: AppColors.textDisabled),
-
-                  // Table Rows
-                  _buildTableRow(
-                    "JBL Tune 520C USB-C",
-                    "1",
-                    "2,999.00",
-                    "2,999.00",
-                  ),
-                  Divider(height: 1.h, color: AppColors.textDisabled),
-                  _buildTableRow("boAt Stone 350", "2", "1,799.00", "3,598.00"),
-                ],
-              ),
-            ),
-
+            ItemsTableSection(cartItems: cartItems),
             SizedBox(height: 24.h),
-
-            // Billing Summary Section
-            _buildSectionHeader(Icons.attach_money, "Billing Summary"),
-            SizedBox(height: 12.h),
-            Container(
-              padding: EdgeInsets.all(16.w),
-              decoration: BoxDecoration(
-                color: AppColors.contColor,
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Column(
-                children: [
-                  _buildSummaryRow("Total Before GST", "6,597.00", false),
-                  SizedBox(height: 8.h),
-                  _buildSummaryRow("GST Charges (28%)", "1,847.16", false),
-                  SizedBox(height: 8.h),
-                  _buildDiscountRow(),
-                  SizedBox(height: 16.h),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 12.w,
-                      vertical: 8.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Color(0xFF8FBC8F),
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "GRAND TOTAL",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.sp,
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
-                        Text(
-                          "6,597.00",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.sp,
-                            color: AppColors.textPrimary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+            BillingSummarySection(
+              subtotal: subtotal,
+              gst: gst,
+              gstRate: gstRate,
+              discountController: discountController,
+              grandTotal: grandTotal,
             ),
-
-            SizedBox(height: 20.h),
           ],
         ),
       ),
-      // Confirm Bill Button
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.all(8.w),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.success,
-            padding: EdgeInsets.symmetric(vertical: 16.h),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            elevation: 0,
-          ),
-          onPressed: () {
-            // Add your confirm bill logic here
-            _confirmBill();
-          },
-          child: Text(
-            'Confirm Bill',
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w600,
-              color: AppColors.white,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSectionHeader(IconData icon, String title) {
-    return Row(
-      children: [
-        Icon(icon, size: 20.sp, color: AppColors.textPrimary),
-        SizedBox(width: 8.w),
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTextField(
-    String label,
-    String hint,
-    TextEditingController controller,
-  ) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 60.w,
-          child: Text(
-            label,
-            style: TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 14.sp,
-              color: AppColors.textPrimary,
-            ),
-          ),
-        ),
-        SizedBox(width: 12.w),
-        Expanded(
-          child: Container(
-            height: 40.h,
-            child: TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                hintText: hint,
-                hintStyle: TextStyle(
-                  color: AppColors.textDisabled,
-                  fontSize: 14.sp,
-                ),
-                filled: true,
-                fillColor: AppColors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.r),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 12.w,
-                  vertical: 8.h,
-                ),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(16.w),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.success,
+              padding: EdgeInsets.symmetric(vertical: 16.h),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
               ),
             ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(fontSize: 14.sp, color: AppColors.textPrimary),
-        ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w500,
-            color: AppColors.textPrimary,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTableRow(
-    String item,
-    String qty,
-    String price,
-    String subTotal,
-  ) {
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 3,
+            onPressed: _confirmBill,
             child: Text(
-              item,
-              style: TextStyle(fontSize: 12.sp, color: AppColors.textPrimary),
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Text(
-              qty,
-              style: TextStyle(fontSize: 12.sp, color: AppColors.textPrimary),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              price,
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: AppColors.error,
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              subTotal,
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: AppColors.error,
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.right,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSummaryRow(String label, String value, bool isTotal) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 14.sp,
-            fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-            color: AppColors.textPrimary,
-          ),
-        ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 14.sp,
-            fontWeight: isTotal ? FontWeight.bold : FontWeight.w500,
-            color: AppColors.error,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDiscountRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          "Discounts Applied",
-          style: TextStyle(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.normal,
-            color: AppColors.textPrimary,
-          ),
-        ),
-        SizedBox(
-          width: 80.w,
-          height: 32.h,
-          child: TextField(
-            controller: discountController,
-            textAlign: TextAlign.right,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              hintText: "0.00",
-              hintStyle: TextStyle(
-                color: AppColors.textDisabled,
-                fontSize: 12.sp,
-              ),
-              filled: true,
-              fillColor: AppColors.white,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(6.r),
-                borderSide: BorderSide(color: AppColors.primary, width: 1),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(6.r),
-                borderSide: BorderSide(color: AppColors.primary, width: 1),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(6.r),
-                borderSide: BorderSide(color: AppColors.primary, width: 2),
-              ),
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: 8.w,
-                vertical: 4.h,
-              ),
-            ),
-            style: TextStyle(
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w500,
-              color: AppColors.error,
+              'CONFIRM BILL',
+              style: TextStyle(fontSize: 18.sp, color: AppColors.white),
             ),
           ),
         ),
-      ],
-    );
-  }
-
-  void _confirmBill() {
-    // You can add navigation or show success dialog here
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text("Bill confirmed successfully!"),
-        backgroundColor: AppColors.success,
       ),
     );
   }

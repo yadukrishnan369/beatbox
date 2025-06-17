@@ -185,7 +185,11 @@ class _CartScreenState extends State<CartScreen> {
                           await Future.delayed(
                             Duration(milliseconds: 1000),
                             () {
-                              Navigator.pushNamed(context, AppRoutes.billing);
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.billing,
+                                arguments: cartUpdatedNotifier.value,
+                              );
                             },
                           );
                         },
