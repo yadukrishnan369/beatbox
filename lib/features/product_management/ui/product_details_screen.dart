@@ -245,8 +245,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         message: "Adding to cart...",
                         showSucess: true,
                       );
-                      await Future.delayed(const Duration(milliseconds: 2000));
                       CartUtils.addProductToCart(product, quantity: quantity);
+                      await Future.delayed(const Duration(milliseconds: 300));
+
                       Navigator.pop(context);
                     },
             style: ElevatedButton.styleFrom(

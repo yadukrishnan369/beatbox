@@ -4,10 +4,9 @@ import 'package:beatbox/core/notifiers/filter_product_notifier.dart';
 import 'package:beatbox/core/notifiers/product_add_notifier.dart';
 import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:beatbox/features/product_management/ui/add_edit_product_screen.dart';
-import 'package:beatbox/routes/app_routes.dart';
 import 'package:beatbox/utils/product_utils.dart';
 import 'package:beatbox/widgets/custom_search_bar.dart';
-import 'package:beatbox/widgets/empty_placeholder.dart';
+import 'package:beatbox/widgets/show_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -52,14 +51,21 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('Delete Product'),
+            backgroundColor: AppColors.white,
+            title: Text(
+              'Delete Product',
+              style: TextStyle(color: AppColors.primary),
+            ),
             content: Text(
               'Are you sure you want to delete ${product.productName}?',
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(color: AppColors.textPrimary),
+                ),
               ),
               TextButton(
                 onPressed: () async {
@@ -68,24 +74,16 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                     product,
                     _searchController.text,
                   );
+                  await showLoadingDialog(
+                    context,
+                    message: "Deleting...",
+                    showSucess: true,
+                  );
                   _searchController.clear();
                   _searchFocusNode.unfocus();
                   ProductUtils.filterProducts('');
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Product ${product.productName} deleted successfully',
-                      ),
-                      backgroundColor: Colors.green,
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
                 },
-                child: const Text(
-                  'Delete',
-                  style: TextStyle(color: Colors.red),
-                ),
+                child: Text('Delete', style: TextStyle(color: AppColors.error)),
               ),
             ],
           ),
@@ -143,15 +141,29 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                 valueListenable: filteredProductNotifier,
                 builder: (context, products, child) {
                   if (products.isEmpty) {
-                    return EmptyPlaceholder(
-                      imagePath: 'assets/images/empty_product.png',
-                      message: 'No products found',
-                      imageSize: 200,
-                      actionIcon: Icons.add_box,
-                      actionText: 'Go to Add Product',
-                      onActionTap: () {
-                        Navigator.pushNamed(context, AppRoutes.addProduct);
-                      },
+                    return Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24.w),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.inventory_2_outlined,
+                              color: AppColors.textDisabled,
+                              size: 60.sp,
+                            ),
+                            SizedBox(height: 12.h),
+                            Text(
+                              'No products found',
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.textDisabled,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     );
                   }
 
@@ -179,17 +191,10 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
       decoration: BoxDecoration(
         color: AppColors.cardColor,
         borderRadius: BorderRadius.circular(12.r),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.textPrimary.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Row(
         children: [
-          // Product Image/Icon
+          // Product Image
           Container(
             width: 80.w,
             height: 80.h,

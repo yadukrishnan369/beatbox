@@ -4,6 +4,7 @@ import 'package:beatbox/features/product_management/controller/drop_down_data_co
 import 'package:beatbox/features/product_management/controller/product_controller.dart';
 import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:beatbox/utils/image_picker_utils.dart';
+import 'package:beatbox/widgets/show_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:uuid/uuid.dart';
@@ -850,6 +851,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         context: context,
                         builder:
                             (context) => AlertDialog(
+                              backgroundColor: AppColors.white,
                               title: Text('Confirm Update'),
                               content: Text(
                                 'Are you sure you want to update this "${_productNameController.text}"?',
@@ -858,11 +860,17 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 TextButton(
                                   onPressed:
                                       () => Navigator.pop(context, false),
-                                  child: Text('Cancel'),
+                                  child: Text(
+                                    'Cancel',
+                                    style: TextStyle(color: AppColors.error),
+                                  ),
                                 ),
                                 TextButton(
                                   onPressed: () => Navigator.pop(context, true),
-                                  child: Text('Update'),
+                                  child: Text(
+                                    'Update',
+                                    style: TextStyle(color: AppColors.success),
+                                  ),
                                 ),
                               ],
                             ),
@@ -872,10 +880,15 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         await ProductController.updateProduct(
                           addAndEditedProduct,
                         );
+                        await showLoadingDialog(
+                          context,
+                          message: "Updating...",
+                          showSucess: true,
+                        );
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text('Product updated successfully'),
-                            backgroundColor: Colors.orange,
+                            backgroundColor: AppColors.success,
                           ),
                         );
 
@@ -899,6 +912,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     } else {
                       // product add call
                       await ProductController.addProduct(addAndEditedProduct);
+                      await showLoadingDialog(
+                        context,
+                        message: "Adding product",
+                        showSucess: true,
+                      );
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Product added successfully'),
