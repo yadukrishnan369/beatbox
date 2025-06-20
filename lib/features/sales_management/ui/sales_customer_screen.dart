@@ -60,75 +60,81 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        backgroundColor: AppColors.white,
-        appBar: AppBar(
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (notification) {
+          FocusScope.of(context).unfocus();
+          return false;
+        },
+        child: Scaffold(
           backgroundColor: AppColors.white,
-          elevation: 0,
-          title: Text(
-            'Sales History',
-            style: TextStyle(
-              fontSize: 22.sp,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          centerTitle: false,
-        ),
-        body: Padding(
-          padding: EdgeInsets.all(16.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomSearchBar(
-                controller: _searchController,
-                onChanged: (query) {
-                  SalesUtils.filterSalesByNameAndDate(
-                    query: query,
-                    startDate: _startDate,
-                    endDate: _endDate,
-                  );
-                },
-                focusNode: _focusNode,
-                showFilterIcon: true,
-                onFilterTap: _pickDateRange,
-                hintText: 'Search by customer or invoice ...',
+          appBar: AppBar(
+            backgroundColor: AppColors.white,
+            elevation: 0,
+            title: Text(
+              'Sales History',
+              style: TextStyle(
+                fontSize: 22.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
               ),
-              SizedBox(height: 10.h),
-              _dateInfo(),
-              SizedBox(height: 10.h),
-              Expanded(
-                child: ValueListenableBuilder<List<SalesModel>>(
-                  valueListenable: filteredSalesNotifier,
-                  builder: (context, salesList, _) {
-                    if (salesList.isEmpty) {
-                      return Center(
-                        child: Text(
-                          'No sales found',
-                          style: TextStyle(fontSize: 14.sp),
-                        ),
-                      );
-                    }
-                    return ListView.builder(
-                      itemCount: salesList.length,
-                      itemBuilder: (context, index) {
-                        final sale = salesList[index];
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              AppRoutes.salesAndCustomerDetails,
-                              arguments: sale,
-                            );
-                          },
-                          child: _buildSalesTile(sale),
-                        );
-                      },
+            ),
+            centerTitle: false,
+          ),
+          body: Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomSearchBar(
+                  controller: _searchController,
+                  onChanged: (query) {
+                    SalesUtils.filterSalesByNameAndDate(
+                      query: query,
+                      startDate: _startDate,
+                      endDate: _endDate,
                     );
                   },
+                  focusNode: _focusNode,
+                  showFilterIcon: true,
+                  onFilterTap: _pickDateRange,
+                  hintText: 'Search by customer or invoice ...',
                 ),
-              ),
-            ],
+                SizedBox(height: 10.h),
+                _dateInfo(),
+                SizedBox(height: 10.h),
+                Expanded(
+                  child: ValueListenableBuilder<List<SalesModel>>(
+                    valueListenable: filteredSalesNotifier,
+                    builder: (context, salesList, _) {
+                      if (salesList.isEmpty) {
+                        return Center(
+                          child: Text(
+                            'No sales found',
+                            style: TextStyle(fontSize: 14.sp),
+                          ),
+                        );
+                      }
+                      return ListView.builder(
+                        itemCount: salesList.length,
+                        itemBuilder: (context, index) {
+                          final sale = salesList[index];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.salesAndCustomerDetails,
+                                arguments: sale,
+                              );
+                            },
+                            child: _buildSalesTile(sale),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

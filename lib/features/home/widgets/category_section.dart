@@ -63,7 +63,7 @@ class CategorySection extends StatelessWidget {
                 child: Column(
                   children: [
                     Image.asset(
-                      'assets/images/empty_image.jpg',
+                      'assets/images/empty_image.png',
                       height: 130.h,
                       width: 350.w,
                       fit: BoxFit.cover,

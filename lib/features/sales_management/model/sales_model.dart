@@ -33,7 +33,7 @@ class SalesModel extends HiveObject {
   final double discount;
 
   @HiveField(9)
-  final double grandTotal;
+  final double grandTotal;  
 
   SalesModel({
     required this.customerName,

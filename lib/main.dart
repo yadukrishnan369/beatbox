@@ -57,8 +57,6 @@ void main() async {
 
   await Hive.openBox('app_settings');
 
-  // await Hive.deleteBoxFromDisk('categoryBox');
-
   runApp(const MyApp());
 }
 

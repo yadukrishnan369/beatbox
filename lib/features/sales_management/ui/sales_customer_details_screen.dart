@@ -131,9 +131,9 @@ class SalesAndCustomerDetailsScreen extends StatelessWidget {
                 width: double.infinity,
                 padding: EdgeInsets.all(16.w),
                 decoration: BoxDecoration(
-                  color: AppColors.white,
+                  color: AppColors.cardColor,
                   borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(color: AppColors.primary, width: 1.w),
+                  border: Border.all(color: AppColors.primary, width: 2.w),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

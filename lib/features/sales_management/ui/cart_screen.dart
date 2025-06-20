@@ -68,14 +68,24 @@ class _CartScreenState extends State<CartScreen> {
                                 builder: (context) {
                                   return AlertDialog(
                                     backgroundColor: AppColors.white,
-                                    title: Text('Confirmation'),
+                                    title: Text(
+                                      'Confirmation',
+                                      style: TextStyle(
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
                                     content: Text(
                                       'Are you sure you want to clear all this cart items?',
                                     ),
                                     actions: [
                                       TextButton(
                                         onPressed: () => Navigator.pop(context),
-                                        child: Text('Cancel'),
+                                        child: Text(
+                                          'Cancel',
+                                          style: TextStyle(
+                                            color: AppColors.textPrimary,
+                                          ),
+                                        ),
                                       ),
                                       TextButton(
                                         onPressed: () {
@@ -83,7 +93,12 @@ class _CartScreenState extends State<CartScreen> {
                                           cartUpdatedNotifier.value = [];
                                           Navigator.pop(context);
                                         },
-                                        child: Text('Yes'),
+                                        child: Text(
+                                          'Clear All',
+                                          style: TextStyle(
+                                            color: AppColors.error,
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   );
@@ -413,21 +428,33 @@ class _CartScreenState extends State<CartScreen> {
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            title: Text('Confirmation'),
+                            backgroundColor: AppColors.white,
+                            title: Text(
+                              'Confirmation',
+                              style: TextStyle(color: AppColors.primary),
+                            ),
                             content: Text(
                               'Are you sure you want to remove this item?',
                             ),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(context),
-                                child: Text('Cancel'),
+                                child: Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
                               ),
                               TextButton(
                                 onPressed: () {
                                   CartUtils.removeProductFromCart(item.product);
                                   Navigator.pop(context);
                                 },
-                                child: Text('Yes'),
+                                child: Text(
+                                  'Remove',
+                                  style: TextStyle(color: AppColors.error),
+                                ),
                               ),
                             ],
                           );

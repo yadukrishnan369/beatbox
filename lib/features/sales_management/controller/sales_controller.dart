@@ -40,12 +40,6 @@ class SalesController {
     return _salesBox.length;
   }
 
-  // delete a single sale by index
-  static Future<void> deleteSale(int index) async {
-    await _salesBox.deleteAt(index);
-    _refreshNotifier();
-  }
-
   // refresh notifier with all sales
   static void _refreshNotifier() {
     final sortedList =
