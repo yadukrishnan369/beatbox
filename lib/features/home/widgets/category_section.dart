@@ -56,32 +56,32 @@ class CategorySection extends StatelessWidget {
               ),
             ),
 
-            // if category empty case
+            // Placeholder Image
             if (categories.isEmpty)
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
-                child: Center(
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.category_outlined,
-                        size: 48.sp,
+                padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 10.h),
+                child: Column(
+                  children: [
+                    Image.asset(
+                      'assets/images/empty_image.jpg',
+                      height: 130.h,
+                      width: 350.w,
+                      fit: BoxFit.cover,
+                    ),
+                    SizedBox(height: 12.h),
+                    Text(
+                      'No categories added yet!',
+                      style: TextStyle(
+                        fontSize: 16.sp,
                         color: AppColors.primary,
+                        fontWeight: FontWeight.w500,
                       ),
-                      SizedBox(height: 8.h),
-                      Text(
-                        "No categories available",
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               )
             else
-              // catogory shows as grid view
+              // Show category list
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: GridView.builder(
@@ -96,6 +96,7 @@ class CategorySection extends StatelessWidget {
                   itemCount: visibleCategories.length,
                   itemBuilder: (context, index) {
                     final category = visibleCategories[index];
+
                     return Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12.r),
@@ -112,17 +113,6 @@ class CategorySection extends StatelessWidget {
                                   File(category.categoryImagePath),
                                   fit: BoxFit.cover,
                                   width: double.infinity,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Center(
-                                      child: Text(
-                                        'Image Not Found',
-                                        style: TextStyle(
-                                          color: AppColors.error,
-                                          fontSize: 12.sp,
-                                        ),
-                                      ),
-                                    );
-                                  },
                                 ),
                               ),
                             ),

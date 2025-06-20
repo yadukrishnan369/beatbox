@@ -1,3 +1,4 @@
+import 'package:beatbox/utils/amount_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/core/app_colors.dart';
@@ -122,7 +123,7 @@ class ItemsTableSection extends StatelessWidget {
               Expanded(
                 flex: 2,
                 child: Text(
-                  "₹${item.product.salePrice.toStringAsFixed(2)}",
+                  "₹${AmountFormatter.format(item.product.salePrice)}",
                   textAlign: TextAlign.center,
                   style: TextStyle(color: AppColors.error),
                 ),
@@ -130,7 +131,7 @@ class ItemsTableSection extends StatelessWidget {
               Expanded(
                 flex: 2,
                 child: Text(
-                  "₹${(item.product.salePrice * item.quantity).toStringAsFixed(2)}",
+                  "₹${AmountFormatter.format((item.product.salePrice * item.quantity))}",
                   textAlign: TextAlign.right,
                   style: TextStyle(color: AppColors.error),
                 ),

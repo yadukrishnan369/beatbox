@@ -8,11 +8,7 @@ class TotalStockCard extends StatelessWidget {
   const TotalStockCard({super.key});
 
   int getTotalStock(List<ProductModel> products) {
-    int totalStock = 0;
-    for (var p in products) {
-      totalStock += p.productQuantity;
-    }
-    return totalStock;
+    return products.fold(0, (sum, item) => sum + item.productQuantity);
   }
 
   @override
@@ -21,6 +17,7 @@ class TotalStockCard extends StatelessWidget {
       valueListenable: productAddNotifier,
       builder: (context, productList, _) {
         final totalStock = getTotalStock(productList);
+        final totalProducts = productList.length;
 
         return Card(
           color: AppColors.success,
@@ -28,25 +25,32 @@ class TotalStockCard extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.r),
           ),
-          child: Padding(
-            padding: EdgeInsets.all(16.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Total stock',
-                  style: TextStyle(fontSize: 16.sp, color: AppColors.white),
-                ),
-                SizedBox(height: 8.h),
-                Text(
-                  totalStock.toString(),
-                  style: TextStyle(
-                    fontSize: 24.sp,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.white,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Padding(
+              padding: EdgeInsets.all(16.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Total Stock',
+                    style: TextStyle(fontSize: 16.sp, color: AppColors.white),
                   ),
-                ),
-              ],
+                  SizedBox(height: 8.h),
+                  Text(
+                    '$totalStock items',
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.white,
+                    ),
+                  ),
+                  Text(
+                    '$totalProducts products',
+                    style: TextStyle(fontSize: 16.sp, color: AppColors.white),
+                  ),
+                ],
+              ),
             ),
           ),
         );

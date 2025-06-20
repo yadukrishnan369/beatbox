@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/product_management/model/product_model.dart';
+import 'package:beatbox/utils/amount_formatter.dart';
 import 'package:beatbox/utils/cart_utils.dart';
 import 'package:beatbox/widgets/show_loading_dialog.dart';
 import 'package:flutter/material.dart';
@@ -176,7 +177,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   ),
                   SizedBox(height: 10.h),
                   Text(
-                    'MRP ₹ ${product.salePrice.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                    'MRP ₹ ${AmountFormatter.format(product.salePrice)}',
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
@@ -235,42 +236,53 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           height: 55.h,
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () async {
-              await showLoadingDialog(
-                context,
-                message: "Adding to cart...",
-                showSucess: true,
-              );
-              await Future.delayed(const Duration(milliseconds: 2000));
-              CartUtils.addProductToCart(product, quantity: quantity);
-              Navigator.pop(context);
-            },
+            onPressed:
+                product.productQuantity <= 0
+                    ? null
+                    : () async {
+                      await showLoadingDialog(
+                        context,
+                        message: "Adding to cart...",
+                        showSucess: true,
+                      );
+                      await Future.delayed(const Duration(milliseconds: 2000));
+                      CartUtils.addProductToCart(product, quantity: quantity);
+                      Navigator.pop(context);
+                    },
             style: ElevatedButton.styleFrom(
               padding: EdgeInsets.zero,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(35.r),
               ),
+              backgroundColor:
+                  product.productQuantity <= 0 ? AppColors.textDisabled : null,
             ),
             child: Ink(
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.bottomNavColor,
-                    const Color.fromARGB(255, 144, 166, 177),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                gradient:
+                    product.productQuantity <= 0
+                        ? null
+                        : LinearGradient(
+                          colors: [
+                            AppColors.bottomNavColor,
+                            const Color.fromARGB(255, 144, 166, 177),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
                 borderRadius: BorderRadius.circular(35.r),
               ),
               child: Container(
                 alignment: Alignment.center,
                 height: 55.h,
                 child: Text(
-                  'Add to Cart',
+                  product.productQuantity <= 0 ? 'Out of Stock' : 'Add to Cart',
                   style: TextStyle(
                     fontSize: 22.sp,
-                    color: AppColors.white,
+                    color:
+                        product.productQuantity <= 0
+                            ? AppColors.error
+                            : AppColors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

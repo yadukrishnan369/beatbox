@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/product_management/model/product_model.dart';
+import 'package:beatbox/utils/amount_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -28,6 +29,7 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isOutOfStock = product.productQuantity == 0;
     final totalValue = product.purchaseRate * product.productQuantity;
     final profitPerItem = product.salePrice - product.purchaseRate;
     final totalProfit = profitPerItem * product.productQuantity;
@@ -101,15 +103,15 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
                       ),
                       _buildDetailRow(
                         'Purchase Price per item',
-                        '₹${product.purchaseRate.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                        '₹${AmountFormatter.format(product.purchaseRate)}',
                       ),
                       _buildDetailRow(
                         'For sale per item',
-                        '₹${product.salePrice.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                        '₹${AmountFormatter.format(product.salePrice)}',
                       ),
                       _buildDetailRow(
                         'Profit per item',
-                        '₹ ${profitPerItem.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                        '₹ ${AmountFormatter.format(profitPerItem)}',
                       ),
                       SizedBox(height: 16.h),
                       Container(
@@ -132,7 +134,7 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
                                   ),
                                 ),
                                 Text(
-                                  '₹${totalValue.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                                  '₹${AmountFormatter.format(totalValue)}',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16.sp,
@@ -149,7 +151,7 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
                                     top: 4.h,
                                   ),
                                   child: Text(
-                                    '${product.purchaseRate.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} x ${product.productQuantity}',
+                                    '${AmountFormatter.format(product.purchaseRate)} x ${product.productQuantity}',
                                     style: TextStyle(
                                       fontSize: 14.sp,
                                       color: AppColors.primary,
@@ -170,7 +172,7 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
                                   ),
                                 ),
                                 Text(
-                                  '₹${totalProfit.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                                  '₹${AmountFormatter.format(totalProfit)}',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16.sp,
@@ -187,7 +189,7 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
                                     top: 4.h,
                                   ),
                                   child: Text(
-                                    '${profitPerItem.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} x ${product.productQuantity}',
+                                    '${AmountFormatter.format(profitPerItem)} x ${product.productQuantity}',
                                     style: TextStyle(
                                       fontSize: 14.sp,
                                       color: AppColors.primary,
@@ -196,6 +198,25 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
                                 ),
                               ],
                             ),
+                            if (isOutOfStock)
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      left: 16.w,
+                                      top: 4.h,
+                                    ),
+                                    child: Text(
+                                      'Out Of Stock',
+                                      style: TextStyle(
+                                        fontSize: 18.sp,
+                                        color: AppColors.error,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                           ],
                         ),
                       ),

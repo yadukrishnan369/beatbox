@@ -12,6 +12,8 @@ import 'package:beatbox/features/product_management/ui/update_delete_product_scr
 import 'package:beatbox/features/app_settings_management/ui/app_settings_screen.dart';
 import 'package:beatbox/features/sales_management/ui/billing_screen.dart';
 import 'package:beatbox/features/sales_management/ui/cart_screen.dart';
+import 'package:beatbox/features/sales_management/ui/sales_customer_details_screen.dart';
+import 'package:beatbox/features/sales_management/ui/sales_customer_screen.dart';
 import 'package:flutter/material.dart';
 import '../features/splash/splash_screen.dart';
 import '../features/auth/biometric_screen.dart';
@@ -34,6 +36,8 @@ class AppRoutes {
   static const String appSettings = '/appSettings';
   static const String cart = '/cart';
   static const String billing = '/billing';
+  static const String salesAndCustomer = '/salesAndCustomer';
+  static const String salesAndCustomerDetails = '/salesAndCustomerDetails';
 
   /// set each routes, its screen widget
   static Map<String, WidgetBuilder> get routes => {
@@ -51,8 +55,10 @@ class AppRoutes {
     productDetails: (context) => ProductDetailsScreen(),
     brandAndCategory: (context) => BrandAndCategoryScreen(),
     appSettings: (context) => AppSettingsScreen(),
-    cart: (context) => const CartScreen(),
-    billing:(context)=>const BillingScreen(),
+    cart: (context) => CartScreen(),
+    billing: (context) => BillingScreen(),
+    salesAndCustomer: (context) => SalesAndCustomerScreen(),
+    salesAndCustomerDetails: (context) => SalesAndCustomerDetailsScreen(),
   };
 
   //tracking navigation and Pause/resume the app

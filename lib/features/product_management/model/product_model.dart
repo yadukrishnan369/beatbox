@@ -17,7 +17,7 @@ class ProductModel extends HiveObject {
   final String productBrand;
 
   @HiveField(4)
-  final int productQuantity;
+  int productQuantity;
 
   @HiveField(5)
   final String productCode;

@@ -1,3 +1,4 @@
+import 'package:beatbox/core/notifiers/cart_update_notifier.dart';
 import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:hive/hive.dart';
 import '../model/cart_item_model.dart';
@@ -9,6 +10,7 @@ class CartController {
     if (!Hive.isBoxOpen(_boxName)) {
       await Hive.openBox<CartItemModel>(_boxName);
     }
+    _refreshNotifier();
   }
 
   static Future<void> addToCart(CartItemModel item) async {
@@ -25,6 +27,7 @@ class CartController {
     } else {
       await box.add(item);
     }
+    _refreshNotifier();
   }
 
   static List<CartItemModel> getCartItems() {
@@ -35,6 +38,7 @@ class CartController {
   static Future<void> removeItem(int index) async {
     final box = Hive.box<CartItemModel>(_boxName);
     await box.deleteAt(index);
+    _refreshNotifier();
   }
 
   static Future<void> updateQuantity(ProductModel product, int newQty) async {
@@ -50,10 +54,18 @@ class CartController {
         break;
       }
     }
+    _refreshNotifier();
   }
 
   static Future<void> clearCart() async {
     final box = Hive.box<CartItemModel>(_boxName);
     await box.clear();
+    _refreshNotifier();
+  }
+
+  /// 🔁 Notify all listeners
+  static void _refreshNotifier() {
+    final box = Hive.box<CartItemModel>(_boxName);
+    cartUpdatedNotifier.value = box.values.toList();
   }
 }

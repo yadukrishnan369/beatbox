@@ -78,52 +78,55 @@ class _StockEntryScreenState extends State<StockEntryScreen> {
               ),
             ),
           ),
-          body: Column(
-            children: [
-              CustomSearchBar(
-                controller: _searchController,
-                onChanged: (query) {
-                  ProductUtils.filterProductsByNameAndDate(
-                    query: query,
-                    startDate: _fromDate,
-                    endDate: _toDate,
-                  );
-                },
-                focusNode: _focusNode,
-                showFilterIcon: true,
-                onFilterTap: _pickDateRange,
-                hintText: 'Search Stock ...',
-              ),
-              _dateInfo(),
-              Expanded(
-                child: ValueListenableBuilder<List<ProductModel>>(
-                  valueListenable: filteredProductNotifier,
-                  builder: (context, products, _) {
-                    if (products.isEmpty) {
-                      return const Center(child: Text("No products found"));
-                    }
-
-                    return ListView.builder(
-                      padding: EdgeInsets.all(12.r),
-                      itemCount: products.length,
-                      itemBuilder: (context, index) {
-                        final product = products[index];
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              AppRoutes.stockEntryDetails,
-                              arguments: product,
-                            );
-                          },
-                          child: _buildProductCard(product),
-                        );
-                      },
+          body: Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              children: [
+                CustomSearchBar(
+                  controller: _searchController,
+                  onChanged: (query) {
+                    ProductUtils.filterProductsByNameAndDate(
+                      query: query,
+                      startDate: _fromDate,
+                      endDate: _toDate,
                     );
                   },
+                  focusNode: _focusNode,
+                  showFilterIcon: true,
+                  onFilterTap: _pickDateRange,
+                  hintText: 'Search Stock ...',
                 ),
-              ),
-            ],
+                SizedBox(height: 10.h),
+                _dateInfo(),
+                SizedBox(height: 10.h),
+                Expanded(
+                  child: ValueListenableBuilder<List<ProductModel>>(
+                    valueListenable: filteredProductNotifier,
+                    builder: (context, products, _) {
+                      if (products.isEmpty) {
+                        return const Center(child: Text("No products found"));
+                      }
+                      return ListView.builder(
+                        itemCount: products.length,
+                        itemBuilder: (context, index) {
+                          final product = products[index];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.stockEntryDetails,
+                                arguments: product,
+                              );
+                            },
+                            child: _buildProductCard(product),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -132,12 +135,11 @@ class _StockEntryScreenState extends State<StockEntryScreen> {
 
   Widget _buildProductCard(ProductModel product) {
     return Container(
-      margin: EdgeInsets.only(bottom: 10.h),
-      padding: EdgeInsets.all(20.r),
+      margin: EdgeInsets.only(bottom: 12.h),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: AppColors.cardColor,
+        color: AppColors.contColor,
         borderRadius: BorderRadius.circular(12.r),
-        boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 0.r)],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,7 +150,7 @@ class _StockEntryScreenState extends State<StockEntryScreen> {
               Text(
                 product.productName,
                 style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
                 ),
@@ -159,7 +161,6 @@ class _StockEntryScreenState extends State<StockEntryScreen> {
               ),
             ],
           ),
-
           SizedBox(height: 10.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -168,7 +169,16 @@ class _StockEntryScreenState extends State<StockEntryScreen> {
                 'Quantity: ${product.productQuantity}',
                 style: TextStyle(fontSize: 14.sp),
               ),
-              Icon(Icons.list, color: AppColors.textPrimary),
+              product.productQuantity == 0
+                  ? Text(
+                    'Out of Stock',
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                      color: AppColors.error,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  )
+                  : Icon(Icons.list, color: AppColors.textPrimary, size: 20.sp),
             ],
           ),
         ],
@@ -182,55 +192,53 @@ class _StockEntryScreenState extends State<StockEntryScreen> {
     String format(DateTime? date) =>
         date != null ? DateFormat('dd MMM yyyy').format(date) : '';
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 4.h),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: AppColors.contColor,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'From: ${format(_fromDate)}',
-                    style: TextStyle(
-                      fontSize: 15.sp,
-                      color: AppColors.textPrimary,
-                    ),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.r),
+        color: AppColors.cardColor,
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: EdgeInsets.all(8.r),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'From: ${format(_fromDate)}',
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    color: AppColors.textPrimary,
                   ),
-                  Text(
-                    'To: ${format(_toDate)}',
-                    style: TextStyle(
-                      fontSize: 15.sp,
-                      color: AppColors.textPrimary,
-                    ),
+                ),
+                Text(
+                  'To: ${format(_toDate)}',
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    color: AppColors.textPrimary,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            IconButton(
-              icon: Icon(Icons.clear, color: AppColors.textPrimary),
-              onPressed: () {
-                setState(() {
-                  _fromDate = null;
-                  _toDate = null;
-                });
+          ),
+          IconButton(
+            icon: Icon(Icons.clear, color: AppColors.textPrimary, size: 20.sp),
+            onPressed: () {
+              setState(() {
+                _fromDate = null;
+                _toDate = null;
+              });
 
-                ProductUtils.filterProductsByNameAndDate(
-                  query: _searchController.text.trim(),
-                  startDate: null,
-                  endDate: null,
-                );
-              },
-            ),
-          ],
-        ),
+              ProductUtils.filterProductsByNameAndDate(
+                query: _searchController.text.trim(),
+                startDate: null,
+                endDate: null,
+              );
+            },
+          ),
+        ],
       ),
     );
   }

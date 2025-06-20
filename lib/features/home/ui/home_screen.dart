@@ -15,8 +15,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
+    return PopScope(
+      canPop: false,
       child: Scaffold(
         body: Container(
           decoration: BoxDecoration(
@@ -43,7 +43,7 @@ class HomeScreen extends StatelessWidget {
                       IconButton(
                         onPressed: () {},
                         icon: Image.asset(
-                          AppImages.logo,
+                          'assets/icons/home_profile.png',
                           width: 30.w,
                           height: 30.h,
                         ),

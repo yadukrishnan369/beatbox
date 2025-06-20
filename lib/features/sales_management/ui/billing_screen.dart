@@ -1,13 +1,19 @@
+import 'package:beatbox/features/product_management/model/product_model.dart';
+import 'package:beatbox/features/sales_management/controller/cart_controller.dart';
+import 'package:beatbox/features/sales_management/controller/sales_controller.dart';
+import 'package:beatbox/features/sales_management/model/sales_model.dart';
 import 'package:beatbox/utils/gst_utils.dart';
+import 'package:beatbox/widgets/show_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/sales_management/model/cart_item_model.dart';
 import 'package:beatbox/features/sales_management/widgets/customer_info_section.dart';
 import 'package:beatbox/features/sales_management/widgets/invoice_info_section.dart';
 import 'package:beatbox/features/sales_management/widgets/items_table_section.dart';
 import 'package:beatbox/features/sales_management/widgets/billing_summary_section.dart';
+import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
 
 class BillingScreen extends StatefulWidget {
   const BillingScreen({super.key});
@@ -17,20 +23,18 @@ class BillingScreen extends StatefulWidget {
 }
 
 class _BillingScreenState extends State<BillingScreen> {
-  // Controllers
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController discountController = TextEditingController();
 
-  // Data
   List<CartItemModel> cartItems = [];
   double subtotal = 0.0;
   double gst = 0.0;
   double discount = 0.0;
   double grandTotal = 0.0;
   late String invoiceNumber;
-  late String billingDate;
+  late DateTime billingDate;
   final double gstRate = GSTUtils.getGSTRate() / 100;
 
   @override
@@ -38,7 +42,7 @@ class _BillingScreenState extends State<BillingScreen> {
     super.initState();
     invoiceNumber =
         'INV-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}';
-    billingDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
+    billingDate = DateTime.now();
     discountController.addListener(_updateDiscount);
   }
 
@@ -80,13 +84,54 @@ class _BillingScreenState extends State<BillingScreen> {
       return;
     }
 
+    final sale = SalesModel(
+      customerName: nameController.text.trim(),
+      customerPhone: phoneController.text.trim(),
+      customerEmail: emailController.text.trim(),
+      invoiceNumber: invoiceNumber,
+      billingDate: billingDate,
+      cartItems: cartItems,
+      subtotal: subtotal,
+      gst: gst,
+      discount: discount,
+      grandTotal: grandTotal,
+    );
+
     try {
-      //bill confirmation logic
-      await Future.delayed(Duration(seconds: 1));
-      _showSnackBar("Bill confirmed successfully!", isError: false);
-      Future.delayed(Duration(seconds: 2), () => Navigator.pop(context));
+      // save to sales
+      await SalesController.addSale(sale);
+
+      //  update stock for each product
+      final productBox = Hive.box<ProductModel>('productBox');
+      for (var item in cartItems) {
+        final id = item.product.id;
+        final existingProduct = productBox.values.firstWhere(
+          (p) => p.id == id,
+          orElse: () => item.product,
+        );
+
+        // Prevent negative stock
+        final newQty = existingProduct.productQuantity - item.quantity;
+        existingProduct.productQuantity = newQty < 0 ? 0 : newQty;
+
+        await existingProduct.save();
+      }
+
+      // clear cart
+      await CartController.clearCart();
+
+      // show loading and success
+      await showLoadingDialog(
+        context,
+        message: 'Saving Bill...',
+        showSucess: true,
+      );
+
+      await Future.delayed(const Duration(milliseconds: 800), () {
+        if (mounted) Navigator.pop(context);
+      });
     } catch (e) {
-      _showSnackBar("Error: ${e.toString()}", isError: true);
+      _showSnackBar("❌ Error: ${e.toString()}", isError: true);
     }
   }
 
@@ -136,7 +181,7 @@ class _BillingScreenState extends State<BillingScreen> {
             SizedBox(height: 24.h),
             InvoiceInfoSection(
               invoiceNumber: invoiceNumber,
-              billingDate: billingDate,
+              billingDate: DateFormat('dd-MM-yyyy').format(billingDate),
               itemCount: cartItems.length,
             ),
             SizedBox(height: 24.h),

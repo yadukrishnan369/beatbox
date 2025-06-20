@@ -87,8 +87,12 @@ class _StockManageScreenState extends State<StockManageScreen> {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: const [TotalStockCard(), TotalSalesCard()],
+              children: const [
+                SizedBox(width: 160, height: 120, child: TotalStockCard()),
+                SizedBox(width: 160, height: 120, child: TotalSalesCard()),
+              ],
             ),
+
             SizedBox(height: 24.h),
             const Divider(height: 1),
             Padding(
@@ -104,7 +108,9 @@ class _StockManageScreenState extends State<StockManageScreen> {
             _productActionItem(Icons.edit, 'Update/Edit Product', () {
               Navigator.pushNamed(context, AppRoutes.updateProduct);
             }),
-            _productActionItem(Icons.history, 'Sales History', () {}),
+            _productActionItem(Icons.history, 'Sales/Customer History', () {
+              Navigator.pushNamed(context, AppRoutes.salesAndCustomer);
+            }),
             _productActionItem(Icons.list_alt, 'Stock Entries', () {
               Navigator.pushNamed(context, AppRoutes.stockEntry);
             }),

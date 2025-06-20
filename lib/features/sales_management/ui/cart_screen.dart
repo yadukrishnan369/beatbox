@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/sales_management/controller/cart_controller.dart';
 import 'package:beatbox/routes/app_routes.dart';
+import 'package:beatbox/utils/amount_formatter.dart';
 import 'package:beatbox/utils/cart_utils.dart';
 import 'package:beatbox/widgets/empty_placeholder.dart';
 import 'package:beatbox/widgets/show_loading_dialog.dart';
@@ -66,6 +67,7 @@ class _CartScreenState extends State<CartScreen> {
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
+                                    backgroundColor: AppColors.white,
                                     title: Text('Confirmation'),
                                     content: Text(
                                       'Are you sure you want to clear all this cart items?',
@@ -151,7 +153,7 @@ class _CartScreenState extends State<CartScreen> {
                                       ),
                                     ),
                                     Text(
-                                      '₹ ${totalPrice.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                                      '₹ ${AmountFormatter.format(totalPrice)}',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18.sp,
@@ -306,7 +308,7 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                     SizedBox(height: 2.h),
                     Text(
-                      'MRP ₹ ${item.product.salePrice.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                      'MRP ₹ ${AmountFormatter.format(item.product.salePrice)}',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 12.sp,
@@ -315,7 +317,7 @@ class _CartScreenState extends State<CartScreen> {
                     ),
                     SizedBox(height: 6.h),
                     Text(
-                      'Total ₹ ${item.totalPrice.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                      'Total ₹ ${AmountFormatter.format(item.totalPrice)}',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14.sp,

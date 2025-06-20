@@ -4,10 +4,14 @@ import 'package:beatbox/features/home/ui/home_screen.dart';
 import 'package:beatbox/features/product_management/ui/stock_entry_details_screen.dart';
 import 'package:beatbox/features/product_management/ui/stock_entry_screen.dart';
 import 'package:beatbox/features/sales_management/controller/cart_controller.dart';
+import 'package:beatbox/features/sales_management/controller/sales_controller.dart';
 import 'package:beatbox/features/sales_management/model/cart_item_model.dart';
 import 'package:beatbox/features/app_settings_management/ui/app_settings_screen.dart';
+import 'package:beatbox/features/sales_management/model/sales_model.dart';
 import 'package:beatbox/features/sales_management/ui/billing_screen.dart';
 import 'package:beatbox/features/sales_management/ui/cart_screen.dart';
+import 'package:beatbox/features/sales_management/ui/sales_customer_details_screen.dart';
+import 'package:beatbox/features/sales_management/ui/sales_customer_screen.dart';
 import 'package:beatbox/features/splash/splash_screen.dart';
 import 'package:beatbox/features/product_management/controller/brand_controller.dart';
 import 'package:beatbox/features/product_management/controller/category_controller.dart';
@@ -42,16 +46,18 @@ void main() async {
   Hive.registerAdapter(BrandModelAdapter());
   Hive.registerAdapter(ProductModelAdapter());
   Hive.registerAdapter(CartItemModelAdapter());
+  Hive.registerAdapter(SalesModelAdapter());
 
   // initialize hive boxes
   await CategoryController.initBox();
   await BrandController.initBox();
   await ProductController.initBox();
   await CartController.initBox();
+  await SalesController.initBox();
 
   await Hive.openBox('app_settings');
 
-  print('🧪 CART ITEMS IN HIVE: ${CartController.getCartItems().length}');
+  // await Hive.deleteBoxFromDisk('categoryBox');
 
   runApp(const MyApp());
 }
@@ -147,6 +153,9 @@ class _MyAppState extends State<MyApp> {
             AppRoutes.appSettings: (context) => AppSettingsScreen(),
             AppRoutes.cart: (context) => CartScreen(),
             AppRoutes.billing: (context) => BillingScreen(),
+            AppRoutes.salesAndCustomer: (context) => SalesAndCustomerScreen(),
+            AppRoutes.salesAndCustomerDetails:
+                (context) => SalesAndCustomerDetailsScreen(),
           },
           // set fixed text size of user device settings
           builder: (context, child) {

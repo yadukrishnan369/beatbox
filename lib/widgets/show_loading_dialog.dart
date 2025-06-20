@@ -9,19 +9,32 @@ Future<void> showLoadingDialog(
   String? message,
   bool? showSucess,
 }) async {
+  final completer = Completer<void>();
+
   showDialog(
     context: context,
     barrierDismissible: false,
     builder:
-        (_) => _AnimatedLoadingDialog(message: message, showSucess: showSucess),
+        (_) => _AnimatedLoadingDialog(
+          message: message,
+          showSucess: showSucess,
+          onFinish: () {
+            if (!completer.isCompleted) {
+              completer.complete(); // ✅ Finish waiting after dialog dismissed
+            }
+          },
+        ),
   );
+
+  return completer.future;
 }
 
 class _AnimatedLoadingDialog extends StatefulWidget {
   final String? message;
   final bool? showSucess;
+  final VoidCallback? onFinish;
 
-  const _AnimatedLoadingDialog({this.message, this.showSucess});
+  const _AnimatedLoadingDialog({this.message, this.showSucess, this.onFinish});
 
   @override
   State<_AnimatedLoadingDialog> createState() => _AnimatedLoadingDialogState();
@@ -33,7 +46,6 @@ class _AnimatedLoadingDialogState extends State<_AnimatedLoadingDialog> {
   @override
   void initState() {
     super.initState();
-
     final bool shouldShowSuccess = widget.showSucess == true;
 
     Future.delayed(Duration(milliseconds: shouldShowSuccess ? 1000 : 800), () {
@@ -43,10 +55,16 @@ class _AnimatedLoadingDialogState extends State<_AnimatedLoadingDialog> {
         });
 
         Future.delayed(Duration(milliseconds: 1000), () {
-          if (mounted) Navigator.of(context).pop();
+          if (mounted) {
+            Navigator.of(context).pop();
+            widget.onFinish?.call(); //
+          }
         });
       } else {
-        if (mounted) Navigator.of(context).pop();
+        if (mounted) {
+          Navigator.of(context).pop();
+          widget.onFinish?.call();
+        }
       }
     });
   }

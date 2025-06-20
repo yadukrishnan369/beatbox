@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:beatbox/core/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/core/notifiers/product_add_notifier.dart';
+import 'package:beatbox/features/product_management/model/product_model.dart';
+import 'package:beatbox/routes/app_routes.dart';
 
 class NewArrivalSection extends StatefulWidget {
   const NewArrivalSection({super.key});
@@ -29,14 +32,14 @@ class _NewArrivalSectionState extends State<NewArrivalSection> {
     super.dispose();
   }
 
-  void _startAutoScroll(List<String> productImages) {
+  void _startAutoScroll(List<ProductModel> productList) {
     _timer?.cancel();
-    if (productImages.isEmpty) return;
+    if (productList.isEmpty) return;
 
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
       if (!mounted) return;
 
-      if (_currentPage < productImages.length - 1) {
+      if (_currentPage < productList.length - 1) {
         _currentPage++;
       } else {
         _currentPage = 0;
@@ -55,16 +58,15 @@ class _NewArrivalSectionState extends State<NewArrivalSection> {
     return ValueListenableBuilder(
       valueListenable: productAddNotifier,
       builder: (context, productList, _) {
-        final latestImages =
+        final latestProducts =
             productList
                 .where((e) => e.image1 != null && e.image1!.trim().isNotEmpty)
                 .take(3)
-                .map((e) => e.image1!)
                 .toList();
 
-        _startAutoScroll(latestImages); // scroll based on new images
+        _startAutoScroll(latestProducts);
 
-        if (latestImages.isEmpty) {
+        if (latestProducts.isEmpty) {
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 16.h),
             child: Column(
@@ -79,18 +81,24 @@ class _NewArrivalSectionState extends State<NewArrivalSection> {
                   ),
                 ),
                 SizedBox(height: 10.h),
+
+                // Placeholder Image
                 Center(
                   child: Column(
                     children: [
-                      Icon(
-                        Icons.image_not_supported,
-                        size: 48.sp,
-                        color: Colors.grey,
+                      Image.asset(
+                        'assets/images/empty_image.jpg',
+                        height: 130.h,
+                        width: 350.w,
+                        fit: BoxFit.cover,
                       ),
                       SizedBox(height: 8.h),
                       Text(
-                        'No Products Added Yet',
-                        style: TextStyle(fontSize: 14.sp, color: Colors.grey),
+                        'No New Products Added Yet',
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          color: AppColors.primary,
+                        ),
                       ),
                     ],
                   ),
@@ -103,7 +111,6 @@ class _NewArrivalSectionState extends State<NewArrivalSection> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Title
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 8.h),
               child: Text(
@@ -115,28 +122,29 @@ class _NewArrivalSectionState extends State<NewArrivalSection> {
                 ),
               ),
             ),
-
             SizedBox(
               height: 150.h,
               child: PageView.builder(
                 controller: _pageController,
-                itemCount: latestImages.length,
+                itemCount: latestProducts.length,
                 itemBuilder: (context, index) {
-                  final imageUrl = latestImages[index];
-                  return Container(
-                    margin: EdgeInsets.symmetric(horizontal: 2.w),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.15),
-                          blurRadius: 8.r,
-                          offset: Offset(0, 4),
+                  final product = latestProducts[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.productDetails,
+                        arguments: product,
+                      );
+                    },
+                    child: Container(
+                      margin: EdgeInsets.symmetric(horizontal: 2.w),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16.r),
+                        image: DecorationImage(
+                          image: FileImage(File(product.image1!)),
+                          fit: BoxFit.cover,
                         ),
-                      ],
-                      image: DecorationImage(
-                        image: FileImage(File(imageUrl)),
-                        fit: BoxFit.cover,
                       ),
                     ),
                   );
