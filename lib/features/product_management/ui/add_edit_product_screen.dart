@@ -112,373 +112,548 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   child: Column(
                     children: [
                       // Product Name Field
-                      Container(
-                        margin: EdgeInsets.only(top: 5.h, bottom: 16.h),
-                        child: TextFormField(
-                          controller: _productNameController,
-                          decoration: InputDecoration(
-                            hintText: 'product name *',
-                            hintStyle: TextStyle(color: AppColors.textDisabled),
-                            prefixIcon: Icon(Icons.shopping_bag_outlined),
-                            filled: true,
-                            fillColor: AppColors.white,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color: AppColors.primary),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color: AppColors.primary),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color: AppColors.blue),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.w,
-                              vertical: 16.h,
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'This field is required';
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-
-                      // Product Category Dropdown
-                      Container(
-                        margin: EdgeInsets.only(bottom: 16.h),
-                        child: DropdownButtonFormField<String>(
-                          value:
-                              categoryList.toSet().contains(selectedCategory)
-                                  ? selectedCategory
-                                  : null,
-                          hint: Text(
-                            'Product category *',
-                            style: TextStyle(color: AppColors.textDisabled),
-                          ),
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.category_outlined),
-                            filled: true,
-                            fillColor: AppColors.white,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color: AppColors.primary),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color: AppColors.primary),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color: AppColors.blue),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.w,
-                              vertical: 16.h,
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please select a category';
-                            }
-                            return null;
-                          },
-                          items:
-                              categoryList.toSet().toList().map((category) {
-                                return DropdownMenuItem<String>(
-                                  value: category,
-                                  child: Text(category),
-                                );
-                              }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              selectedCategory = value;
-                            });
-                          },
-                        ),
-                      ),
-
-                      // Brand Dropdown
-                      Container(
-                        margin: EdgeInsets.only(bottom: 16.h),
-                        child: DropdownButtonFormField<String>(
-                          value:
-                              brandList.toSet().contains(selectedBrand)
-                                  ? selectedBrand
-                                  : null,
-                          hint: Text(
-                            'brand *',
-                            style: TextStyle(color: AppColors.textDisabled),
-                          ),
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Icons.branding_watermark_outlined),
-                            filled: true,
-                            fillColor: AppColors.white,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color: AppColors.primary),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color: AppColors.primary),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color: AppColors.blue),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.w,
-                              vertical: 16.h,
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please select a brand';
-                            }
-                            return null;
-                          },
-                          items:
-                              brandList.toSet().toList().map((brand) {
-                                return DropdownMenuItem<String>(
-                                  value: brand,
-                                  child: Text(brand),
-                                );
-                              }).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              selectedBrand = value;
-                            });
-                          },
-                        ),
-                      ),
-
-                      // Product Quantity and Product Code Row
-                      Row(
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: Container(
-                              margin: EdgeInsets.only(right: 8.w, bottom: 16.h),
-                              child: TextFormField(
-                                controller: _quantityController,
-                                decoration: InputDecoration(
-                                  hintText: 'qnty produc *',
-                                  hintStyle: TextStyle(
-                                    color: AppColors.textDisabled,
-                                  ),
-                                  prefixIcon: Icon(Icons.numbers),
-                                  filled: true,
-                                  fillColor: AppColors.white,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8.r),
-                                    borderSide: BorderSide(
-                                      color: AppColors.primary,
-                                    ),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8.r),
-                                    borderSide: BorderSide(
-                                      color: AppColors.primary,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8.r),
-                                    borderSide: BorderSide(
-                                      color: AppColors.blue,
-                                    ),
-                                  ),
-                                  contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 16.w,
-                                    vertical: 16.h,
-                                  ),
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.trim().isEmpty) {
-                                    return 'This field is required';
-                                  }
-                                  return null;
-                                },
-                                keyboardType: TextInputType.number,
-                              ),
+                          Text(
+                            'Product Name',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textPrimary,
                             ),
                           ),
-                          Expanded(
-                            child: Container(
-                              margin: EdgeInsets.only(left: 8.w, bottom: 16.h),
-                              child: TextFormField(
-                                controller: _productCodeController,
-                                decoration: InputDecoration(
-                                  hintText: 'code product *',
-                                  hintStyle: TextStyle(
-                                    color: AppColors.textDisabled,
-                                  ),
-                                  prefixIcon: Icon(Icons.qr_code),
-                                  filled: true,
-                                  fillColor: AppColors.white,
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8.r),
-                                    borderSide: BorderSide(
-                                      color: AppColors.primary,
-                                    ),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8.r),
-                                    borderSide: BorderSide(
-                                      color: AppColors.primary,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8.r),
-                                    borderSide: BorderSide(
-                                      color: AppColors.blue,
-                                    ),
-                                  ),
-                                  contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 16.w,
-                                    vertical: 16.h,
+                          SizedBox(height: 4.h),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 16.h),
+                            child: TextFormField(
+                              controller: _productNameController,
+                              decoration: InputDecoration(
+                                hintText: 'Enter product name',
+                                hintStyle: TextStyle(
+                                  color: AppColors.textDisabled,
+                                ),
+                                prefixIcon: Icon(Icons.shopping_bag_outlined),
+                                filled: true,
+                                fillColor: AppColors.white,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(
+                                    color: AppColors.primary,
                                   ),
                                 ),
-                                validator: (value) {
-                                  if (value == null || value.trim().isEmpty) {
-                                    return 'This field is required';
-                                  }
-                                  return null;
-                                },
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(color: AppColors.blue),
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16.w,
+                                  vertical: 16.h,
+                                ),
                               ),
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'This field is required';
+                                }
+                                return null;
+                              },
                             ),
                           ),
                         ],
                       ),
 
-                      // Purchase Price Field
-                      Container(
-                        margin: EdgeInsets.only(bottom: 16.h),
-                        child: TextFormField(
-                          controller: _purchaseRateController,
-                          decoration: InputDecoration(
-                            hintText: 'purchase price *',
-                            hintStyle: TextStyle(color: AppColors.textDisabled),
-                            prefixIcon: Icon(Icons.attach_money),
-                            filled: true,
-                            fillColor: AppColors.white,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color: AppColors.primary),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color: AppColors.primary),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color: AppColors.blue),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.w,
-                              vertical: 16.h,
+                      // Product Category Dropdown
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Product Category',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textPrimary,
                             ),
                           ),
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'This field is required';
-                            }
-                            return null;
-                          },
-                          keyboardType: TextInputType.number,
-                        ),
+                          SizedBox(height: 4.h),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 16.h),
+                            child: DropdownButtonFormField<String>(
+                              value:
+                                  categoryList.toSet().contains(
+                                        selectedCategory,
+                                      )
+                                      ? selectedCategory
+                                      : null,
+                              hint: Text(
+                                'Select category',
+                                style: TextStyle(color: AppColors.textDisabled),
+                              ),
+                              decoration: InputDecoration(
+                                prefixIcon: Icon(Icons.category_outlined),
+                                filled: true,
+                                fillColor: AppColors.white,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(color: AppColors.blue),
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16.w,
+                                  vertical: 16.h,
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please select a category';
+                                }
+                                return null;
+                              },
+                              items:
+                                  categoryList.toSet().toList().map((category) {
+                                    return DropdownMenuItem<String>(
+                                      value: category,
+                                      child: Text(category),
+                                    );
+                                  }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedCategory = value;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // Brand Dropdown
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Brand',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          SizedBox(height: 4.h),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 16.h),
+                            child: DropdownButtonFormField<String>(
+                              value:
+                                  brandList.toSet().contains(selectedBrand)
+                                      ? selectedBrand
+                                      : null,
+                              hint: Text(
+                                'Select brand',
+                                style: TextStyle(color: AppColors.textDisabled),
+                              ),
+                              decoration: InputDecoration(
+                                prefixIcon: Icon(
+                                  Icons.branding_watermark_outlined,
+                                ),
+                                filled: true,
+                                fillColor: AppColors.white,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(color: AppColors.blue),
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16.w,
+                                  vertical: 16.h,
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please select a brand';
+                                }
+                                return null;
+                              },
+                              items:
+                                  brandList.toSet().toList().map((brand) {
+                                    return DropdownMenuItem<String>(
+                                      value: brand,
+                                      child: Text(brand),
+                                    );
+                                  }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedBrand = value;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // Product Quantity and Product Code Row
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 4.h),
+                          Row(
+                            children: [
+                              // Quantity
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Quantity',
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        color: AppColors.textPrimary,
+                                      ),
+                                    ),
+                                    SizedBox(height: 4.h),
+                                    Container(
+                                      margin: EdgeInsets.only(
+                                        right: 8.w,
+                                        bottom: 16.h,
+                                      ),
+                                      child: TextFormField(
+                                        controller: _quantityController,
+                                        decoration: InputDecoration(
+                                          hintText: 'Enter quantity',
+                                          hintStyle: TextStyle(
+                                            color: AppColors.textDisabled,
+                                          ),
+                                          prefixIcon: Icon(Icons.numbers),
+                                          filled: true,
+                                          fillColor: AppColors.white,
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8.r,
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: AppColors.primary,
+                                            ),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8.r,
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: AppColors.primary,
+                                            ),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8.r,
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: AppColors.blue,
+                                            ),
+                                          ),
+                                          contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 16.w,
+                                            vertical: 16.h,
+                                          ),
+                                        ),
+                                        validator: (value) {
+                                          if (value == null ||
+                                              value.trim().isEmpty) {
+                                            return 'This field is required';
+                                          }
+                                          return null;
+                                        },
+                                        keyboardType: TextInputType.number,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              // Product Code
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Product Code',
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        color: AppColors.textPrimary,
+                                      ),
+                                    ),
+                                    SizedBox(height: 4.h),
+                                    Container(
+                                      margin: EdgeInsets.only(
+                                        left: 8.w,
+                                        bottom: 16.h,
+                                      ),
+                                      child: TextFormField(
+                                        controller: _productCodeController,
+                                        decoration: InputDecoration(
+                                          hintText: 'Enter product code',
+                                          hintStyle: TextStyle(
+                                            color: AppColors.textDisabled,
+                                          ),
+                                          prefixIcon: Icon(Icons.qr_code),
+                                          filled: true,
+                                          fillColor: AppColors.white,
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8.r,
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: AppColors.primary,
+                                            ),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8.r,
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: AppColors.primary,
+                                            ),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8.r,
+                                            ),
+                                            borderSide: BorderSide(
+                                              color: AppColors.blue,
+                                            ),
+                                          ),
+                                          contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 16.w,
+                                            vertical: 16.h,
+                                          ),
+                                        ),
+                                        validator: (value) {
+                                          if (value == null ||
+                                              value.trim().isEmpty) {
+                                            return 'This field is required';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+
+                      // Purchase Price Field
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Purchase Price',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                          SizedBox(height: 4.h),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 16.h),
+                            child: TextFormField(
+                              controller: _purchaseRateController,
+                              decoration: InputDecoration(
+                                hintText: 'Enter purchase price',
+                                hintStyle: TextStyle(
+                                  color: AppColors.textDisabled,
+                                ),
+                                prefixIcon: Icon(Icons.attach_money),
+                                filled: true,
+                                fillColor: AppColors.white,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(color: AppColors.blue),
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16.w,
+                                  vertical: 16.h,
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'This field is required';
+                                }
+                                return null;
+                              },
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                        ],
                       ),
 
                       // Sale Price Field
-                      Container(
-                        margin: EdgeInsets.only(bottom: 16.h),
-                        child: TextFormField(
-                          controller: _salePriceController,
-                          decoration: InputDecoration(
-                            hintText: 'sale price *',
-                            hintStyle: TextStyle(color: AppColors.textDisabled),
-                            prefixIcon: Icon(Icons.sell_outlined),
-                            filled: true,
-                            fillColor: AppColors.white,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color: AppColors.primary),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color: AppColors.primary),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color: AppColors.blue),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.w,
-                              vertical: 16.h,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Sale Price',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textPrimary,
                             ),
                           ),
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'This field is required';
-                            }
-                            return null;
-                          },
-                          keyboardType: TextInputType.number,
-                        ),
+                          SizedBox(height: 4.h),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 16.h),
+                            child: TextFormField(
+                              controller: _salePriceController,
+                              decoration: InputDecoration(
+                                hintText: 'Enter sale price',
+                                hintStyle: TextStyle(
+                                  color: AppColors.textDisabled,
+                                ),
+                                prefixIcon: Icon(Icons.sell_outlined),
+                                filled: true,
+                                fillColor: AppColors.white,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(color: AppColors.blue),
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16.w,
+                                  vertical: 16.h,
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'This field is required';
+                                }
+                                return null;
+                              },
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                        ],
                       ),
 
                       // Product Description Field
-                      Container(
-                        margin: EdgeInsets.only(bottom: 24.h),
-                        child: TextFormField(
-                          controller: _descriptionController,
-                          maxLines: 4,
-                          decoration: InputDecoration(
-                            hintText: 'product description *',
-                            hintStyle: TextStyle(color: AppColors.textDisabled),
-                            prefixIcon: Icon(Icons.description_outlined),
-                            filled: true,
-                            fillColor: AppColors.white,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color: AppColors.primary),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color: AppColors.primary),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.r),
-                              borderSide: BorderSide(color: AppColors.blue),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.w,
-                              vertical: 16.h,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Product Description',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textPrimary,
                             ),
                           ),
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'This field is required';
-                            }
-                            return null;
-                          },
-                        ),
+                          SizedBox(height: 4.h),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 24.h),
+                            child: TextFormField(
+                              controller: _descriptionController,
+                              maxLines: 4,
+                              decoration: InputDecoration(
+                                hintText: 'Enter product description',
+                                hintStyle: TextStyle(
+                                  color: AppColors.textDisabled,
+                                ),
+                                prefixIcon: Icon(Icons.description_outlined),
+                                filled: true,
+                                fillColor: AppColors.white,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  borderSide: BorderSide(color: AppColors.blue),
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16.w,
+                                  vertical: 16.h,
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'This field is required';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                        ],
                       ),
 
                       // Upload Images Section
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          SizedBox(height: 4.h),
                           Padding(
-                            padding: EdgeInsets.only(bottom: 16.h),
+                            padding: EdgeInsets.only(bottom: 8.h),
                             child: Text(
-                              'Upload Atleast 1 Image *',
+                              'Upload at least 1 image *',
                               style: TextStyle(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w500,
+                                fontSize: 14.sp,
                                 color: AppColors.textPrimary,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
@@ -575,7 +750,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                                 ),
                                       ),
                                     ),
-
                                     SizedBox(height: 8.h),
                                     Icon(
                                       Icons.camera_alt,
@@ -676,7 +850,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                                 ),
                                       ),
                                     ),
-
                                     SizedBox(height: 8.h),
                                     Icon(
                                       Icons.camera_alt,
@@ -778,7 +951,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                                 ),
                                       ),
                                     ),
-
                                     SizedBox(height: 8.h),
                                     Icon(
                                       Icons.camera_alt,
