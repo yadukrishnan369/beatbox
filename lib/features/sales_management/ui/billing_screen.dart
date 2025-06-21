@@ -131,7 +131,7 @@ class _BillingScreenState extends State<BillingScreen> {
         if (mounted) Navigator.pop(context);
       });
     } catch (e) {
-      _showSnackBar("❌ Error: ${e.toString()}", isError: true);
+      _showSnackBar("Error: ${e.toString()}", isError: true);
     }
   }
 
