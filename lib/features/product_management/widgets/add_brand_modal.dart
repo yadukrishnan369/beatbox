@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:uuid/uuid.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart';
 
 class AddBrandModal extends StatefulWidget {
   final Function(String, File?)? onSubmit;
@@ -20,40 +22,48 @@ class _AddBrandModalState extends State<AddBrandModal> {
   final _formKey = GlobalKey<FormState>();
   final _brandController = TextEditingController();
   File? _selectedImage;
-  bool _isImageSelected = true;
-
   final uuid = Uuid();
 
-  void onSubmit() {
+  Future<File> getDefaultImageFile() async {
+    final byteData = await rootBundle.load('assets/images/empty_image.png');
+    final tempDir = await getTemporaryDirectory();
+    final file = File('${tempDir.path}/default_image.png');
+    await file.writeAsBytes(byteData.buffer.asUint8List());
+    return file;
+  }
+
+  // Submit function
+  void onSubmit() async {
     bool isValid = _formKey.currentState!.validate();
-    bool hasImage = _selectedImage != null;
+    if (!isValid) return;
 
-    setState(() {
-      _isImageSelected = hasImage;
-    });
+    File imageToSave;
 
-    if (isValid && hasImage) {
-      final newBrand = BrandModel(
-        id: uuid.v4(),
-        brandName: _brandController.text.trim(),
-        brandImagePath: _selectedImage!.path,
-      );
-
-      BrandController.addBrand(newBrand);
-
-      widget.onSubmit?.call(_brandController.text, _selectedImage);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Brand added successfully!'),
-          backgroundColor: AppColors.success,
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 2),
-        ),
-      );
-
-      Navigator.of(context).pop();
+    if (_selectedImage != null) {
+      imageToSave = _selectedImage!;
+    } else {
+      imageToSave = await getDefaultImageFile();
     }
+
+    final newBrand = BrandModel(
+      id: uuid.v4(),
+      brandName: _brandController.text.trim(),
+      brandImagePath: imageToSave.path,
+    );
+
+    BrandController.addBrand(newBrand);
+    widget.onSubmit?.call(_brandController.text, imageToSave);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Brand added successfully!'),
+        backgroundColor: AppColors.success,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+
+    Navigator.of(context).pop();
   }
 
   @override
@@ -104,15 +114,19 @@ class _AddBrandModalState extends State<AddBrandModal> {
                     ),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a brand name';
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Enter brand name';
+                    }
+                    final hasLetter = RegExp(r'[a-zA-Z]').hasMatch(value);
+                    if (!hasLetter) {
+                      return 'Invalid brand name';
                     }
                     return null;
                   },
                 ),
                 SizedBox(height: 20.h),
 
-                // Image Field
+                // Image Picker Field (optional)
                 GestureDetector(
                   onTap: () async {
                     File? picked = await pickImageFromGallery();
@@ -159,17 +173,6 @@ class _AddBrandModalState extends State<AddBrandModal> {
                                   ),
                                 ),
                       ),
-                      if (!_isImageSelected)
-                        Padding(
-                          padding: EdgeInsets.only(top: 4.h, left: 8.w),
-                          child: Text(
-                            'Please select an image',
-                            style: TextStyle(
-                              color: AppColors.error,
-                              fontSize: 12.sp,
-                            ),
-                          ),
-                        ),
                     ],
                   ),
                 ),

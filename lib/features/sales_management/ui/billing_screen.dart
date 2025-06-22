@@ -67,27 +67,71 @@ class _BillingScreenState extends State<BillingScreen> {
   }
 
   void _updateDiscount() {
-    discount = double.tryParse(discountController.text) ?? 0.0;
-    if (discount > subtotal + gst) {
-      discount = subtotal + gst;
-      discountController.text = discount.toStringAsFixed(2);
+    final enteredPercentage =
+        double.tryParse(discountController.text.trim()) ?? 0.0;
+    if (discountController.text.trim().isEmpty) {
+      discount = 0.0;
+      _calculateTotals();
+      return;
     }
+    // Calculate percentage-based discount
+    discount = ((subtotal + gst) * enteredPercentage) / 100;
     _calculateTotals();
   }
 
   void _confirmBill() async {
-    if (nameController.text.trim().isEmpty) {
-      _showSnackBar("Please enter customer name!", isError: true);
+    final name = nameController.text.trim();
+    final phone = phoneController.text.trim();
+    final email = emailController.text.trim();
+    final discountText = discountController.text.trim();
+
+    //  Name validation
+    if (name.isEmpty) {
+      _showSnackBar("Enter customer name!", isError: true);
       return;
-    } else if (phoneController.text.trim().isEmpty) {
-      _showSnackBar("Please enter customer phone!", isError: true);
+    }
+    if (!RegExp(r'[a-zA-Z]').hasMatch(name)) {
+      _showSnackBar("Invalid name", isError: true);
       return;
     }
 
+    //  Phone validation
+    if (phone.isEmpty) {
+      _showSnackBar("Enter phone number!", isError: true);
+      return;
+    }
+    if (!RegExp(r'^[0-9]{10}$').hasMatch(phone)) {
+      _showSnackBar("Invalid phone number", isError: true);
+      return;
+    }
+
+    //  Email Format validation
+    if (email.isNotEmpty &&
+        !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$').hasMatch(email)) {
+      _showSnackBar("Invalid email", isError: true);
+      return;
+    }
+
+    //  Discount validation
+    if (discountText.isNotEmpty) {
+      final enteredDisc = double.tryParse(discountText.trim());
+
+      if (enteredDisc == null) {
+        _showSnackBar("Invalid discount", isError: true);
+        return;
+      }
+
+      if (enteredDisc >= 100) {
+        _showSnackBar("Discount can't be 100% or more", isError: true);
+        return;
+      }
+    }
+
+    /// save to DB after all validations
     final sale = SalesModel(
-      customerName: nameController.text.trim(),
-      customerPhone: phoneController.text.trim(),
-      customerEmail: emailController.text.trim(),
+      customerName: name,
+      customerPhone: phone,
+      customerEmail: email,
       invoiceNumber: invoiceNumber,
       billingDate: billingDate,
       cartItems: cartItems,
@@ -101,26 +145,28 @@ class _BillingScreenState extends State<BillingScreen> {
       // save to sales
       await SalesController.addSale(sale);
 
-      //  update stock for each product
+      // update stock
       final productBox = Hive.box<ProductModel>('productBox');
       for (var item in cartItems) {
         final id = item.product.id;
-        final existingProduct = productBox.values.firstWhere(
-          (p) => p.id == id,
-          orElse: () => item.product,
-        );
 
-        // Prevent negative stock
-        final newQty = existingProduct.productQuantity - item.quantity;
-        existingProduct.productQuantity = newQty < 0 ? 0 : newQty;
+        final matchingList =
+            productBox.values.where((p) => p.id == id).toList();
 
-        await existingProduct.save();
+        if (matchingList.isNotEmpty) {
+          final product = matchingList.first;
+
+          // Reduce quantity
+          final newQty = product.productQuantity - item.quantity;
+          product.productQuantity = newQty < 0 ? 0 : newQty;
+
+          // Save updated product
+          await product.save();
+        }
       }
 
-      // clear cart
       await CartController.clearCart();
 
-      // show loading and success
       await showLoadingDialog(
         context,
         message: 'Saving Bill...',
@@ -193,6 +239,7 @@ class _BillingScreenState extends State<BillingScreen> {
               gstRate: gstRate,
               discountController: discountController,
               grandTotal: grandTotal,
+              onDiscountChanged: _updateDiscount,
             ),
           ],
         ),

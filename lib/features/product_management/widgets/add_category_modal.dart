@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:uuid/uuid.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart';
 
 class AddCategoryModal extends StatefulWidget {
   final Function(String, File?)? onSubmit;
@@ -20,40 +22,49 @@ class _AddCategoryModalState extends State<AddCategoryModal> {
   final _formKey = GlobalKey<FormState>();
   final _categoryController = TextEditingController();
   File? _selectedImage;
-  bool _isImageSelected = true;
-
   final uuid = Uuid();
 
-  void onSubmit() {
+  // Function to convert asset image to File
+  Future<File> getDefaultImageFile() async {
+    final byteData = await rootBundle.load('assets/images/empty_image.png');
+    final tempDir = await getTemporaryDirectory();
+    final file = File('${tempDir.path}/default_image.png');
+    await file.writeAsBytes(byteData.buffer.asUint8List());
+    return file;
+  }
+
+  // Submit logic
+  void onSubmit() async {
     bool isValid = _formKey.currentState!.validate();
-    bool hasImage = _selectedImage != null;
+    if (!isValid) return;
 
-    setState(() {
-      _isImageSelected = hasImage;
-    });
+    File imageToSave;
 
-    if (isValid && hasImage) {
-      final newCategory = CategoryModel(
-        id: uuid.v4(),
-        categoryName: _categoryController.text.trim(),
-        categoryImagePath: _selectedImage!.path,
-      );
-
-      CategoryController.addCategory(newCategory);
-
-      widget.onSubmit?.call(_categoryController.text, _selectedImage);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Category added successfully!'),
-          backgroundColor: AppColors.success,
-          behavior: SnackBarBehavior.floating,
-          duration: const Duration(seconds: 2),
-        ),
-      );
-
-      Navigator.of(context).pop(true);
+    if (_selectedImage != null) {
+      imageToSave = _selectedImage!;
+    } else {
+      imageToSave = await getDefaultImageFile();
     }
+
+    final newCategory = CategoryModel(
+      id: uuid.v4(),
+      categoryName: _categoryController.text.trim(),
+      categoryImagePath: imageToSave.path,
+    );
+
+    CategoryController.addCategory(newCategory);
+    widget.onSubmit?.call(_categoryController.text, imageToSave);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Category added successfully!'),
+        backgroundColor: AppColors.success,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+
+    Navigator.of(context).pop(true);
   }
 
   @override
@@ -104,15 +115,19 @@ class _AddCategoryModalState extends State<AddCategoryModal> {
                     ),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a category name';
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Enter category name';
+                    }
+                    final isValid = RegExp(r'[a-zA-Z]').hasMatch(value);
+                    if (!isValid) {
+                      return 'Invalid category name';
                     }
                     return null;
                   },
                 ),
                 SizedBox(height: 20.h),
 
-                // Image Field
+                // Image Field (optional)
                 GestureDetector(
                   onTap: () async {
                     File? picked = await pickImageFromGallery();
@@ -159,17 +174,6 @@ class _AddCategoryModalState extends State<AddCategoryModal> {
                                   ),
                                 ),
                       ),
-                      if (!_isImageSelected)
-                        Padding(
-                          padding: EdgeInsets.only(top: 4.h, left: 8.w),
-                          child: Text(
-                            'Please select an image',
-                            style: TextStyle(
-                              color: AppColors.error,
-                              fontSize: 12.sp,
-                            ),
-                          ),
-                        ),
                     ],
                   ),
                 ),

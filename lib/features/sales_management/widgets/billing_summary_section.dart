@@ -1,3 +1,4 @@
+import 'package:beatbox/utils/amount_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/core/app_colors.dart';
@@ -8,6 +9,7 @@ class BillingSummarySection extends StatelessWidget {
   final double gstRate;
   final TextEditingController discountController;
   final double grandTotal;
+  final VoidCallback onDiscountChanged;
 
   const BillingSummarySection({
     required this.subtotal,
@@ -15,6 +17,7 @@ class BillingSummarySection extends StatelessWidget {
     required this.gstRate,
     required this.discountController,
     required this.grandTotal,
+    required this.onDiscountChanged,
     super.key,
   });
 
@@ -44,15 +47,15 @@ class BillingSummarySection extends StatelessWidget {
             children: [
               _buildSummaryRow(
                 "Total before GST",
-                "₹${subtotal.toStringAsFixed(2)}",
+                "₹${AmountFormatter.format(subtotal)}",
               ),
               SizedBox(height: 8.h),
               _buildSummaryRow(
                 "GST charges (${(gstRate * 100).toStringAsFixed(1)}%)",
-                "₹${gst.toStringAsFixed(2)}",
+                "₹${AmountFormatter.format(gst)}",
               ),
               SizedBox(height: 8.h),
-              _buildDiscountField(),
+              _buildDiscountField(context),
               SizedBox(height: 16.h),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
@@ -68,7 +71,7 @@ class BillingSummarySection extends StatelessWidget {
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      "₹${grandTotal.toStringAsFixed(2)}",
+                      "₹${AmountFormatter.format(grandTotal)}",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: AppColors.success,
@@ -97,51 +100,78 @@ class BillingSummarySection extends StatelessWidget {
     );
   }
 
-  Widget _buildDiscountField() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget _buildDiscountField(BuildContext context) {
+    double discountValue = 0.0;
+    final percentage = double.tryParse(discountController.text.trim());
+    if (percentage != null && percentage > 0 && percentage <= 100) {
+      discountValue = ((subtotal + gst) * percentage) / 100;
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Discount Applied", style: TextStyle(fontSize: 14.sp)),
-        SizedBox(
-          width: 120.w,
-          height: 45.h,
-          child: TextField(
-            controller: discountController,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            textAlign: TextAlign.right,
-            decoration: InputDecoration(
-              hintText: "0.00",
-              prefixText: "₹",
-              hintStyle: TextStyle(
-                color: AppColors.textDisabled,
-                fontSize: 12.sp,
-              ),
-              filled: true,
-              fillColor: AppColors.white,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(6.r),
-                borderSide: BorderSide(color: AppColors.primary, width: 1),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(6.r),
-                borderSide: BorderSide(color: AppColors.primary, width: 1),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(6.r),
-                borderSide: BorderSide(color: AppColors.primary, width: 2),
-              ),
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: 8.w,
-                vertical: 8.h,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text("Discount (%)", style: TextStyle(fontSize: 14.sp)),
+            SizedBox(
+              width: 120.w,
+              height: 45.h,
+              child: TextField(
+                controller: discountController,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                textAlign: TextAlign.right,
+                onChanged: (_) {
+                  onDiscountChanged();
+                },
+                decoration: InputDecoration(
+                  hintText: "0.0",
+                  suffixText: "%",
+                  hintStyle: TextStyle(
+                    color: AppColors.textDisabled,
+                    fontSize: 12.sp,
+                  ),
+                  filled: true,
+                  fillColor: AppColors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(6.r),
+                    borderSide: BorderSide(color: AppColors.primary, width: 1),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(6.r),
+                    borderSide: BorderSide(color: AppColors.primary, width: 1),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(6.r),
+                    borderSide: BorderSide(color: AppColors.primary, width: 2),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 8.w,
+                    vertical: 8.h,
+                  ),
+                ),
+                style: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.error,
+                ),
               ),
             ),
+          ],
+        ),
+        SizedBox(height: 4.h),
+
+        if (discountValue > 0)
+          Text(
+            "Discount Rate ₹${AmountFormatter.format(discountValue)}",
             style: TextStyle(
               fontSize: 12.sp,
+              color: AppColors.success,
               fontWeight: FontWeight.w500,
-              color: AppColors.error,
             ),
           ),
-        ),
       ],
     );
   }

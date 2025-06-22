@@ -161,6 +161,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 if (value == null || value.trim().isEmpty) {
                                   return 'This field is required';
                                 }
+                                final isValid = RegExp(
+                                  r'[a-zA-Z]',
+                                ).hasMatch(value);
+                                if (!isValid) {
+                                  return 'Enter Valid Product Name';
+                                }
                                 return null;
                               },
                             ),
@@ -385,6 +391,15 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                               value.trim().isEmpty) {
                                             return 'This field is required';
                                           }
+                                          final qty = int.tryParse(value);
+                                          if (qty == null) {
+                                            return 'Invalid Quantity';
+                                          }
+
+                                          if (qty <= 0) {
+                                            return 'Invalid Quantity';
+                                          }
+
                                           return null;
                                         },
                                         keyboardType: TextInputType.number,
@@ -455,6 +470,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                               value.trim().isEmpty) {
                                             return 'This field is required';
                                           }
+                                          final isValid = RegExp(
+                                            r'[a-zA-Z]',
+                                          ).hasMatch(value);
+                                          if (!isValid) {
+                                            return 'Enter valid Code';
+                                          }
                                           return null;
                                         },
                                       ),
@@ -517,6 +538,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 if (value == null || value.trim().isEmpty) {
                                   return 'This field is required';
                                 }
+                                final purchase = double.tryParse(value);
+
+                                if (purchase == null) {
+                                  return 'Enter valid Rate';
+                                }
+
+                                final parsed = double.tryParse(value);
+                                if (parsed == null || parsed <= 0) {
+                                  return 'Enter a valid positive Rate';
+                                }
                                 return null;
                               },
                               keyboardType: TextInputType.number,
@@ -574,6 +605,18 @@ class _AddProductScreenState extends State<AddProductScreen> {
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
                                   return 'This field is required';
+                                }
+                                final sales = double.tryParse(value);
+                                final purchase = double.tryParse(
+                                  _purchaseRateController.text,
+                                );
+
+                                if (sales == null) {
+                                  return 'Enter valid Rate';
+                                }
+
+                                if (purchase != null && sales <= purchase) {
+                                  return 'Sales Rate should not less than purchase rate';
                                 }
                                 return null;
                               },
@@ -633,6 +676,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
                                   return 'This field is required';
+                                }
+                                final isValid = RegExp(
+                                  r'[a-zA-Z]',
+                                ).hasMatch(value);
+                                if (!isValid) {
+                                  return 'Enter valid Description';
                                 }
                                 return null;
                               },
