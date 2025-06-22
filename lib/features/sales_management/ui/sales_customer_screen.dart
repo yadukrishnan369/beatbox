@@ -5,6 +5,7 @@ import 'package:beatbox/routes/app_routes.dart';
 import 'package:beatbox/utils/amount_formatter.dart';
 import 'package:beatbox/utils/sales_utils.dart';
 import 'package:beatbox/widgets/custom_search_bar.dart';
+import 'package:beatbox/widgets/shimmer_widgets/shimmer_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -21,11 +22,30 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
   final FocusNode _focusNode = FocusNode();
   DateTime? _startDate;
   DateTime? _endDate;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    SalesUtils.loadSales();
+    _loadSales();
+  }
+
+  Future<void> _loadSales() async {
+    setState(() => _isLoading = true);
+    await SalesUtils.loadSales();
+    await Future.delayed(const Duration(milliseconds: 300));
+    setState(() => _isLoading = false);
+  }
+
+  Future<void> _filterSales() async {
+    setState(() => _isLoading = true);
+    await SalesUtils.filterSalesByNameAndDate(
+      query: _searchController.text.trim(),
+      startDate: _startDate,
+      endDate: _endDate,
+    );
+    await Future.delayed(const Duration(milliseconds: 500));
+    setState(() => _isLoading = false);
   }
 
   void _pickDateRange() async {
@@ -36,16 +56,9 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
     );
 
     if (picked != null) {
-      setState(() {
-        _startDate = picked.start;
-        _endDate = picked.end;
-      });
-
-      SalesUtils.filterSalesByNameAndDate(
-        query: _searchController.text.trim(),
-        startDate: _startDate,
-        endDate: _endDate,
-      );
+      _startDate = picked.start;
+      _endDate = picked.end;
+      await _filterSales();
     }
   }
 
@@ -61,7 +74,7 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: NotificationListener<ScrollNotification>(
-        onNotification: (notification) {
+        onNotification: (_) {
           FocusScope.of(context).unfocus();
           return false;
         },
@@ -87,13 +100,7 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
               children: [
                 CustomSearchBar(
                   controller: _searchController,
-                  onChanged: (query) {
-                    SalesUtils.filterSalesByNameAndDate(
-                      query: query,
-                      startDate: _startDate,
-                      endDate: _endDate,
-                    );
-                  },
+                  onChanged: (query) => _filterSales(),
                   focusNode: _focusNode,
                   showFilterIcon: true,
                   onFilterTap: _pickDateRange,
@@ -106,6 +113,14 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
                   child: ValueListenableBuilder<List<SalesModel>>(
                     valueListenable: filteredSalesNotifier,
                     builder: (context, salesList, _) {
+                      if (_isLoading) {
+                        return ListView.builder(
+                          itemCount: 6,
+                          itemBuilder:
+                              (context, index) => const ShimmerListTile(),
+                        );
+                      }
+
                       if (salesList.isEmpty) {
                         return Center(
                           child: Text(
@@ -114,6 +129,7 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
                           ),
                         );
                       }
+
                       return ListView.builder(
                         itemCount: salesList.length,
                         itemBuilder: (context, index) {
@@ -212,7 +228,7 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
   }
 
   Widget _dateInfo() {
-    if (_startDate == null && _endDate == null) return SizedBox();
+    if (_startDate == null && _endDate == null) return const SizedBox();
 
     String format(DateTime? date) =>
         date != null ? DateFormat('dd MMM yyyy').format(date) : '';
@@ -226,31 +242,28 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'From: ${format(_startDate)}',
-                style: TextStyle(fontSize: 15.sp),
-              ),
-              Text(
-                'To: ${format(_endDate)}',
-                style: TextStyle(fontSize: 15.sp),
-              ),
-            ],
+          Padding(
+            padding: EdgeInsets.all(8.r),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'From: ${format(_startDate)}',
+                  style: TextStyle(fontSize: 15.sp),
+                ),
+                Text(
+                  'To: ${format(_endDate)}',
+                  style: TextStyle(fontSize: 15.sp),
+                ),
+              ],
+            ),
           ),
           IconButton(
             icon: Icon(Icons.clear, size: 18.sp),
-            onPressed: () {
-              setState(() {
-                _startDate = null;
-                _endDate = null;
-              });
-              SalesUtils.filterSalesByNameAndDate(
-                query: _searchController.text.trim(),
-                startDate: null,
-                endDate: null,
-              );
+            onPressed: () async {
+              _startDate = null;
+              _endDate = null;
+              await _filterSales();
             },
           ),
         ],

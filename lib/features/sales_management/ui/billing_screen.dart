@@ -3,7 +3,7 @@ import 'package:beatbox/features/sales_management/controller/cart_controller.dar
 import 'package:beatbox/features/sales_management/controller/sales_controller.dart';
 import 'package:beatbox/features/sales_management/model/sales_model.dart';
 import 'package:beatbox/utils/gst_utils.dart';
-import 'package:beatbox/widgets/show_loading_dialog.dart';
+import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/core/app_colors.dart';

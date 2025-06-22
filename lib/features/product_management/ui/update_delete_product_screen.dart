@@ -6,7 +6,7 @@ import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:beatbox/features/product_management/ui/add_edit_product_screen.dart';
 import 'package:beatbox/utils/product_utils.dart';
 import 'package:beatbox/widgets/custom_search_bar.dart';
-import 'package:beatbox/widgets/show_loading_dialog.dart';
+import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

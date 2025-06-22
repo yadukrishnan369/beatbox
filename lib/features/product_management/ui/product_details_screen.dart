@@ -3,7 +3,7 @@ import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:beatbox/utils/amount_formatter.dart';
 import 'package:beatbox/utils/cart_utils.dart';
-import 'package:beatbox/widgets/show_loading_dialog.dart';
+import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

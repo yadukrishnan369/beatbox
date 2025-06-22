@@ -4,7 +4,7 @@ import 'package:beatbox/features/product_management/controller/drop_down_data_co
 import 'package:beatbox/features/product_management/controller/product_controller.dart';
 import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:beatbox/utils/image_picker_utils.dart';
-import 'package:beatbox/widgets/show_loading_dialog.dart';
+import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:uuid/uuid.dart';

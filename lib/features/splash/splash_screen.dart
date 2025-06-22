@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../constants/app_images.dart';
-import '../../widgets/loading_dot.dart';
+import '../../widgets/Loading_widgets/loading_dot.dart';
 import '../../core/app_colors.dart';
 import '../../routes/app_routes.dart';
 

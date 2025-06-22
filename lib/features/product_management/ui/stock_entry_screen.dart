@@ -4,6 +4,7 @@ import 'package:beatbox/core/notifiers/filter_product_notifier.dart';
 import 'package:beatbox/routes/app_routes.dart';
 import 'package:beatbox/utils/product_utils.dart';
 import 'package:beatbox/widgets/custom_search_bar.dart';
+import 'package:beatbox/widgets/shimmer_widgets/shimmer_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -20,11 +21,19 @@ class _StockEntryScreenState extends State<StockEntryScreen> {
   final FocusNode _focusNode = FocusNode();
   DateTime? _fromDate;
   DateTime? _toDate;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    ProductUtils.loadProducts();
+    _loadProducts();
+  }
+
+  Future<void> _loadProducts() async {
+    setState(() => _isLoading = true);
+    await ProductUtils.loadProducts();
+    await Future.delayed(const Duration(milliseconds: 300));
+    setState(() => _isLoading = false);
   }
 
   void _pickDateRange() async {
@@ -38,6 +47,7 @@ class _StockEntryScreenState extends State<StockEntryScreen> {
       setState(() {
         _fromDate = picked.start;
         _toDate = picked.end;
+        _isLoading = true;
       });
 
       ProductUtils.filterProductsByNameAndDate(
@@ -45,6 +55,9 @@ class _StockEntryScreenState extends State<StockEntryScreen> {
         startDate: _fromDate,
         endDate: _toDate,
       );
+
+      await Future.delayed(const Duration(milliseconds: 300));
+      setState(() => _isLoading = false);
     }
   }
 
@@ -84,12 +97,15 @@ class _StockEntryScreenState extends State<StockEntryScreen> {
               children: [
                 CustomSearchBar(
                   controller: _searchController,
-                  onChanged: (query) {
+                  onChanged: (query) async {
+                    setState(() => _isLoading = true);
                     ProductUtils.filterProductsByNameAndDate(
                       query: query,
                       startDate: _fromDate,
                       endDate: _toDate,
                     );
+                    await Future.delayed(const Duration(milliseconds: 300));
+                    setState(() => _isLoading = false);
                   },
                   focusNode: _focusNode,
                   showFilterIcon: true,
@@ -103,9 +119,18 @@ class _StockEntryScreenState extends State<StockEntryScreen> {
                   child: ValueListenableBuilder<List<ProductModel>>(
                     valueListenable: filteredProductNotifier,
                     builder: (context, products, _) {
+                      if (_isLoading) {
+                        return ListView.builder(
+                          itemCount: 6,
+                          itemBuilder:
+                              (context, index) => const ShimmerListTile(),
+                        );
+                      }
+
                       if (products.isEmpty) {
                         return const Center(child: Text("No products found"));
                       }
+
                       return ListView.builder(
                         itemCount: products.length,
                         itemBuilder: (context, index) {
@@ -225,10 +250,11 @@ class _StockEntryScreenState extends State<StockEntryScreen> {
           ),
           IconButton(
             icon: Icon(Icons.clear, color: AppColors.textPrimary, size: 20.sp),
-            onPressed: () {
+            onPressed: () async {
               setState(() {
                 _fromDate = null;
                 _toDate = null;
+                _isLoading = true;
               });
 
               ProductUtils.filterProductsByNameAndDate(
@@ -236,6 +262,9 @@ class _StockEntryScreenState extends State<StockEntryScreen> {
                 startDate: null,
                 endDate: null,
               );
+
+              await Future.delayed(const Duration(milliseconds: 300));
+              setState(() => _isLoading = false);
             },
           ),
         ],

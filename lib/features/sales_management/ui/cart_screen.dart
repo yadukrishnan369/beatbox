@@ -5,7 +5,7 @@ import 'package:beatbox/routes/app_routes.dart';
 import 'package:beatbox/utils/amount_formatter.dart';
 import 'package:beatbox/utils/cart_utils.dart';
 import 'package:beatbox/widgets/empty_placeholder.dart';
-import 'package:beatbox/widgets/show_loading_dialog.dart';
+import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:beatbox/core/notifiers/cart_update_notifier.dart';
 import 'package:beatbox/features/sales_management/model/cart_item_model.dart';
