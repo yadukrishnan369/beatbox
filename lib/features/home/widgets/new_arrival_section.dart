@@ -61,12 +61,16 @@ class _NewArrivalSectionState extends State<NewArrivalSection> {
         final latestProducts =
             productList
                 .where((e) => e.image1 != null && e.image1!.trim().isNotEmpty)
-                .take(3)
-                .toList();
+                .toList()
+              ..sort(
+                (a, b) => b.createdDate.compareTo(a.createdDate),
+              ); // Latest first
 
-        _startAutoScroll(latestProducts);
+        final top3Products = latestProducts.take(3).toList();
 
-        if (latestProducts.isEmpty) {
+        _startAutoScroll(top3Products);
+
+        if (top3Products.isEmpty) {
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 16.h),
             child: Column(
@@ -81,8 +85,6 @@ class _NewArrivalSectionState extends State<NewArrivalSection> {
                   ),
                 ),
                 SizedBox(height: 10.h),
-
-                // Placeholder Image
                 Center(
                   child: Column(
                     children: [
@@ -126,9 +128,9 @@ class _NewArrivalSectionState extends State<NewArrivalSection> {
               height: 150.h,
               child: PageView.builder(
                 controller: _pageController,
-                itemCount: latestProducts.length,
+                itemCount: top3Products.length,
                 itemBuilder: (context, index) {
-                  final product = latestProducts[index];
+                  final product = top3Products[index];
                   return GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(
