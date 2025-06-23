@@ -54,7 +54,7 @@ class SalesUtils {
     allSales.sort((a, b) => b.billingDate.compareTo(a.billingDate));
     filteredSalesNotifier.value = [...allSales];
     await Future.delayed(const Duration(milliseconds: 300));
-    isSalesLoadingNotifier.value = false; // ✅ stop shimmer
+    isSalesLoadingNotifier.value = false; //  stop shimmer
   }
 
   static Future<Map<String, double>> getTodaySalesAndProfit() async {
@@ -78,8 +78,9 @@ class SalesUtils {
         final cost = item.product.purchaseRate;
         final sell = item.product.salePrice;
         final qty = item.quantity;
+        final discount = sale.discount;
 
-        totalProfit += (sell - cost) * qty;
+        totalProfit += (sell - cost) * qty - discount;
       }
     }
 

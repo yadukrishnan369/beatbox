@@ -98,7 +98,7 @@ class _NewArrivalSectionState extends State<NewArrivalSection> {
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: AppColors.textPrimary,
                   ),
                 ),
                 SizedBox(height: 10.h),
@@ -137,7 +137,7 @@ class _NewArrivalSectionState extends State<NewArrivalSection> {
                 style: TextStyle(
                   fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: AppColors.textPrimary,
                 ),
               ),
             ),

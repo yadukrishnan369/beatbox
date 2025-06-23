@@ -1,3 +1,4 @@
+import 'package:beatbox/core/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
@@ -18,7 +19,7 @@ class ShimmerProductBanner extends StatelessWidget {
             child: Container(
               height: 20.h,
               width: 120.w,
-              color: Colors.white,
+              color: AppColors.white,
               margin: EdgeInsets.only(bottom: 10.h),
             ),
           ),
@@ -37,7 +38,7 @@ class ShimmerProductBanner extends StatelessWidget {
                         width: 300.w,
                         height: 150.h,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: AppColors.white,
                           borderRadius: BorderRadius.circular(16.r),
                         ),
                       ),

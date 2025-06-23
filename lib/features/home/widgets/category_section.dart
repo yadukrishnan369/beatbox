@@ -1,16 +1,45 @@
 import 'dart:io';
 import 'package:beatbox/core/app_colors.dart';
+import 'package:beatbox/core/notifiers/category_update_notifiers.dart';
 import 'package:beatbox/routes/app_routes.dart';
+import 'package:beatbox/widgets/shimmer_widgets/shimmer_category_banner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/features/product_management/model/category_model.dart';
-import 'package:beatbox/core/notifiers/category_update_notifiers.dart';
 
-class CategorySection extends StatelessWidget {
+class CategorySection extends StatefulWidget {
   const CategorySection({super.key});
 
   @override
+  State<CategorySection> createState() => _CategorySectionState();
+}
+
+class _CategorySectionState extends State<CategorySection> {
+  bool _isShimmering = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (isFirstTimeCategory.value) {
+      _isShimmering = true;
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) {
+          setState(() {
+            _isShimmering = false;
+            isFirstTimeCategory.value = false;
+          });
+        }
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_isShimmering) {
+      return const ShimmerCategoryBanner();
+    }
+
     return ValueListenableBuilder<List<CategoryModel>>(
       valueListenable: categoryUpdatedNotifier,
       builder: (context, categories, _) {
@@ -21,7 +50,6 @@ class CategorySection extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // title and view all option
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
               child: Row(
@@ -55,8 +83,6 @@ class CategorySection extends StatelessWidget {
                 ],
               ),
             ),
-
-            // Placeholder Image
             if (categories.isEmpty)
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 10.h),
@@ -81,7 +107,6 @@ class CategorySection extends StatelessWidget {
                 ),
               )
             else
-              // Show category list
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: GridView.builder(
@@ -96,7 +121,6 @@ class CategorySection extends StatelessWidget {
                   itemCount: visibleCategories.length,
                   itemBuilder: (context, index) {
                     final category = visibleCategories[index];
-
                     return Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(12.r),

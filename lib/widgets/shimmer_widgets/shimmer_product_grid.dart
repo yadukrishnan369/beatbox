@@ -1,3 +1,4 @@
+import 'package:beatbox/core/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
@@ -47,7 +48,7 @@ class ShimmerProductGrid extends StatelessWidget {
       highlightColor: Colors.grey[100]!,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.white,
           borderRadius: BorderRadius.circular(12.r),
         ),
         padding: EdgeInsets.all(12.w),
@@ -79,7 +80,7 @@ class ShimmerProductGrid extends StatelessWidget {
       child: Container(
         height: 100.h,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.white,
           borderRadius: BorderRadius.circular(12.r),
         ),
         padding: EdgeInsets.all(12.w),
