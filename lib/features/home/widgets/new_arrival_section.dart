@@ -4,8 +4,10 @@ import 'package:beatbox/core/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/core/notifiers/product_add_notifier.dart';
+import 'package:beatbox/core/notifiers/new_arrival_notifier.dart';
 import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:beatbox/routes/app_routes.dart';
+import 'package:beatbox/widgets/shimmer_widgets/shimmer_new_arrival_banner.dart';
 
 class NewArrivalSection extends StatefulWidget {
   const NewArrivalSection({super.key});
@@ -18,11 +20,24 @@ class _NewArrivalSectionState extends State<NewArrivalSection> {
   late PageController _pageController;
   int _currentPage = 0;
   Timer? _timer;
+  bool _isShimmering = false;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(viewportFraction: 0.90);
+
+    if (isFirstTimeNewArrival.value) {
+      _isShimmering = true;
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) {
+          setState(() {
+            _isShimmering = false;
+            isFirstTimeNewArrival.value = false;
+          });
+        }
+      });
+    }
   }
 
   @override
@@ -37,7 +52,7 @@ class _NewArrivalSectionState extends State<NewArrivalSection> {
     if (productList.isEmpty) return;
 
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
-      if (!mounted) return;
+      if (!mounted || !_pageController.hasClients) return;
 
       if (_currentPage < productList.length - 1) {
         _currentPage++;
@@ -55,6 +70,10 @@ class _NewArrivalSectionState extends State<NewArrivalSection> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isShimmering) {
+      return const ShimmerProductBanner();
+    }
+
     return ValueListenableBuilder(
       valueListenable: productAddNotifier,
       builder: (context, productList, _) {
@@ -62,9 +81,7 @@ class _NewArrivalSectionState extends State<NewArrivalSection> {
             productList
                 .where((e) => e.image1 != null && e.image1!.trim().isNotEmpty)
                 .toList()
-              ..sort(
-                (a, b) => b.createdDate.compareTo(a.createdDate),
-              ); // Latest first
+              ..sort((a, b) => b.createdDate.compareTo(a.createdDate));
 
         final top3Products = latestProducts.take(3).toList();
 
