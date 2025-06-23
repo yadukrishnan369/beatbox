@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/core/notifiers/filter_product_notifier.dart';
+import 'package:beatbox/core/notifiers/product_add_notifier.dart';
 import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:beatbox/routes/app_routes.dart';
 import 'package:beatbox/utils/product_utils.dart';
+import 'package:beatbox/widgets/shimmer_widgets/shimmer_product_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -17,16 +19,25 @@ class ProductViewSwitcher extends StatelessWidget {
     return ValueListenableBuilder<List<ProductModel>>(
       valueListenable: filteredProductNotifier,
       builder: (context, products, _) {
-        if (products.isEmpty) {
-          return _productEmptyView();
-        }
-
         return ValueListenableBuilder<bool>(
           valueListenable: viewToggleNotifier,
           builder: (context, isGridView, _) {
-            return isGridView
-                ? _buildGridView(context, products)
-                : _buildListView(context, products);
+            return ValueListenableBuilder<bool>(
+              valueListenable: productShimmerNotifier,
+              builder: (context, isLoading, _) {
+                if (isLoading) {
+                  return ShimmerProductGrid(isGridView: isGridView);
+                }
+
+                if (products.isEmpty) {
+                  return _productEmptyView();
+                }
+
+                return isGridView
+                    ? _buildGridView(context, products)
+                    : _buildListView(context, products);
+              },
+            );
           },
         );
       },

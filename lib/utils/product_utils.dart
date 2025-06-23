@@ -6,13 +6,19 @@ import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:beatbox/core/notifiers/product_add_notifier.dart';
 
 class ProductUtils {
-  static Future<void> loadProducts() async {
+  static Future<void> loadProducts({bool showShimmer = true}) async {
+    if (showShimmer) productShimmerNotifier.value = true;
+
     final box = await Hive.openBox<ProductModel>('productBox');
     final allProducts =
         box.values.toList()
           ..sort((a, b) => b.createdDate.compareTo(a.createdDate));
+
     productAddNotifier.value = allProducts;
     filteredProductNotifier.value = allProducts;
+
+    await Future.delayed(Duration(milliseconds: 300));
+    productShimmerNotifier.value = false;
   }
 
   //filter by name and categories and brands of product screen
@@ -20,7 +26,11 @@ class ProductUtils {
     String query, {
     List<String>? selectedCategories,
     List<String>? selectedBrands,
-  }) {
+  }) async {
+    productShimmerNotifier.value = true;
+
+    await Future.delayed(Duration(milliseconds: 300));
+
     final box = Hive.box<ProductModel>('productBox');
     final allProducts =
         box.values.toList()
@@ -31,7 +41,6 @@ class ProductUtils {
           final matchName = product.productName.toLowerCase().contains(
             query.toLowerCase(),
           );
-
           final matchCode = product.productCode.toLowerCase().contains(
             query.toLowerCase(),
           );
@@ -50,6 +59,7 @@ class ProductUtils {
         }).toList();
 
     filteredProductNotifier.value = filtered;
+    productShimmerNotifier.value = false;
   }
 
   //filter by name and dates range of stock entry screen

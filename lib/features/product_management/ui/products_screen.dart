@@ -2,10 +2,9 @@ import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/core/notifiers/product_add_notifier.dart';
 import 'package:beatbox/features/product_management/widgets/product_filter_sheet.dart';
 import 'package:beatbox/features/product_management/widgets/product_view_switcher.dart';
-import 'package:beatbox/routes/app_routes.dart';
 import 'package:beatbox/utils/product_utils.dart';
 import 'package:beatbox/widgets/custom_search_bar.dart';
-import 'package:beatbox/widgets/empty_placeholder.dart';
+import 'package:beatbox/widgets/shimmer_widgets/shimmer_product_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -29,7 +28,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
   void initState() {
     super.initState();
     viewToggleNotifier = ValueNotifier(true);
-    ProductUtils.loadProducts();
+
+    // Load products only once at app start
+    if (isProductReloadNeeded.value) {
+      ProductUtils.loadProducts(showShimmer: true);
+      isProductReloadNeeded.value = false;
+    }
 
     if (widget.shouldFocusSearch) {
       Future.delayed(Duration(milliseconds: 300), () {
@@ -104,70 +108,68 @@ class _ProductsScreenState extends State<ProductsScreen> {
               ),
             ],
           ),
-          body: ValueListenableBuilder(
-            valueListenable: productAddNotifier,
-            builder: (context, products, _) {
-              if (products.isEmpty) {
-                return EmptyPlaceholder(
-                  imagePath: 'assets/images/empty_product.png',
-                  message: 'No products available!',
-                  imageSize: 200,
-                  actionText: 'Add Product',
-                  actionIcon: Icons.add_box,
-                  onActionTap: () {
-                    Navigator.pushNamed(context, AppRoutes.addProduct);
-                  },
-                );
-              }
 
-              return Column(
-                children: [
-                  CustomSearchBar(
-                    controller: _searchController,
-                    onChanged: _filterProducts,
-                    focusNode: _searchFocusNode,
-                    onFilterTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(20.r),
-                          ),
-                        ),
-                        builder:
-                            (_) => ProductFilterSheet(
-                              selectedCategories: _selectedCategories,
-                              selectedBrands: _selectedBrands,
-                              onClear: () {
-                                setState(() {
-                                  _selectedCategories.clear();
-                                  _selectedBrands.clear();
-                                });
-                                _filterProducts(_searchController.text);
-                              },
-                              onApply: () {
-                                _filterProducts(_searchController.text);
-                              },
-                              onCategorySelected: (selected) {
-                                setState(() => _selectedCategories = selected);
-                              },
-                              onBrandSelected: (selected) {
-                                setState(() => _selectedBrands = selected);
-                              },
-                            ),
-                      );
-                    },
-                    showFilterIcon: true,
-                  ),
-                  Expanded(
-                    child: ProductViewSwitcher(
-                      viewToggleNotifier: viewToggleNotifier,
+          // Main Body with Search Bar and Shimmer
+          body: Column(
+            children: [
+              CustomSearchBar(
+                controller: _searchController,
+                onChanged: _filterProducts,
+                focusNode: _searchFocusNode,
+                onFilterTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20.r),
+                      ),
                     ),
-                  ),
-                ],
-              );
-            },
+                    builder:
+                        (_) => ProductFilterSheet(
+                          selectedCategories: _selectedCategories,
+                          selectedBrands: _selectedBrands,
+                          onClear: () {
+                            setState(() {
+                              _selectedCategories.clear();
+                              _selectedBrands.clear();
+                            });
+                            _filterProducts(_searchController.text);
+                          },
+                          onApply: () {
+                            _filterProducts(_searchController.text);
+                          },
+                          onCategorySelected: (selected) {
+                            setState(() => _selectedCategories = selected);
+                          },
+                          onBrandSelected: (selected) {
+                            setState(() => _selectedBrands = selected);
+                          },
+                        ),
+                  );
+                },
+                showFilterIcon: true,
+              ),
+
+              // Switch between shimmer or actual products
+              Expanded(
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: viewToggleNotifier,
+                  builder: (context, isGridView, _) {
+                    return ValueListenableBuilder<bool>(
+                      valueListenable: productShimmerNotifier,
+                      builder: (context, isLoading, _) {
+                        return isLoading
+                            ? ShimmerProductGrid(isGridView: isGridView)
+                            : ProductViewSwitcher(
+                              viewToggleNotifier: viewToggleNotifier,
+                            );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ),

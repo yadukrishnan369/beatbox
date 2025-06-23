@@ -42,6 +42,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
         builder: (_) => AddProductScreen(productToEdit: product),
       ),
     ).then((_) {
+      isProductReloadNeeded.value = true;
       ProductUtils.loadProducts();
     });
   }
@@ -74,6 +75,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                     product,
                     _searchController.text,
                   );
+                  isProductReloadNeeded.value = true;
                   await showLoadingDialog(
                     context,
                     message: "Deleting...",
