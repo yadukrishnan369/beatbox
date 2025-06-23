@@ -22,30 +22,34 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
   final FocusNode _focusNode = FocusNode();
   DateTime? _startDate;
   DateTime? _endDate;
-  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadSales();
+    _checkAndLoadSales();
   }
 
-  Future<void> _loadSales() async {
-    setState(() => _isLoading = true);
-    await SalesUtils.loadSales();
-    await Future.delayed(const Duration(milliseconds: 300));
-    setState(() => _isLoading = false);
+  Future<void> _checkAndLoadSales() async {
+    if (isSalesReloadNeeded.value) {
+      isSalesLoadingNotifier.value = true;
+      await SalesUtils.loadSales();
+      await Future.delayed(const Duration(milliseconds: 300));
+      isSalesLoadingNotifier.value = false;
+      isSalesReloadNeeded.value = false;
+    } else {
+      await SalesUtils.loadSalesWithoutShimmer(); // no shimmer
+    }
   }
 
   Future<void> _filterSales() async {
-    setState(() => _isLoading = true);
+    isSalesLoadingNotifier.value = true;
     await SalesUtils.filterSalesByNameAndDate(
       query: _searchController.text.trim(),
       startDate: _startDate,
       endDate: _endDate,
     );
-    await Future.delayed(const Duration(milliseconds: 500));
-    setState(() => _isLoading = false);
+    await Future.delayed(const Duration(milliseconds: 300));
+    isSalesLoadingNotifier.value = false;
   }
 
   void _pickDateRange() async {
@@ -56,8 +60,10 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
     );
 
     if (picked != null) {
-      _startDate = picked.start;
-      _endDate = picked.end;
+      setState(() {
+        _startDate = picked.start;
+        _endDate = picked.end;
+      });
       await _filterSales();
     }
   }
@@ -91,58 +97,61 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
                 color: AppColors.textPrimary,
               ),
             ),
-            centerTitle: false,
           ),
           body: Padding(
             padding: EdgeInsets.all(16.w),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomSearchBar(
                   controller: _searchController,
-                  onChanged: (query) => _filterSales(),
                   focusNode: _focusNode,
                   showFilterIcon: true,
-                  onFilterTap: _pickDateRange,
                   hintText: 'Search by customer or invoice ...',
+                  onChanged: (_) => _filterSales(),
+                  onFilterTap: _pickDateRange,
                 ),
                 SizedBox(height: 10.h),
                 _dateInfo(),
                 SizedBox(height: 10.h),
                 Expanded(
-                  child: ValueListenableBuilder<List<SalesModel>>(
-                    valueListenable: filteredSalesNotifier,
-                    builder: (context, salesList, _) {
-                      if (_isLoading) {
-                        return ListView.builder(
-                          itemCount: 6,
-                          itemBuilder:
-                              (context, index) => const ShimmerListTile(),
-                        );
-                      }
+                  child: ValueListenableBuilder<bool>(
+                    valueListenable: isSalesLoadingNotifier,
+                    builder: (context, isLoading, _) {
+                      return ValueListenableBuilder<List<SalesModel>>(
+                        valueListenable: filteredSalesNotifier,
+                        builder: (context, salesList, _) {
+                          if (isLoading) {
+                            return ListView.builder(
+                              itemCount: 6,
+                              itemBuilder:
+                                  (context, index) => const ShimmerListTile(),
+                            );
+                          }
 
-                      if (salesList.isEmpty) {
-                        return Center(
-                          child: Text(
-                            'No sales found',
-                            style: TextStyle(fontSize: 14.sp),
-                          ),
-                        );
-                      }
+                          if (salesList.isEmpty) {
+                            return Center(
+                              child: Text(
+                                'No sales found',
+                                style: TextStyle(fontSize: 14.sp),
+                              ),
+                            );
+                          }
 
-                      return ListView.builder(
-                        itemCount: salesList.length,
-                        itemBuilder: (context, index) {
-                          final sale = salesList[index];
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                AppRoutes.salesAndCustomerDetails,
-                                arguments: sale,
+                          return ListView.builder(
+                            itemCount: salesList.length,
+                            itemBuilder: (context, index) {
+                              final sale = salesList[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.salesAndCustomerDetails,
+                                    arguments: sale,
+                                  );
+                                },
+                                child: _buildSalesTile(sale),
                               );
                             },
-                            child: _buildSalesTile(sale),
                           );
                         },
                       );
@@ -261,8 +270,10 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
           IconButton(
             icon: Icon(Icons.clear, size: 18.sp),
             onPressed: () async {
-              _startDate = null;
-              _endDate = null;
+              setState(() {
+                _startDate = null;
+                _endDate = null;
+              });
               await _filterSales();
             },
           ),

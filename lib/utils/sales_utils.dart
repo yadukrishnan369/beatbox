@@ -4,6 +4,17 @@ import 'package:hive/hive.dart';
 
 class SalesUtils {
   static Future<void> loadSales() async {
+    isSalesLoadingNotifier.value = true; // 🔴 start shimmer
+    final box = await Hive.openBox<SalesModel>('salesBox');
+    final List<SalesModel> allSales =
+        box.values.toList()
+          ..sort((a, b) => b.billingDate.compareTo(a.billingDate));
+    filteredSalesNotifier.value = [...allSales];
+    await Future.delayed(const Duration(milliseconds: 300)); // optional delay
+    isSalesLoadingNotifier.value = false; // ✅ stop shimmer
+  }
+
+  static Future<void> loadSalesWithoutShimmer() async {
     final box = await Hive.openBox<SalesModel>('salesBox');
     final List<SalesModel> allSales =
         box.values.toList()
@@ -16,6 +27,7 @@ class SalesUtils {
     DateTime? startDate,
     DateTime? endDate,
   }) async {
+    isSalesLoadingNotifier.value = true; // 🔴 start shimmer
     final box = await Hive.openBox<SalesModel>('salesBox');
     List<SalesModel> allSales = box.values.toList();
 
@@ -41,6 +53,8 @@ class SalesUtils {
 
     allSales.sort((a, b) => b.billingDate.compareTo(a.billingDate));
     filteredSalesNotifier.value = [...allSales];
+    await Future.delayed(const Duration(milliseconds: 300));
+    isSalesLoadingNotifier.value = false; // ✅ stop shimmer
   }
 
   static Future<Map<String, double>> getTodaySalesAndProfit() async {

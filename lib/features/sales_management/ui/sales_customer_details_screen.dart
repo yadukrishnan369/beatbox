@@ -196,6 +196,7 @@ class SalesAndCustomerDetailsScreen extends StatelessWidget {
                           item.product.purchaseRate,
                           item.product.salePrice,
                           item.totalPrice,
+                          sale.discount,
                         ),
                       ),
                     ),
@@ -277,6 +278,7 @@ class SalesAndCustomerDetailsScreen extends StatelessWidget {
     double purchaseRate,
     double salePrice,
     double total,
+    double discount,
   ) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -326,7 +328,7 @@ class SalesAndCustomerDetailsScreen extends StatelessWidget {
           Row(
             children: [
               Text(
-                'total: $total',
+                'Discount: ₹${AmountFormatter.format(discount)}',
                 style: TextStyle(
                   color: AppColors.textPrimary,
                   fontSize: 14.sp,
@@ -335,7 +337,20 @@ class SalesAndCustomerDetailsScreen extends StatelessWidget {
               ),
               SizedBox(width: 18.w),
               Text(
-                'Sale profit: ₹${AmountFormatter.format((total - (purchaseRate * qty)))}',
+                'total: ${total - discount}',
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 5.h),
+          Row(
+            children: [
+              Text(
+                'Sale profit: ₹${AmountFormatter.format((total - (purchaseRate * qty) - discount))}',
                 style: TextStyle(
                   color: AppColors.textPrimary,
                   fontSize: 14.sp,

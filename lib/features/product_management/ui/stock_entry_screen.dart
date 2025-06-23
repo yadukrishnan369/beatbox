@@ -1,6 +1,7 @@
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:beatbox/core/notifiers/filter_product_notifier.dart';
+import 'package:beatbox/core/notifiers/product_add_notifier.dart';
 import 'package:beatbox/routes/app_routes.dart';
 import 'package:beatbox/utils/product_utils.dart';
 import 'package:beatbox/widgets/custom_search_bar.dart';
@@ -26,7 +27,13 @@ class _StockEntryScreenState extends State<StockEntryScreen> {
   @override
   void initState() {
     super.initState();
-    _loadProducts();
+
+    if (isProductReloadNeeded.value) {
+      _loadProducts(); // First time or after new product
+      isProductReloadNeeded.value = false;
+    } else {
+      _loadFilteredProductsOnly(); // No shimmer
+    }
   }
 
   Future<void> _loadProducts() async {
@@ -34,6 +41,15 @@ class _StockEntryScreenState extends State<StockEntryScreen> {
     await ProductUtils.loadProducts();
     await Future.delayed(const Duration(milliseconds: 300));
     setState(() => _isLoading = false);
+  }
+
+  void _loadFilteredProductsOnly() {
+    setState(() => _isLoading = false);
+    ProductUtils.filterProductsByNameAndDate(
+      query: _searchController.text,
+      startDate: _fromDate,
+      endDate: _toDate,
+    );
   }
 
   void _pickDateRange() async {

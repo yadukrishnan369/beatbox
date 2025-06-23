@@ -1,3 +1,4 @@
+import 'package:beatbox/core/notifiers/sales_notifier.dart';
 import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:beatbox/features/sales_management/controller/cart_controller.dart';
 import 'package:beatbox/features/sales_management/controller/sales_controller.dart';
@@ -144,6 +145,7 @@ class _BillingScreenState extends State<BillingScreen> {
     try {
       // save to sales
       await SalesController.addSale(sale);
+      isSalesReloadNeeded.value = true;
 
       // update stock
       final productBox = Hive.box<ProductModel>('productBox');
