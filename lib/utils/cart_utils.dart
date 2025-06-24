@@ -4,6 +4,7 @@ import 'package:beatbox/features/sales_management/model/cart_item_model.dart';
 import 'package:beatbox/features/product_management/model/product_model.dart';
 
 class CartUtils {
+  //add products to cart
   static Future<void> addProductToCart(
     ProductModel product, {
     int quantity = 1,

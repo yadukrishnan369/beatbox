@@ -6,6 +6,7 @@ import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:beatbox/core/notifiers/product_add_notifier.dart';
 
 class ProductUtils {
+  // get all prouducts functon
   static Future<void> loadProducts({bool showShimmer = true}) async {
     if (showShimmer) productShimmerNotifier.value = true;
 
@@ -107,6 +108,30 @@ class ProductUtils {
     filterProducts(currentQuery);
   }
 
+  //product quanity adjustment functions
+  static int incrementQuantity({
+    required int currentQuantity,
+    required int availableQuantity,
+    required BuildContext context,
+  }) {
+    if (currentQuantity < availableQuantity) {
+      return currentQuantity + 1;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Only $availableQuantity items available"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return currentQuantity;
+    }
+  }
+
+  static int decrementQuantity(int currentQuantity) {
+    return currentQuantity > 1 ? currentQuantity - 1 : 1;
+  }
+
+  // get product label function
   static String getProductLabel(ProductModel product) {
     const int arrivalLabelDays = 7;
     const int limitedCount = 5;
@@ -131,6 +156,7 @@ class ProductUtils {
     return '';
   }
 
+  // get product label color function
   static Color getProductLabelColor(ProductModel product) {
     final label = getProductLabel(product);
     switch (label) {
