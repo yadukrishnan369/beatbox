@@ -1,5 +1,6 @@
 // billing_utils.dart
 import 'package:beatbox/core/app_colors.dart';
+import 'package:beatbox/core/notifiers/bill_notifier.dart';
 import 'package:beatbox/core/notifiers/sales_notifier.dart';
 import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:beatbox/features/sales_management/controller/cart_controller.dart';
@@ -120,6 +121,7 @@ class BillingUtils {
     try {
       await SalesController.addSale(sale);
       isSalesReloadNeeded.value = true;
+      isBillReloadNeeded.value = true;
 
       final productBox = Hive.box<ProductModel>('productBox');
       for (var item in cartItems) {

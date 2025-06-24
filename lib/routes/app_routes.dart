@@ -1,3 +1,5 @@
+import 'package:beatbox/features/bill_management/ui/bill_details_screen.dart';
+import 'package:beatbox/features/bill_management/ui/bill_history_screen.dart';
 import 'package:beatbox/features/home/ui/home_screen.dart';
 import 'package:beatbox/features/product_management/ui/add_edit_product_screen.dart';
 import 'package:beatbox/features/product_management/ui/brand_category_screen.dart';
@@ -38,6 +40,8 @@ class AppRoutes {
   static const String billing = '/billing';
   static const String salesAndCustomer = '/salesAndCustomer';
   static const String salesAndCustomerDetails = '/salesAndCustomerDetails';
+  static const String billHistory = '/billHistory';
+  static const String billDetails = '/billDetails';
 
   /// set each routes, its screen widget
   static Map<String, WidgetBuilder> get routes => {
@@ -59,6 +63,8 @@ class AppRoutes {
     billing: (context) => BillingScreen(),
     salesAndCustomer: (context) => SalesAndCustomerScreen(),
     salesAndCustomerDetails: (context) => SalesAndCustomerDetailsScreen(),
+    billHistory: (context) => BillHistoryScreen(),
+    billDetails: (context) => BillDetailsScreen(),
   };
 
   //tracking navigation and Pause/resume the app

@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:beatbox/features/auth/biometric_screen.dart';
+import 'package:beatbox/features/bill_management/ui/bill_details_screen.dart';
+import 'package:beatbox/features/bill_management/ui/bill_history_screen.dart';
 import 'package:beatbox/features/home/ui/home_screen.dart';
 import 'package:beatbox/features/product_management/ui/stock_entry_details_screen.dart';
 import 'package:beatbox/features/product_management/ui/stock_entry_screen.dart';
@@ -154,6 +156,8 @@ class _MyAppState extends State<MyApp> {
             AppRoutes.salesAndCustomer: (context) => SalesAndCustomerScreen(),
             AppRoutes.salesAndCustomerDetails:
                 (context) => SalesAndCustomerDetailsScreen(),
+            AppRoutes.billHistory: (context) => BillHistoryScreen(),
+            AppRoutes.billDetails:(context)=>BillDetailsScreen()
           },
           // set fixed text size of user device settings
           builder: (context, child) {

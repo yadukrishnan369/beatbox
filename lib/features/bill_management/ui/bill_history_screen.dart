@@ -1,45 +1,46 @@
 import 'package:beatbox/core/app_colors.dart';
-import 'package:beatbox/core/notifiers/sales_notifier.dart';
+import 'package:beatbox/core/notifiers/bill_notifier.dart';
+import 'package:beatbox/features/bill_management/widgets/bill_item_card_widget.dart';
 import 'package:beatbox/features/sales_management/model/sales_model.dart';
-import 'package:beatbox/features/sales_management/widgets/sold_item_list_widget.dart';
 import 'package:beatbox/routes/app_routes.dart';
-import 'package:beatbox/utils/sales_utils.dart';
+import 'package:beatbox/utils/bill_utils.dart';
 import 'package:beatbox/widgets/custom_search_bar.dart';
 import 'package:beatbox/widgets/date_range_info_widget.dart';
-import 'package:beatbox/widgets/shimmer_widgets/shimmer_list_tile.dart';
+import 'package:beatbox/widgets/shimmer_widgets/shimmer_bill_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class SalesAndCustomerScreen extends StatefulWidget {
-  const SalesAndCustomerScreen({super.key});
+class BillHistoryScreen extends StatefulWidget {
+  const BillHistoryScreen({super.key});
 
   @override
-  State<SalesAndCustomerScreen> createState() => _SalesAndCustomerScreenState();
+  State<BillHistoryScreen> createState() => _BillHistoryScreenState();
 }
 
-class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
+class _BillHistoryScreenState extends State<BillHistoryScreen> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+
   DateTime? _startDate;
   DateTime? _endDate;
 
   @override
   void initState() {
     super.initState();
-    _checkAndLoadSales();
+    _checkAndLoadBills();
   }
 
-  Future<void> _checkAndLoadSales() async {
-    if (isSalesReloadNeeded.value) {
-      await SalesUtils.loadSales();
-      isSalesReloadNeeded.value = false;
+  Future<void> _checkAndLoadBills() async {
+    if (isBillReloadNeeded.value) {
+      await BillUtils.loadBills();
+      isBillReloadNeeded.value = false;
     } else {
-      await SalesUtils.loadSalesWithoutShimmer();
+      await BillUtils.loadBillsWithoutShimmer();
     }
   }
 
-  Future<void> _filterSales() async {
-    await SalesUtils.filterSalesByNameAndDate(
+  Future<void> _filterBills() async {
+    await BillUtils.filterBillsByNameAndDate(
       query: _searchController.text.trim(),
       startDate: _startDate,
       endDate: _endDate,
@@ -58,7 +59,7 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
         _startDate = picked.start;
         _endDate = picked.end;
       });
-      await _filterSales();
+      await _filterBills();
     }
   }
 
@@ -84,7 +85,7 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
             backgroundColor: AppColors.white,
             elevation: 0,
             title: Text(
-              'Sales History',
+              'Bill History',
               style: TextStyle(
                 fontSize: 22.sp,
                 fontWeight: FontWeight.w600,
@@ -99,12 +100,12 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
                 CustomSearchBar(
                   controller: _searchController,
                   focusNode: _focusNode,
+                  hintText: 'Search by invoice or customer name',
+                  onChanged: (_) => _filterBills(),
                   showFilterIcon: true,
-                  hintText: 'Search by customer or invoice ...',
-                  onChanged: (_) => _filterSales(),
                   onFilterTap: _pickDateRange,
                 ),
-                SizedBox(height: 10.h),
+                SizedBox(height: 12.h),
                 // date range filter info
                 DateRangeInfoWidget(
                   startDate: _startDate,
@@ -114,48 +115,48 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
                       _startDate = null;
                       _endDate = null;
                     });
-                    await _filterSales();
+                    await _filterBills();
                   },
                 ),
                 SizedBox(height: 10.h),
                 Expanded(
                   child: ValueListenableBuilder<bool>(
-                    valueListenable: isSalesLoadingNotifier,
+                    valueListenable: isBillLoadingNotifier,
                     builder: (context, isLoading, _) {
                       return ValueListenableBuilder<List<SalesModel>>(
-                        valueListenable: filteredSalesNotifier,
-                        builder: (context, salesList, _) {
+                        valueListenable: filteredBillNotifier,
+                        builder: (context, billList, _) {
                           if (isLoading) {
-                            return ListView.builder(
+                            return ListView.separated(
                               itemCount: 6,
-                              itemBuilder:
-                                  (context, index) => const ShimmerListTile(),
+                              separatorBuilder:
+                                  (_, __) => SizedBox(height: 12.h),
+                              itemBuilder: (_, __) => const ShimmerBillTile(),
                             );
                           }
 
-                          if (salesList.isEmpty) {
+                          if (billList.isEmpty) {
                             return Center(
                               child: Text(
-                                'No sales found',
+                                'No bills found',
                                 style: TextStyle(fontSize: 14.sp),
                               ),
                             );
                           }
 
                           return ListView.builder(
-                            itemCount: salesList.length,
+                            itemCount: billList.length,
                             itemBuilder: (context, index) {
-                              final sale = salesList[index];
+                              final bill = billList[index];
                               return GestureDetector(
                                 onTap: () {
                                   Navigator.pushNamed(
                                     context,
-                                    AppRoutes.salesAndCustomerDetails,
-                                    arguments: sale,
+                                    AppRoutes.billDetails,
+                                    arguments: bill,
                                   );
                                 },
-                                //list of sale and customer history
-                                child: SoldItemListTile(sale: sale),
+                                child: BillItemCard(bill: bill),
                               );
                             },
                           );
