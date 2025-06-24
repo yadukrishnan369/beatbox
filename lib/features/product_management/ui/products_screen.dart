@@ -29,14 +29,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
     super.initState();
     viewToggleNotifier = ValueNotifier(true);
 
-    // Load products only once at app start
     if (isProductReloadNeeded.value) {
       ProductUtils.loadProducts(showShimmer: true);
       isProductReloadNeeded.value = false;
     }
 
     if (widget.shouldFocusSearch) {
-      Future.delayed(Duration(milliseconds: 300), () {
+      Future.delayed(const Duration(milliseconds: 300), () {
         _searchFocusNode.requestFocus();
       });
     }
@@ -48,6 +47,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
       selectedCategories: _selectedCategories,
       selectedBrands: _selectedBrands,
     );
+  }
+
+  void _clearFilters() {
+    setState(() {
+      _selectedCategories.clear();
+      _selectedBrands.clear();
+    });
+    _filterProducts(_searchController.text);
   }
 
   @override
@@ -84,7 +91,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
               ValueListenableBuilder(
                 valueListenable: productAddNotifier,
                 builder: (context, productList, _) {
-                  if (productList.isEmpty) return SizedBox.shrink();
+                  if (productList.isEmpty) return const SizedBox.shrink();
                   return Row(
                     children: [
                       ValueListenableBuilder<bool>(
@@ -108,50 +115,70 @@ class _ProductsScreenState extends State<ProductsScreen> {
               ),
             ],
           ),
-
-          // Main Body with Search Bar and Shimmer
+          // body of screen
           body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CustomSearchBar(
-                controller: _searchController,
-                onChanged: _filterProducts,
-                focusNode: _searchFocusNode,
-                onFilterTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(20.r),
+              // Search Bar
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: CustomSearchBar(
+                  controller: _searchController,
+                  onChanged: _filterProducts,
+                  focusNode: _searchFocusNode,
+                  onFilterTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(20.r),
+                        ),
+                      ),
+                      builder:
+                          (_) => ProductFilterSheet(
+                            selectedCategories: _selectedCategories,
+                            selectedBrands: _selectedBrands,
+                            onClear: _clearFilters,
+                            onApply: () {
+                              _filterProducts(_searchController.text);
+                            },
+                            onCategorySelected: (selected) {
+                              setState(() => _selectedCategories = selected);
+                            },
+                            onBrandSelected: (selected) {
+                              setState(() => _selectedBrands = selected);
+                            },
+                          ),
+                    );
+                  },
+                  showFilterIcon: true,
+                ),
+              ),
+              // Clear Filter Button
+              if (_selectedCategories.isNotEmpty || _selectedBrands.isNotEmpty)
+                Padding(
+                  padding: EdgeInsets.only(right: 16.w),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton.icon(
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppColors.primary,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 12.w,
+                          vertical: 4.h,
+                        ),
+                      ),
+                      onPressed: _clearFilters,
+                      icon: Icon(Icons.clear, size: 18.sp),
+                      label: Text(
+                        'Clear Filter',
+                        style: TextStyle(fontSize: 14.sp),
                       ),
                     ),
-                    builder:
-                        (_) => ProductFilterSheet(
-                          selectedCategories: _selectedCategories,
-                          selectedBrands: _selectedBrands,
-                          onClear: () {
-                            setState(() {
-                              _selectedCategories.clear();
-                              _selectedBrands.clear();
-                            });
-                            _filterProducts(_searchController.text);
-                          },
-                          onApply: () {
-                            _filterProducts(_searchController.text);
-                          },
-                          onCategorySelected: (selected) {
-                            setState(() => _selectedCategories = selected);
-                          },
-                          onBrandSelected: (selected) {
-                            setState(() => _selectedBrands = selected);
-                          },
-                        ),
-                  );
-                },
-                showFilterIcon: true,
-              ),
-
-              // Switch between shimmer or actual products
+                  ),
+                ),
+              // Products View
               Expanded(
                 child: ValueListenableBuilder<bool>(
                   valueListenable: viewToggleNotifier,
