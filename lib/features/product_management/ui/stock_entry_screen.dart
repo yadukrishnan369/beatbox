@@ -2,6 +2,7 @@ import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:beatbox/core/notifiers/filter_product_notifier.dart';
 import 'package:beatbox/core/notifiers/product_add_notifier.dart';
+import 'package:beatbox/features/product_management/widgets/stock_entry_list_card_widget.dart';
 import 'package:beatbox/routes/app_routes.dart';
 import 'package:beatbox/utils/product_utils.dart';
 import 'package:beatbox/widgets/custom_search_bar.dart';
@@ -159,7 +160,7 @@ class _StockEntryScreenState extends State<StockEntryScreen> {
                                 arguments: product,
                               );
                             },
-                            child: _buildProductCard(product),
+                            child: StockEntryListCard(product: product),
                           );
                         },
                       );
@@ -170,59 +171,6 @@ class _StockEntryScreenState extends State<StockEntryScreen> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildProductCard(ProductModel product) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 12.h),
-      padding: EdgeInsets.all(16.r),
-      decoration: BoxDecoration(
-        color: AppColors.contColor,
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                product.productName,
-                style: TextStyle(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              Text(
-                DateFormat('dd MMM yyyy').format(product.createdDate),
-                style: TextStyle(fontSize: 12.sp, color: AppColors.primary),
-              ),
-            ],
-          ),
-          SizedBox(height: 10.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Quantity: ${product.productQuantity}',
-                style: TextStyle(fontSize: 14.sp),
-              ),
-              product.productQuantity == 0
-                  ? Text(
-                    'Out of Stock',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      color: AppColors.error,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )
-                  : Icon(Icons.list, color: AppColors.textPrimary, size: 20.sp),
-            ],
-          ),
-        ],
       ),
     );
   }

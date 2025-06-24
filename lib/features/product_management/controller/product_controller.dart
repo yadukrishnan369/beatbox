@@ -28,12 +28,6 @@ class ProductController {
     return _productBox.values.toList();
   }
 
-  // delete product
-  static Future<void> deleteProductByKey(dynamic key) async {
-    await _productBox.delete(key);
-    _refreshNotifier();
-  }
-
   // refresh product notifier
   static void _refreshNotifier() {
     final products = _productBox.values.toList().reversed.toList();

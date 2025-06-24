@@ -1,5 +1,7 @@
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/core/notifiers/filter_product_notifier.dart';
+import 'package:beatbox/features/product_management/ui/add_edit_product_screen.dart';
+import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:beatbox/features/product_management/model/product_model.dart';
@@ -97,6 +99,66 @@ class ProductUtils {
         }).toList();
 
     filteredProductNotifier.value = filtered;
+  }
+
+  //edit and delete product functions
+  static void editProduct(BuildContext context, ProductModel product) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => AddProductScreen(productToEdit: product),
+      ),
+    ).then((_) {
+      isProductReloadNeeded.value = true;
+      loadProducts();
+    });
+  }
+
+  static void confirmDeleteProduct(
+    BuildContext context,
+    ProductModel product,
+    TextEditingController searchController,
+    FocusNode searchFocusNode,
+  ) {
+    showDialog(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            backgroundColor: AppColors.white,
+            title: Text(
+              'Delete Product',
+              style: TextStyle(color: AppColors.primary),
+            ),
+            content: Text(
+              'Are you sure you want to delete ${product.productName}?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(color: AppColors.textPrimary),
+                ),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  await deleteProduct(product, searchController.text);
+                  isProductReloadNeeded.value = true;
+                  await showLoadingDialog(
+                    context,
+                    message: "Deleting...",
+                    showSucess: true,
+                  );
+                  searchController.clear();
+                  searchFocusNode.unfocus();
+                  filterProducts('');
+                },
+                child: Text('Delete', style: TextStyle(color: AppColors.error)),
+              ),
+            ],
+          ),
+    );
   }
 
   static Future<void> deleteProduct(
