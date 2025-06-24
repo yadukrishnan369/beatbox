@@ -1,19 +1,13 @@
-import 'package:beatbox/core/notifiers/sales_notifier.dart';
-import 'package:beatbox/features/product_management/model/product_model.dart';
-import 'package:beatbox/features/sales_management/controller/cart_controller.dart';
-import 'package:beatbox/features/sales_management/controller/sales_controller.dart';
-import 'package:beatbox/features/sales_management/model/sales_model.dart';
-import 'package:beatbox/utils/gst_utils.dart';
-import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/sales_management/model/cart_item_model.dart';
+import 'package:beatbox/features/sales_management/widgets/billing_summary_section.dart';
 import 'package:beatbox/features/sales_management/widgets/customer_info_section.dart';
 import 'package:beatbox/features/sales_management/widgets/invoice_info_section.dart';
 import 'package:beatbox/features/sales_management/widgets/items_table_section.dart';
-import 'package:beatbox/features/sales_management/widgets/billing_summary_section.dart';
-import 'package:hive/hive.dart';
+import 'package:beatbox/utils/billing_utils.dart';
+import 'package:beatbox/utils/gst_utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 class BillingScreen extends StatefulWidget {
@@ -44,7 +38,16 @@ class _BillingScreenState extends State<BillingScreen> {
     invoiceNumber =
         'INV-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}';
     billingDate = DateTime.now();
-    discountController.addListener(_updateDiscount);
+
+    discountController.addListener(() {
+      discount = BillingUtils.calculateDiscount(
+        discountController.text,
+        subtotal,
+        gst,
+      );
+      grandTotal = BillingUtils.calculateGrandTotal(subtotal, gst, discount);
+      setState(() {});
+    });
   }
 
   @override
@@ -58,26 +61,10 @@ class _BillingScreenState extends State<BillingScreen> {
   }
 
   void _calculateTotals() {
-    subtotal = cartItems.fold(
-      0,
-      (sum, item) => sum + (item.product.salePrice * item.quantity),
-    );
-    gst = subtotal * gstRate;
-    grandTotal = subtotal + gst - discount;
-    if (mounted) setState(() {});
-  }
-
-  void _updateDiscount() {
-    final enteredPercentage =
-        double.tryParse(discountController.text.trim()) ?? 0.0;
-    if (discountController.text.trim().isEmpty) {
-      discount = 0.0;
-      _calculateTotals();
-      return;
-    }
-    // Calculate percentage-based discount
-    discount = ((subtotal + gst) * enteredPercentage) / 100;
-    _calculateTotals();
+    subtotal = BillingUtils.calculateSubtotal(cartItems);
+    gst = BillingUtils.calculateGst(subtotal, gstRate);
+    grandTotal = BillingUtils.calculateGrandTotal(subtotal, gst, discount);
+    setState(() {});
   }
 
   void _confirmBill() async {
@@ -86,53 +73,21 @@ class _BillingScreenState extends State<BillingScreen> {
     final email = emailController.text.trim();
     final discountText = discountController.text.trim();
 
-    //  Name validation
-    if (name.isEmpty) {
-      _showSnackBar("Enter customer name!", isError: true);
-      return;
-    }
-    if (!RegExp(r'[a-zA-Z]').hasMatch(name)) {
-      _showSnackBar("Invalid name", isError: true);
-      return;
-    }
-
-    //  Phone validation
-    if (phone.isEmpty) {
-      _showSnackBar("Enter phone number!", isError: true);
-      return;
-    }
-    if (!RegExp(r'^[0-9]{10}$').hasMatch(phone)) {
-      _showSnackBar("Invalid phone number", isError: true);
+    if (!BillingUtils.validateCustomerDetails(
+      context,
+      name: name,
+      phone: phone,
+      email: email,
+      discountText: discountText,
+    )) {
       return;
     }
 
-    //  Email Format validation
-    if (email.isNotEmpty &&
-        !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$').hasMatch(email)) {
-      _showSnackBar("Invalid email", isError: true);
-      return;
-    }
-
-    //  Discount validation
-    if (discountText.isNotEmpty) {
-      final enteredDisc = double.tryParse(discountText.trim());
-
-      if (enteredDisc == null) {
-        _showSnackBar("Invalid discount", isError: true);
-        return;
-      }
-
-      if (enteredDisc >= 100) {
-        _showSnackBar("Discount can't be 100% or more", isError: true);
-        return;
-      }
-    }
-
-    /// save to DB after all validations
-    final sale = SalesModel(
-      customerName: name,
-      customerPhone: phone,
-      customerEmail: email,
+    await BillingUtils.confirmAndSaveBill(
+      context,
+      name: name,
+      phone: phone,
+      email: email,
       invoiceNumber: invoiceNumber,
       billingDate: billingDate,
       cartItems: cartItems,
@@ -140,55 +95,6 @@ class _BillingScreenState extends State<BillingScreen> {
       gst: gst,
       discount: discount,
       grandTotal: grandTotal,
-    );
-
-    try {
-      // save to sales
-      await SalesController.addSale(sale);
-      isSalesReloadNeeded.value = true;
-
-      // update stock
-      final productBox = Hive.box<ProductModel>('productBox');
-      for (var item in cartItems) {
-        final id = item.product.id;
-
-        final matchingList =
-            productBox.values.where((p) => p.id == id).toList();
-
-        if (matchingList.isNotEmpty) {
-          final product = matchingList.first;
-
-          // Reduce quantity
-          final newQty = product.productQuantity - item.quantity;
-          product.productQuantity = newQty < 0 ? 0 : newQty;
-
-          // Save updated product
-          await product.save();
-        }
-      }
-
-      await CartController.clearCart();
-
-      await showLoadingDialog(
-        context,
-        message: 'Saving Bill...',
-        showSucess: true,
-      );
-
-      await Future.delayed(const Duration(milliseconds: 800), () {
-        if (mounted) Navigator.pop(context);
-      });
-    } catch (e) {
-      _showSnackBar("Error: ${e.toString()}", isError: true);
-    }
-  }
-
-  void _showSnackBar(String message, {required bool isError}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? AppColors.error : AppColors.success,
-      ),
     );
   }
 
@@ -241,7 +147,19 @@ class _BillingScreenState extends State<BillingScreen> {
               gstRate: gstRate,
               discountController: discountController,
               grandTotal: grandTotal,
-              onDiscountChanged: _updateDiscount,
+              onDiscountChanged: () {
+                discount = BillingUtils.calculateDiscount(
+                  discountController.text,
+                  subtotal,
+                  gst,
+                );
+                grandTotal = BillingUtils.calculateGrandTotal(
+                  subtotal,
+                  gst,
+                  discount,
+                );
+                setState(() {});
+              },
             ),
           ],
         ),
