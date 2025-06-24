@@ -23,6 +23,12 @@ class ProductController {
     _refreshNotifier();
   }
 
+  // delete product
+  static Future<void> deleteProduct(ProductModel product) async {
+    final box = Hive.box<ProductModel>('productBox');
+    await box.delete(product.key);
+  }
+
   // get all product
   static List<ProductModel> getAllProducts() {
     return _productBox.values.toList();

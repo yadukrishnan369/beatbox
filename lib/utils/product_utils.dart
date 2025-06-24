@@ -1,5 +1,6 @@
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/core/notifiers/filter_product_notifier.dart';
+import 'package:beatbox/features/product_management/controller/product_controller.dart';
 import 'package:beatbox/features/product_management/ui/add_edit_product_screen.dart';
 import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
 import 'package:flutter/material.dart';
@@ -165,8 +166,7 @@ class ProductUtils {
     ProductModel product,
     String currentQuery,
   ) async {
-    final box = Hive.box<ProductModel>('productBox');
-    await box.delete(product.key);
+    await ProductController.deleteProduct(product);
     filterProducts(currentQuery);
   }
 
