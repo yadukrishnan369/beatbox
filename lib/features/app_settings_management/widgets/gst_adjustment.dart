@@ -19,7 +19,7 @@ class _GSTAdjustmentDialogState extends State<GSTAdjustmentDialog> {
     super.initState();
 
     // fetch current GST value from Hive
-    currentGST = GSTUtils.getGSTRate();
+    currentGST = GSTUtils.getGSTPercentage();
     gstController = TextEditingController(text: currentGST.toStringAsFixed(1));
   }
 

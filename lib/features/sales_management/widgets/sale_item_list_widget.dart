@@ -11,6 +11,16 @@ class SaleItemListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double totalSale = 0.0;
+    double totalPurchase = 0.0;
+
+    for (var item in sale.cartItems) {
+      totalSale += item.product.salePrice * item.quantity;
+      totalPurchase += item.product.purchaseRate * item.quantity;
+    }
+
+    double totalProfit = (totalSale + sale.gst - sale.discount) - totalPurchase;
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(16.w),
@@ -22,8 +32,12 @@ class SaleItemListWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ...sale.cartItems.map(
-            (item) => Padding(
+          ...sale.cartItems.map((item) {
+            final itemProfit =
+                (item.product.salePrice - item.product.purchaseRate) *
+                item.quantity;
+
+            return Padding(
               padding: EdgeInsets.only(bottom: 16.h),
               child: _buildProductItem(
                 productName: item.product.productName,
@@ -32,8 +46,34 @@ class SaleItemListWidget extends StatelessWidget {
                 purchaseRate: item.product.purchaseRate,
                 salePrice: item.product.salePrice,
                 total: item.totalPrice,
-                discount: sale.discount,
+                itemProfit: itemProfit,
               ),
+            );
+          }),
+
+          Divider(color: Colors.grey.shade500, thickness: 1),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Row(
+              children: [
+                Text(
+                  '(GST & Discount)',
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 10.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                SizedBox(width: 25.w),
+                Text(
+                  'Total Profit : ₹${AmountFormatter.format(totalProfit)}',
+                  style: TextStyle(
+                    color: AppColors.success,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -48,10 +88,8 @@ class SaleItemListWidget extends StatelessWidget {
     required double purchaseRate,
     required double salePrice,
     required double total,
-    required double discount,
+    required double itemProfit,
   }) {
-    final saleProfit = (total - (purchaseRate * qty) - discount);
-
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Column(
@@ -76,14 +114,8 @@ class SaleItemListWidget extends StatelessWidget {
           SizedBox(height: 5.h),
           Row(
             children: [
-              _infoText('Discount: ₹${AmountFormatter.format(discount)}'),
-              _infoText('Total: ₹${AmountFormatter.format(total - discount)}'),
-            ],
-          ),
-          SizedBox(height: 5.h),
-          Row(
-            children: [
-              _infoText('Sale profit: ₹${AmountFormatter.format(saleProfit)}'),
+              _infoText('Total : ₹${AmountFormatter.format(total)}'),
+              _infoText('Profit: ₹${AmountFormatter.format(itemProfit)}'),
             ],
           ),
         ],

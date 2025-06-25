@@ -30,7 +30,7 @@ class _BillingScreenState extends State<BillingScreen> {
   double grandTotal = 0.0;
   late String invoiceNumber;
   late DateTime billingDate;
-  final double gstRate = GSTUtils.getGSTRate() / 100;
+  final double gstRate = GSTUtils.getGSTPercentage() / 100;
 
   @override
   void initState() {

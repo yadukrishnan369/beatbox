@@ -5,7 +5,7 @@ class GSTUtils {
   static const _key = 'gst_rate';
 
   //fetch GST rate
-  static double getGSTRate() {
+  static double getGSTPercentage() {
     final box = Hive.box(_boxName);
     return box.get(_key, defaultValue: 0.0);
   }

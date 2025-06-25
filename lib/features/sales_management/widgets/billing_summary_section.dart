@@ -1,5 +1,6 @@
 import 'package:beatbox/features/sales_management/widgets/billing_discount_section.dart';
 import 'package:beatbox/utils/amount_formatter.dart';
+import 'package:beatbox/utils/gst_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/core/app_colors.dart';
@@ -24,6 +25,7 @@ class BillingSummarySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final gstPercentage = GSTUtils.getGSTPercentage();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -52,7 +54,7 @@ class BillingSummarySection extends StatelessWidget {
               ),
               SizedBox(height: 8.h),
               _buildSummaryRow(
-                "GST charges (${(gstRate * 100).toStringAsFixed(1)}%)",
+                "GST charges (${gstPercentage.toStringAsFixed(0)}%)",
                 "₹${AmountFormatter.format(gst)}",
               ),
               SizedBox(height: 8.h),
