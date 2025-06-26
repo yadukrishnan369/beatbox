@@ -55,7 +55,9 @@ class SalesAndCustomerDetailsScreen extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(18.w),
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, '/billDetails', arguments: sale);
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.success,
               shape: RoundedRectangleBorder(

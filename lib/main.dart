@@ -157,7 +157,7 @@ class _MyAppState extends State<MyApp> {
             AppRoutes.salesAndCustomerDetails:
                 (context) => SalesAndCustomerDetailsScreen(),
             AppRoutes.billHistory: (context) => BillHistoryScreen(),
-            AppRoutes.billDetails:(context)=>BillDetailsScreen()
+            AppRoutes.billDetails: (context) => BillDetailsScreen(),
           },
           // set fixed text size of user device settings
           builder: (context, child) {

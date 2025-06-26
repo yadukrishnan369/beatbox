@@ -7,6 +7,7 @@ import 'package:beatbox/features/sales_management/controller/cart_controller.dar
 import 'package:beatbox/features/sales_management/controller/sales_controller.dart';
 import 'package:beatbox/features/sales_management/model/cart_item_model.dart';
 import 'package:beatbox/features/sales_management/model/sales_model.dart';
+import 'package:beatbox/routes/app_routes.dart';
 import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -140,7 +141,9 @@ class BillingUtils {
         showSucess: true,
       );
       await Future.delayed(const Duration(milliseconds: 800));
-      if (context.mounted) Navigator.pop(context);
+      if (context.mounted) {
+        Navigator.pushReplacementNamed(context, AppRoutes.billHistory);
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
