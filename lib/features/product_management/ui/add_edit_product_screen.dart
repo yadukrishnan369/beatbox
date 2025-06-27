@@ -131,6 +131,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
       productCategory: selectedCategory ?? '',
       productBrand: selectedBrand ?? '',
       productQuantity: int.tryParse(_quantityController.text.trim()) ?? 0,
+      initialQuantity: int.tryParse(_quantityController.text.trim()) ?? 0,
       productCode: _productCodeController.text.trim(),
       purchaseRate: double.tryParse(_purchaseRateController.text.trim()) ?? 0.0,
       salePrice: double.tryParse(_salePriceController.text.trim()) ?? 0.0,

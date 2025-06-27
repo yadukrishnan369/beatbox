@@ -5,10 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
 class StockEntryListCard extends StatelessWidget {
-  const StockEntryListCard({
-    super.key,
-    required this.product,
-  });
+  const StockEntryListCard({super.key, required this.product});
 
   final ProductModel product;
 
@@ -46,7 +43,7 @@ class StockEntryListCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Quantity: ${product.productQuantity}',
+                'Quantity: ${product.initialQuantity}',
                 style: TextStyle(fontSize: 14.sp),
               ),
               product.productQuantity == 0

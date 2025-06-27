@@ -42,12 +42,16 @@ class ProductModel extends HiveObject {
   @HiveField(12)
   final DateTime createdDate;
 
+  @HiveField(13)
+  final int? initialQuantity;
+
   ProductModel({
     required this.id,
     required this.productName,
     required this.productCategory,
     required this.productBrand,
     required this.productQuantity,
+    required this.initialQuantity,
     required this.productCode,
     required this.purchaseRate,
     required this.salePrice,

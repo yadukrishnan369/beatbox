@@ -30,9 +30,12 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final isOutOfStock = product.productQuantity == 0;
-    final totalValue = product.purchaseRate * product.productQuantity;
+    final totalValue =
+        product.purchaseRate *
+        (product.initialQuantity ?? product.productQuantity);
     final profitPerItem = product.salePrice - product.purchaseRate;
-    final totalProfit = profitPerItem * product.productQuantity;
+    final totalProfit =
+        profitPerItem * (product.initialQuantity ?? product.productQuantity);
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -98,7 +101,11 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
                         DateFormat('dd MMM yyyy').format(product.createdDate),
                       ),
                       _buildDetailRow(
-                        'Quantity',
+                        'Purchased Quantity',
+                        product.initialQuantity.toString(),
+                      ),
+                      _buildDetailRow(
+                        'Current Quantity',
                         product.productQuantity.toString(),
                       ),
                       _buildDetailRow(
@@ -151,7 +158,7 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
                                     top: 4.h,
                                   ),
                                   child: Text(
-                                    '${AmountFormatter.format(product.purchaseRate)} x ${product.productQuantity}',
+                                    '${AmountFormatter.format(product.purchaseRate)} x ${product.initialQuantity}',
                                     style: TextStyle(
                                       fontSize: 14.sp,
                                       color: AppColors.primary,
@@ -189,7 +196,7 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
                                     top: 4.h,
                                   ),
                                   child: Text(
-                                    '${AmountFormatter.format(profitPerItem)} x ${product.productQuantity}',
+                                    '${AmountFormatter.format(profitPerItem)} x ${product.initialQuantity}',
                                     style: TextStyle(
                                       fontSize: 14.sp,
                                       color: AppColors.primary,
