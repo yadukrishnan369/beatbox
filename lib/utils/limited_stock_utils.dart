@@ -1,10 +1,18 @@
-import 'package:beatbox/core/notifiers/product_add_notifier.dart';
-import 'package:beatbox/core/notifiers/filter_product_notifier.dart';
+import 'package:beatbox/core/notifiers/limited_stock_notifier.dart';
+import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:beatbox/utils/product_utils.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class LimitedStockUtils {
-  static void filterLimitedStockProducts() {
-    final allProducts = productAddNotifier.value;
+  static bool _initialLoaded = false;
+
+  static Future<void> filterLimitedStockProducts() async {
+    if (!_initialLoaded) {
+      limitedStockShimmerNotifier.value = true;
+    }
+
+    final box = await Hive.openBox<ProductModel>('productBox');
+    final allProducts = box.values.toList();
 
     final filtered =
         allProducts.where((product) {
@@ -13,35 +21,41 @@ class LimitedStockUtils {
         }).toList();
 
     filtered.sort((a, b) => a.productQuantity.compareTo(b.productQuantity));
-    filteredProductNotifier.value = filtered;
-    productShimmerNotifier.value = false;
+    limitedStockNotifier.value = filtered;
+
+    await Future.delayed(const Duration(milliseconds: 300));
+
+    if (!_initialLoaded) {
+      limitedStockShimmerNotifier.value = false;
+      _initialLoaded = true;
+    }
   }
 
   static Future<void> searchLimitedProducts(String query) async {
-    productShimmerNotifier.value = true;
-    await Future.delayed(Duration(milliseconds: 300));
+    limitedStockShimmerNotifier.value = true;
 
+    final box = await Hive.openBox<ProductModel>('productBox');
+    final allProducts = box.values.toList();
     final lowerQuery = query.toLowerCase().trim();
-    final allProducts = productAddNotifier.value;
 
     final filtered =
         allProducts.where((product) {
           final isLimited =
               product.productQuantity < 5 ||
               ProductUtils.getProductLabel(product).contains("Limited");
-
           final matchName = product.productName.toLowerCase().contains(
             lowerQuery,
           );
           final matchCode = product.productCode.toLowerCase().contains(
             lowerQuery,
           );
-
           return isLimited && (matchName || matchCode);
         }).toList();
 
     filtered.sort((a, b) => a.productQuantity.compareTo(b.productQuantity));
-    filteredProductNotifier.value = filtered;
-    productShimmerNotifier.value = false;
+    limitedStockNotifier.value = filtered;
+
+    await Future.delayed(const Duration(milliseconds: 300));
+    limitedStockShimmerNotifier.value = false;
   }
 }

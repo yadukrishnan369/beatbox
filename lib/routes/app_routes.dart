@@ -4,6 +4,7 @@ import 'package:beatbox/features/home/ui/home_screen.dart';
 import 'package:beatbox/features/product_management/ui/add_edit_product_screen.dart';
 import 'package:beatbox/features/product_management/ui/brand_category_screen.dart';
 import 'package:beatbox/features/product_management/ui/current_stock_screen.dart';
+import 'package:beatbox/features/product_management/ui/limited_stock_detail_screen.dart';
 import 'package:beatbox/features/product_management/ui/limited_stock_screen.dart';
 import 'package:beatbox/features/product_management/ui/manage_stock_screen.dart';
 import 'package:beatbox/features/product_management/ui/product_details_screen.dart';
@@ -27,6 +28,7 @@ class AppRoutes {
   static const String home = '/home';
   static const String stock = '/stock';
   static const String limitedStock = '/limitedStock';
+  static const String limitedStockDetail = '/limitedStockDetail';
   static const String currentStock = '/currentStock';
   static const String addProduct = '/addProduct';
   static const String updateProduct = '/updateProduct';
@@ -50,6 +52,7 @@ class AppRoutes {
     home: (context) => HomeScreen(),
     stock: (context) => StockManageScreen(),
     limitedStock: (context) => LimitedStockScreen(),
+    limitedStockDetail: (context) => LimitedStockDetailScreen(),
     currentStock: (context) => CurrentStockScreen(),
     addProduct: (context) => AddProductScreen(),
     updateProduct: (context) => UpdateProductScreen(),
