@@ -18,7 +18,7 @@ class _StockManageScreenState extends State<StockManageScreen> {
   int _selectedIndex = 0;
 
   static const List<BottomNavigationBarItem> bottomNavItems = [
-    BottomNavigationBarItem(icon: Icon(Icons.category), label: 'Add Category'),
+    BottomNavigationBarItem(icon: Icon(Icons.category), label: 'Add category'),
     BottomNavigationBarItem(
       icon: Icon(Icons.branding_watermark),
       label: 'Add Brand',
@@ -102,7 +102,7 @@ class _StockManageScreenState extends State<StockManageScreen> {
                 style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
               ),
             ),
-            _productActionItem(Icons.add, 'Add Product', () {
+            _productActionItem(Icons.library_add, 'Add Product', () {
               Navigator.pushNamed(context, AppRoutes.addProduct);
             }),
             _productActionItem(Icons.edit, 'Update/Edit Product', () {
@@ -114,7 +114,7 @@ class _StockManageScreenState extends State<StockManageScreen> {
             _productActionItem(Icons.list_alt, 'Stock Entries', () {
               Navigator.pushNamed(context, AppRoutes.stockEntry);
             }),
-            _productActionItem(Icons.list_alt, 'Bill History', () {
+            _productActionItem(Icons.receipt_long, 'Bill History', () {
               Navigator.pushNamed(context, AppRoutes.billHistory);
             }),
           ],
@@ -138,7 +138,7 @@ class _StockManageScreenState extends State<StockManageScreen> {
       margin: EdgeInsets.symmetric(vertical: 6.h),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
       child: ListTile(
-        leading: Icon(icon, color: Theme.of(context).primaryColor, size: 24.w),
+        leading: Icon(icon, color: AppColors.primary, size: 24.w),
         title: Text(title, style: TextStyle(fontSize: 16.sp)),
         trailing: Icon(Icons.arrow_forward_ios, size: 16.w),
         onTap: onTap,

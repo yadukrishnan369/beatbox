@@ -66,7 +66,7 @@ class SaleItemListWidget extends StatelessWidget {
                 ),
                 SizedBox(width: 25.w),
                 Text(
-                  'Total Profit : ₹${AmountFormatter.format(totalProfit)}',
+                  'Total : ₹${AmountFormatter.format(totalProfit)}',
                   style: TextStyle(
                     color: AppColors.success,
                     fontSize: 16.sp,

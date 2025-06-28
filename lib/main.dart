@@ -54,6 +54,8 @@ void main() async {
   // await Hive.deleteBoxFromDisk('productBox');
   // await Hive.deleteBoxFromDisk('salesBox');
   // await Hive.deleteBoxFromDisk('cartBox');
+  // await Hive.deleteBoxFromDisk('categoryBox');
+  // await Hive.deleteBoxFromDisk('brandBox');
 
   // initialize hive boxes
   await CategoryController.initBox();
