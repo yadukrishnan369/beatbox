@@ -29,91 +29,96 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        Container(
-          height: 75.h,
-          margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          decoration: BoxDecoration(
-            color: AppColors.bottomNavColor,
-            borderRadius: BorderRadius.circular(30.r),
-            boxShadow: [BoxShadow(color: AppColors.primary, blurRadius: 10.r)],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildNavItem(context, Icons.home, "Home", 0),
-              _buildNavItem(context, Icons.inventory, "Stock", 1),
-              SizedBox(width: 60.w),
-              _buildNavItem(context, Icons.shopping_bag, "Product", 3),
-              _buildNavItem(context, Icons.bar_chart, "Insight", 4),
-            ],
-          ),
-        ),
-        // Cart Button with Badge Indicator
-        Positioned(
-          bottom: 15.5.h,
-          child: GestureDetector(
-            onTap: () => _onItemTapped(context, 2),
-            child: Stack(
-              alignment: Alignment.topRight,
+    return Container(
+      color: AppColors.white,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          Container(
+            height: 75.h,
+            margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            decoration: BoxDecoration(
+              color: AppColors.bottomNavColor,
+              borderRadius: BorderRadius.circular(30.r),
+              boxShadow: [
+                BoxShadow(color: AppColors.primary, blurRadius: 10.r),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  height: 68.h,
-                  width: 68.w,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.white,
-                    border: Border.all(color: AppColors.primary, width: 3.w),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.textPrimary,
-                        blurRadius: 6.r,
-                        offset: Offset(0, 2.h),
-                      ),
-                    ],
-                  ),
-                  child: Icon(
-                    Icons.shopping_cart,
-                    color: AppColors.textPrimary,
-                    size: 32.sp,
-                  ),
-                ),
-
-                // badge of cart
-                Positioned(
-                  right: 10,
-                  top: 7,
-                  child: ValueListenableBuilder(
-                    valueListenable: cartUpdatedNotifier,
-                    builder: (context, cartItems, _) {
-                      if (cartItems.isEmpty) return SizedBox.shrink();
-
-                      return Container(
-                        padding: EdgeInsets.all(5.r),
-                        decoration: BoxDecoration(
-                          color: AppColors.error,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Text(
-                          '${cartItems.length}',
-                          style: TextStyle(
-                            color: AppColors.white,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                _buildNavItem(context, Icons.home, "Home", 0),
+                _buildNavItem(context, Icons.inventory, "Stock", 1),
+                SizedBox(width: 60.w),
+                _buildNavItem(context, Icons.shopping_bag, "Product", 3),
+                _buildNavItem(context, Icons.bar_chart, "Insight", 4),
               ],
             ),
           ),
-        ),
-      ],
+          // Cart Button with Badge Indicator
+          Positioned(
+            bottom: 15.5.h,
+            child: GestureDetector(
+              onTap: () => _onItemTapped(context, 2),
+              child: Stack(
+                alignment: Alignment.topRight,
+                children: [
+                  Container(
+                    height: 68.h,
+                    width: 68.w,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.white,
+                      border: Border.all(color: AppColors.primary, width: 3.w),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.textPrimary,
+                          blurRadius: 6.r,
+                          offset: Offset(0, 2.h),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      Icons.shopping_cart,
+                      color: AppColors.textPrimary,
+                      size: 32.sp,
+                    ),
+                  ),
+
+                  // badge of cart
+                  Positioned(
+                    right: 10,
+                    top: 7,
+                    child: ValueListenableBuilder(
+                      valueListenable: cartUpdatedNotifier,
+                      builder: (context, cartItems, _) {
+                        if (cartItems.isEmpty) return SizedBox.shrink();
+
+                        return Container(
+                          padding: EdgeInsets.all(5.r),
+                          decoration: BoxDecoration(
+                            color: AppColors.error,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Text(
+                            '${cartItems.length}',
+                            style: TextStyle(
+                              color: AppColors.white,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

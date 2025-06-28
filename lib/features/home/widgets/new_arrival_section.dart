@@ -97,11 +97,14 @@ class _NewArrivalSectionState extends State<NewArrivalSection> {
                 Center(
                   child: Column(
                     children: [
-                      Image.asset(
-                        'assets/images/empty_image.png',
-                        height: 130.h,
-                        width: 350.w,
-                        fit: BoxFit.cover,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12.r),
+                        child: Image.asset(
+                          'assets/images/empty_image.png',
+                          height: 130.h,
+                          width: 350.w,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                       SizedBox(height: 8.h),
                       Text(

@@ -88,11 +88,14 @@ class _CategorySectionState extends State<CategorySection> {
                 padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 10.h),
                 child: Column(
                   children: [
-                    Image.asset(
-                      'assets/images/empty_image.png',
-                      height: 130.h,
-                      width: 350.w,
-                      fit: BoxFit.cover,
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12.r),
+                      child: Image.asset(
+                        'assets/images/empty_image.png',
+                        height: 130.h,
+                        width: 350.w,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                     SizedBox(height: 12.h),
                     Text(
