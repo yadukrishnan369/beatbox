@@ -1,90 +1,64 @@
-import 'package:flutter/material.dart';
-import 'package:beatbox/utils/product_utils.dart';
-import 'package:intl/intl.dart';
+import 'package:beatbox/core/notifiers/stock_entry_notifier.dart';
+import 'package:beatbox/features/product_management/model/product_model.dart';
+import 'package:hive/hive.dart';
 
 class StockEntryUtils {
-  static Future<void> loadProducts({
-    required bool isReloadNeeded,
-    required ValueNotifier<bool> isReloadNotifier,
-    required Function(bool) setLoadingState,
-  }) async {
-    if (isReloadNeeded) {
-      setLoadingState(true);
-      await ProductUtils.loadProducts();
-      await Future.delayed(const Duration(milliseconds: 300));
-      setLoadingState(false);
-      isReloadNotifier.value = false;
-    } else {
-      setLoadingState(false);
-    }
-  }
-
-  static Future<void> pickDateRange({
-    required BuildContext context,
-    required Function(DateTime?) setFromDate,
-    required Function(DateTime?) setToDate,
-    required Function(bool) setLoadingState,
-    required String searchQuery,
-  }) async {
-    final picked = await showDateRangePicker(
-      context: context,
-      firstDate: DateTime(2022),
-      lastDate: DateTime.now(),
-    );
-
-    if (picked != null) {
-      setFromDate(picked.start);
-      setToDate(picked.end);
-      setLoadingState(true);
-
-      ProductUtils.filterProductsByNameAndDate(
-        query: searchQuery,
-        startDate: picked.start,
-        endDate: picked.end,
-      );
-
-      await Future.delayed(const Duration(milliseconds: 300));
-      setLoadingState(false);
-    }
-  }
-
-  static Future<void> clearDateFilter({
-    required Function(DateTime?) setFromDate,
-    required Function(DateTime?) setToDate,
-    required Function(bool) setLoadingState,
-    required String searchQuery,
-  }) async {
-    setFromDate(null);
-    setToDate(null);
-    setLoadingState(true);
-
-    ProductUtils.filterProductsByNameAndDate(
-      query: searchQuery.trim(),
-      startDate: null,
-      endDate: null,
-    );
-
+  /// Show shimmer and load all products
+  static Future<void> loadAllProducts() async {
+    isStockEntryLoadingNotifier.value = true;
+    await _fetchSortedProductsAndUpdateNotifier();
     await Future.delayed(const Duration(milliseconds: 300));
-    setLoadingState(false);
+    isStockEntryLoadingNotifier.value = false;
   }
 
-  static Future<void> searchProducts({
+  /// Load all products without shimmer
+  static Future<void> loadProductsWithoutShimmer() async {
+    await _fetchSortedProductsAndUpdateNotifier();
+  }
+
+  /// Filter based on name/code and date
+  static Future<void> filterByNameAndDate({
     required String query,
-    required DateTime? fromDate,
-    required DateTime? toDate,
-    required Function(bool) setLoadingState,
+    DateTime? startDate,
+    DateTime? endDate,
   }) async {
-    setLoadingState(true);
-    ProductUtils.filterProductsByNameAndDate(
-      query: query,
-      startDate: fromDate,
-      endDate: toDate,
-    );
+    isStockEntryLoadingNotifier.value = true;
+
+    final box = Hive.box<ProductModel>('productBox');
+    List<ProductModel> all =
+        box.values.toList()
+          ..sort((a, b) => b.createdDate.compareTo(a.createdDate));
+
+    if (query.trim().isNotEmpty) {
+      final lower = query.toLowerCase().trim();
+      all =
+          all.where((p) {
+            return p.productName.toLowerCase().contains(lower) ||
+                p.productCode.toLowerCase().contains(lower);
+          }).toList();
+    }
+
+    if (startDate != null && endDate != null) {
+      all =
+          all.where((p) {
+            return p.createdDate.isAfter(
+                  startDate.subtract(const Duration(days: 1)),
+                ) &&
+                p.createdDate.isBefore(endDate.add(const Duration(days: 1)));
+          }).toList();
+    }
+
+    stockEntryNotifier.value = [...all];
+
     await Future.delayed(const Duration(milliseconds: 300));
-    setLoadingState(false);
+    isStockEntryLoadingNotifier.value = false;
   }
 
-  static String formatDate(DateTime? date) {
-    return date != null ? DateFormat('dd MMM yyyy').format(date) : '';
+  static Future<void> _fetchSortedProductsAndUpdateNotifier() async {
+    final box = await Hive.openBox<ProductModel>('productBox');
+    final all =
+        box.values.toList()
+          ..sort((a, b) => b.createdDate.compareTo(a.createdDate));
+    stockEntryNotifier.value = [...all];
   }
 }

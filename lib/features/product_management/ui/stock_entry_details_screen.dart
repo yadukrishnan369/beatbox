@@ -70,7 +70,6 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
                           color: AppColors.primary,
                         ),
               ),
-
               // Details
               Container(
                 color: AppColors.white,
@@ -79,14 +78,46 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        product.productName,
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              product.productName,
+                              style: TextStyle(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textPrimary,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8.w,
+                              vertical: 4.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color:
+                                  product.isAvailableForSale
+                                      ? AppColors.success
+                                      : AppColors.error,
+                              borderRadius: BorderRadius.circular(6.r),
+                            ),
+                            child: Text(
+                              product.isAvailableForSale
+                                  ? "Available"
+                                  : "Not Available",
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.white,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
+
                       SizedBox(height: 8.h),
                       Text(
                         'Headset',
