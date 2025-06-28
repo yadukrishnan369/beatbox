@@ -73,17 +73,18 @@ class ProductViewSwitcher extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.inventory_2_outlined,
-            size: 80.sp,
-            color: AppColors.bottomNavColor,
-          ),
-          SizedBox(height: 10.h),
+          Icon(Icons.search_off_rounded, size: 60.sp, color: AppColors.primary),
+          SizedBox(height: 16.h),
           Text(
-            'No products found',
-            style: TextStyle(fontSize: 16.sp, color: AppColors.primary),
+            "No matching product found",
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w600,
+              color: AppColors.primary,
+            ),
+            textAlign: TextAlign.center,
           ),
-          SizedBox(height: 4.h),
+          SizedBox(height: 12.h),
           Text(
             'Try searching something else',
             style: TextStyle(fontSize: 14.sp, color: AppColors.primary),

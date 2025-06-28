@@ -4,7 +4,7 @@ import 'package:beatbox/features/product_management/widgets/product_filter_sheet
 import 'package:beatbox/features/product_management/widgets/product_view_switcher.dart';
 import 'package:beatbox/utils/product_utils.dart';
 import 'package:beatbox/widgets/custom_search_bar.dart';
-import 'package:beatbox/widgets/shimmer_widgets/shimmer_product_grid.dart';
+import 'package:beatbox/widgets/empty_placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -115,91 +115,97 @@ class _ProductsScreenState extends State<ProductsScreen> {
               ),
             ],
           ),
-          // body of screen
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Search Bar
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: CustomSearchBar(
-                  controller: _searchController,
-                  onChanged: _filterProducts,
-                  focusNode: _searchFocusNode,
-                  onFilterTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(20.r),
-                        ),
-                      ),
-                      builder:
-                          (_) => ProductFilterSheet(
-                            selectedCategories: _selectedCategories,
-                            selectedBrands: _selectedBrands,
-                            onClear: _clearFilters,
-                            onApply: () {
-                              _filterProducts(_searchController.text);
-                            },
-                            onCategorySelected: (selected) {
-                              setState(() => _selectedCategories = selected);
-                            },
-                            onBrandSelected: (selected) {
-                              setState(() => _selectedBrands = selected);
-                            },
-                          ),
-                    );
-                  },
-                  showFilterIcon: true,
-                ),
-              ),
-              // Clear Filter Button
-              if (_selectedCategories.isNotEmpty || _selectedBrands.isNotEmpty)
-                Padding(
-                  padding: EdgeInsets.only(right: 16.w),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton.icon(
-                      style: TextButton.styleFrom(
-                        foregroundColor: AppColors.primary,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 12.w,
-                          vertical: 4.h,
-                        ),
-                      ),
-                      onPressed: _clearFilters,
-                      icon: Icon(Icons.clear, size: 18.sp),
-                      label: Text(
-                        'Clear Filter',
-                        style: TextStyle(fontSize: 14.sp),
-                      ),
+          body: ValueListenableBuilder(
+            valueListenable: productAddNotifier,
+            builder: (context, productList, _) {
+              if (productList.isEmpty) {
+                // No products in screen
+                return const EmptyPlaceholder(
+                  imagePath: 'assets/images/empty_product.png',
+                  message: 'No Product added yet !',
+                );
+              }
+
+              // Products available on screen
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Search Bar
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
+                    child: CustomSearchBar(
+                      controller: _searchController,
+                      onChanged: _filterProducts,
+                      focusNode: _searchFocusNode,
+                      onFilterTap: () {
+                        filterProductBottomSheet(context);
+                      },
+                      showFilterIcon: true,
                     ),
                   ),
-                ),
-              // Products View
-              Expanded(
-                child: ValueListenableBuilder<bool>(
-                  valueListenable: viewToggleNotifier,
-                  builder: (context, isGridView, _) {
-                    return ValueListenableBuilder<bool>(
-                      valueListenable: productShimmerNotifier,
-                      builder: (context, isLoading, _) {
-                        return isLoading
-                            ? ShimmerProductGrid(isGridView: isGridView)
-                            : ProductViewSwitcher(
-                              viewToggleNotifier: viewToggleNotifier,
-                            );
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
+
+                  // Clear Filter Button
+                  if (_selectedCategories.isNotEmpty ||
+                      _selectedBrands.isNotEmpty)
+                    Padding(
+                      padding: EdgeInsets.only(right: 16.w),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton.icon(
+                          style: TextButton.styleFrom(
+                            foregroundColor: AppColors.primary,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12.w,
+                              vertical: 4.h,
+                            ),
+                          ),
+                          onPressed: _clearFilters,
+                          icon: Icon(Icons.clear, size: 18.sp),
+                          label: Text(
+                            'Clear Filter',
+                            style: TextStyle(fontSize: 14.sp),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                  // Product View
+                  Expanded(
+                    child: ProductViewSwitcher(
+                      viewToggleNotifier: viewToggleNotifier,
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),
+    );
+  }
+
+  Future<dynamic> filterProductBottomSheet(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
+      builder:
+          (_) => ProductFilterSheet(
+            selectedCategories: _selectedCategories,
+            selectedBrands: _selectedBrands,
+            onClear: _clearFilters,
+            onApply: () {
+              _filterProducts(_searchController.text);
+            },
+            onCategorySelected: (selected) {
+              setState(() => _selectedCategories = selected);
+            },
+            onBrandSelected: (selected) {
+              setState(() => _selectedBrands = selected);
+            },
+          ),
     );
   }
 }
