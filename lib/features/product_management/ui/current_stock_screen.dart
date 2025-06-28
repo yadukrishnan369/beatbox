@@ -126,7 +126,7 @@ class _CurrentStockScreenState extends State<CurrentStockScreen> {
                                         imagePath:
                                             'assets/images/empty_product.png',
                                         message:
-                                            'No current stock products available',
+                                            'No products available in stock now.\nPlease add items to see them here !',
                                       );
                                 }
 

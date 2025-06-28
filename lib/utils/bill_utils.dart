@@ -45,7 +45,11 @@ class BillUtils {
     }
 
     allBills.sort((a, b) => b.billingDate.compareTo(a.billingDate));
+
     filteredBillNotifier.value = [...allBills];
+
+    final boxAll = await Hive.openBox<SalesModel>('salesBox');
+    allBillNotifier.value = [...boxAll.values];
 
     await Future.delayed(const Duration(milliseconds: 300));
     isBillLoadingNotifier.value = false;
@@ -56,6 +60,8 @@ class BillUtils {
     final sortedList =
         box.values.toList()
           ..sort((a, b) => b.billingDate.compareTo(a.billingDate));
+
     filteredBillNotifier.value = [...sortedList];
+    allBillNotifier.value = [...box.values];
   }
 }

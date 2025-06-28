@@ -160,7 +160,8 @@ class _StockEntryScreenState extends State<StockEntryScreen> {
                             if (allProducts.isEmpty) {
                               return const EmptyPlaceholder(
                                 imagePath: 'assets/images/empty_product.png',
-                                message: 'No stock entries found',
+                                message:
+                                    'No stock entries found.\nAdd products to track your stock entries here !',
                               );
                             }
 

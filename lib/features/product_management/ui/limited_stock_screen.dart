@@ -129,7 +129,7 @@ class _LimitedStockScreenState extends State<LimitedStockScreen> {
                                         imagePath:
                                             'assets/images/empty_product.png',
                                         message:
-                                            'No limited stock products available',
+                                            'All products have sufficient stock.\nNo items are currently in limited stock !',
                                       );
                                 }
 

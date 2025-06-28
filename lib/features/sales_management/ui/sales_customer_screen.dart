@@ -141,7 +141,8 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
                         if (allSalesNotifier.value.isEmpty) {
                           return const EmptyPlaceholder(
                             imagePath: 'assets/images/empty_product.png',
-                            message: "Start selling your first item!",
+                            message:
+                                "No sales have been recorded yet.\nStart selling to see your sales history here !",
                           );
                         }
                         // Loading shimmer
