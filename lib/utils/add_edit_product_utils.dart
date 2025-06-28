@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:beatbox/utils/new_arrival_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/product_management/model/product_model.dart';
@@ -113,6 +114,7 @@ class AddEditProductUtils {
     await showLoadingDialog(context, message: "Updating...", showSucess: true);
     isProductReloadNeeded.value = true;
     await ProductUtils.loadProducts();
+    NewArrivalUtils.loadNewArrivalProducts();
     showSuccessMessage(context, 'Product updated successfully');
     if (context.mounted) Navigator.pop(context);
   }
@@ -125,6 +127,7 @@ class AddEditProductUtils {
     await showLoadingDialog(context, message: "Adding...", showSucess: true);
     isProductReloadNeeded.value = true;
     await ProductUtils.loadProducts();
+    NewArrivalUtils.loadNewArrivalProducts();
     showSuccessMessage(context, 'Product added successfully');
     if (context.mounted) Navigator.pop(context);
   }

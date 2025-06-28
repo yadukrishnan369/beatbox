@@ -9,13 +9,13 @@ import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:beatbox/core/notifiers/product_add_notifier.dart';
 
 class ProductUtils {
-  // get all prouducts functon
+  // get all products function
   static Future<void> loadProducts({bool showShimmer = true}) async {
     if (showShimmer) productShimmerNotifier.value = true;
 
     final box = await Hive.openBox<ProductModel>('productBox');
     final allProducts =
-        box.values.toList()
+        box.values.where((product) => product.isAvailableForSale).toList()
           ..sort((a, b) => b.createdDate.compareTo(a.createdDate));
 
     productAddNotifier.value = allProducts;
@@ -25,7 +25,7 @@ class ProductUtils {
     productShimmerNotifier.value = false;
   }
 
-  //filter by name and categories and brands of product screen
+  // filter by name and categories and brands of product screen
   static void filterProducts(
     String query, {
     List<String>? selectedCategories,
@@ -37,7 +37,7 @@ class ProductUtils {
 
     final box = Hive.box<ProductModel>('productBox');
     final allProducts =
-        box.values.toList()
+        box.values.where((product) => product.isAvailableForSale).toList()
           ..sort((a, b) => b.createdDate.compareTo(a.createdDate));
 
     final filtered =
@@ -66,7 +66,7 @@ class ProductUtils {
     productShimmerNotifier.value = false;
   }
 
-  //filter by name and dates range of stock entry screen
+  // filter by name and date range of stock entry screen
   static void filterProductsByNameAndDate({
     required String query,
     DateTime? startDate,
@@ -102,7 +102,7 @@ class ProductUtils {
     filteredProductNotifier.value = filtered;
   }
 
-  //edit and delete product functions
+  // edit and delete product functions
   static void editProduct(BuildContext context, ProductModel product) {
     Navigator.push(
       context,
@@ -170,7 +170,7 @@ class ProductUtils {
     filterProducts(currentQuery);
   }
 
-  //product quanity adjustment functions
+  // product quantity adjustment functions
   static int incrementQuantity({
     required int currentQuantity,
     required int availableQuantity,

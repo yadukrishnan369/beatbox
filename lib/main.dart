@@ -51,6 +51,10 @@ void main() async {
   Hive.registerAdapter(CartItemModelAdapter());
   Hive.registerAdapter(SalesModelAdapter());
 
+  // await Hive.deleteBoxFromDisk('productBox');
+  // await Hive.deleteBoxFromDisk('salesBox');
+  // await Hive.deleteBoxFromDisk('cartBox');
+
   // initialize hive boxes
   await CategoryController.initBox();
   await BrandController.initBox();

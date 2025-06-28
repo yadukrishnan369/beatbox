@@ -45,6 +45,9 @@ class ProductModel extends HiveObject {
   @HiveField(13)
   final int? initialQuantity;
 
+  @HiveField(14)
+  bool isAvailableForSale;
+
   ProductModel({
     required this.id,
     required this.productName,
@@ -60,5 +63,6 @@ class ProductModel extends HiveObject {
     this.image2,
     this.image3,
     required this.createdDate,
+    this.isAvailableForSale = true,
   });
 }

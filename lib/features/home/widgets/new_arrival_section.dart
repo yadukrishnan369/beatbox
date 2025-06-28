@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:beatbox/core/app_colors.dart';
+import 'package:beatbox/utils/new_arrival_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:beatbox/core/notifiers/product_add_notifier.dart';
 import 'package:beatbox/core/notifiers/new_arrival_notifier.dart';
 import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:beatbox/routes/app_routes.dart';
@@ -26,7 +26,7 @@ class _NewArrivalSectionState extends State<NewArrivalSection> {
   void initState() {
     super.initState();
     _pageController = PageController(viewportFraction: 0.90);
-
+    NewArrivalUtils.loadNewArrivalProducts();
     if (isFirstTimeNewArrival.value) {
       _isShimmering = true;
       Future.delayed(const Duration(seconds: 2), () {
@@ -74,20 +74,12 @@ class _NewArrivalSectionState extends State<NewArrivalSection> {
       return const ShimmerProductBanner();
     }
 
-    return ValueListenableBuilder(
-      valueListenable: productAddNotifier,
+    return ValueListenableBuilder<List<ProductModel>>(
+      valueListenable: newArrivalNotifier,
       builder: (context, productList, _) {
-        final latestProducts =
-            productList
-                .where((e) => e.image1 != null && e.image1!.trim().isNotEmpty)
-                .toList()
-              ..sort((a, b) => b.createdDate.compareTo(a.createdDate));
+        _startAutoScroll(productList);
 
-        final top3Products = latestProducts.take(3).toList();
-
-        _startAutoScroll(top3Products);
-
-        if (top3Products.isEmpty) {
+        if (productList.isEmpty) {
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 25.w, vertical: 16.h),
             child: Column(
@@ -145,9 +137,9 @@ class _NewArrivalSectionState extends State<NewArrivalSection> {
               height: 150.h,
               child: PageView.builder(
                 controller: _pageController,
-                itemCount: top3Products.length,
+                itemCount: productList.length,
                 itemBuilder: (context, index) {
-                  final product = top3Products[index];
+                  final product = productList[index];
                   return GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(
