@@ -101,29 +101,26 @@ class _CurrentStockScreenState extends State<CurrentStockScreen> {
                               builder: (_, productList, __) {
                                 if (productList.isEmpty) {
                                   return _isSearching
-                                      ? Padding(
-                                        padding: EdgeInsets.all(24.w),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.search_off_rounded,
-                                              size: 60.sp,
+                                      ? Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.search_off_rounded,
+                                            size: 60.sp,
+                                            color: AppColors.primary,
+                                          ),
+                                          SizedBox(height: 16.h),
+                                          Text(
+                                            "No matching product found",
+                                            style: TextStyle(
+                                              fontSize: 18.sp,
+                                              fontWeight: FontWeight.w600,
                                               color: AppColors.primary,
                                             ),
-                                            SizedBox(height: 16.h),
-                                            Text(
-                                              "No matching product found",
-                                              style: TextStyle(
-                                                fontSize: 18.sp,
-                                                fontWeight: FontWeight.w600,
-                                                color: AppColors.primary,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ],
-                                        ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
                                       )
                                       : const EmptyPlaceholder(
                                         imagePath:

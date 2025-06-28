@@ -25,13 +25,13 @@ class SalesUtils {
     isSalesLoadingNotifier.value = true;
 
     final box = await Hive.openBox<SalesModel>('salesBox');
-    List<SalesModel> allSales = box.values.toList();
+    List<SalesModel> filtered = box.values.toList();
 
-    // Filter by name or invoice
+    // Filter by search
     if (query.trim().isNotEmpty) {
       final lowerQuery = query.trim().toLowerCase();
-      allSales =
-          allSales.where((sale) {
+      filtered =
+          filtered.where((sale) {
             return sale.customerName.toLowerCase().contains(lowerQuery) ||
                 sale.invoiceNumber.toLowerCase().contains(lowerQuery);
           }).toList();
@@ -39,8 +39,8 @@ class SalesUtils {
 
     // Filter by date
     if (startDate != null && endDate != null) {
-      allSales =
-          allSales.where((sale) {
+      filtered =
+          filtered.where((sale) {
             final billingDate = sale.billingDate;
             return billingDate.isAfter(
                   startDate.subtract(const Duration(days: 1)),
@@ -49,14 +49,17 @@ class SalesUtils {
           }).toList();
     }
 
-    allSales.sort((a, b) => b.billingDate.compareTo(a.billingDate));
-    filteredSalesNotifier.value = [...allSales];
+    // Sort filtered
+    filtered.sort((a, b) => b.billingDate.compareTo(a.billingDate));
+
+    //  Update only filtered list
+    filteredSalesNotifier.value = [...filtered];
 
     await Future.delayed(const Duration(milliseconds: 300));
     isSalesLoadingNotifier.value = false;
   }
 
-  /// Calculate today's total sales and profit
+  /// Get today's sales and profit
   static Future<Map<String, double>> getTodaySalesAndProfit() async {
     final box = await Hive.openBox<SalesModel>('salesBox');
     final today = DateTime.now();
@@ -92,6 +95,8 @@ class SalesUtils {
     final List<SalesModel> allSales =
         box.values.toList()
           ..sort((a, b) => b.billingDate.compareTo(a.billingDate));
+
+    allSalesNotifier.value = [...allSales];
     filteredSalesNotifier.value = [...allSales];
   }
 }

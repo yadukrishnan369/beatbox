@@ -6,6 +6,7 @@ import 'package:beatbox/routes/app_routes.dart';
 import 'package:beatbox/utils/sales_utils.dart';
 import 'package:beatbox/widgets/custom_search_bar.dart';
 import 'package:beatbox/widgets/date_range_info_widget.dart';
+import 'package:beatbox/widgets/empty_placeholder.dart';
 import 'package:beatbox/widgets/shimmer_widgets/shimmer_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -92,61 +93,107 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
               ),
             ),
           ),
-          body: Padding(
-            padding: EdgeInsets.all(16.w),
-            child: Column(
-              children: [
-                CustomSearchBar(
-                  controller: _searchController,
-                  focusNode: _focusNode,
-                  showFilterIcon: true,
-                  hintText: 'Search by customer or invoice ...',
-                  onChanged: (_) => _filterSales(),
-                  onFilterTap: _pickDateRange,
+          body: Column(
+            children: [
+              ValueListenableBuilder<List<SalesModel>>(
+                valueListenable: allSalesNotifier,
+                builder: (_, allSalesList, __) {
+                  if (allSalesList.isEmpty) {
+                    return const SizedBox();
+                  }
+                  return Padding(
+                    padding: EdgeInsets.all(16.w),
+                    child: CustomSearchBar(
+                      controller: _searchController,
+                      focusNode: _focusNode,
+                      showFilterIcon: true,
+                      hintText: 'Search by customer or invoice ...',
+                      onChanged: (_) => _filterSales(),
+                      onFilterTap: _pickDateRange,
+                    ),
+                  );
+                },
+              ),
+              if (_startDate != null || _endDate != null)
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: DateRangeInfoWidget(
+                    startDate: _startDate,
+                    endDate: _endDate,
+                    onClear: () async {
+                      setState(() {
+                        _startDate = null;
+                        _endDate = null;
+                      });
+                      await _filterSales();
+                    },
+                  ),
                 ),
-                SizedBox(height: 10.h),
-                // date range filter info
-                DateRangeInfoWidget(
-                  startDate: _startDate,
-                  endDate: _endDate,
-                  onClear: () async {
-                    setState(() {
-                      _startDate = null;
-                      _endDate = null;
-                    });
-                    await _filterSales();
-                  },
-                ),
-                SizedBox(height: 10.h),
-                Expanded(
-                  child: ValueListenableBuilder<bool>(
-                    valueListenable: isSalesLoadingNotifier,
-                    builder: (context, isLoading, _) {
-                      return ValueListenableBuilder<List<SalesModel>>(
-                        valueListenable: filteredSalesNotifier,
-                        builder: (context, salesList, _) {
-                          if (isLoading) {
-                            return ListView.builder(
-                              itemCount: 6,
-                              itemBuilder:
-                                  (context, index) => const ShimmerListTile(),
-                            );
-                          }
-
-                          if (salesList.isEmpty) {
-                            return Center(
-                              child: Text(
-                                'No sales found',
-                                style: TextStyle(fontSize: 14.sp),
-                              ),
-                            );
-                          }
-
+              SizedBox(height: 10.h),
+              Expanded(
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: isSalesLoadingNotifier,
+                  builder: (context, isLoading, _) {
+                    return ValueListenableBuilder<List<SalesModel>>(
+                      valueListenable: filteredSalesNotifier,
+                      builder: (context, salesList, _) {
+                        // No sales in DB
+                        if (allSalesNotifier.value.isEmpty) {
+                          return const EmptyPlaceholder(
+                            imagePath: 'assets/images/empty_product.png',
+                            message: "Start selling your first item!",
+                          );
+                        }
+                        // Loading shimmer
+                        if (isLoading) {
                           return ListView.builder(
-                            itemCount: salesList.length,
-                            itemBuilder: (context, index) {
-                              final sale = salesList[index];
-                              return GestureDetector(
+                            itemCount: 6,
+                            itemBuilder:
+                                (_, index) => const Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 16.0,
+                                    vertical: 6,
+                                  ),
+                                  child: ShimmerListTile(),
+                                ),
+                          );
+                        }
+                        // Filter/search found no results
+                        if (salesList.isEmpty) {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.search_off_rounded,
+                                  size: 60.sp,
+                                  color: AppColors.primary,
+                                ),
+                                SizedBox(height: 16.h),
+                                Text(
+                                  "No matching sale found",
+                                  style: TextStyle(
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.primary,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                        // Display sale list
+                        return ListView.builder(
+                          itemCount: salesList.length,
+                          itemBuilder: (_, index) {
+                            final sale = salesList[index];
+                            return Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16.w,
+                                vertical: 6.h,
+                              ),
+                              child: GestureDetector(
                                 onTap: () {
                                   Navigator.pushNamed(
                                     context,
@@ -154,18 +201,17 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
                                     arguments: sale,
                                   );
                                 },
-                                //list of sale and customer history
                                 child: SoldItemListTile(sale: sale),
-                              );
-                            },
-                          );
-                        },
-                      );
-                    },
-                  ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

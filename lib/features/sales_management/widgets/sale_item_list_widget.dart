@@ -57,7 +57,7 @@ class SaleItemListWidget extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  '(GST & Discount)',
+                  '(included GST & Discount)',
                   style: TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 10.sp,

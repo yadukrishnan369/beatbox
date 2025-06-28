@@ -120,7 +120,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
             builder: (context, productList, _) {
               if (productList.isEmpty) {
                 // No products in screen
-                return const EmptyPlaceholder(
+                return EmptyPlaceholder(
                   imagePath: 'assets/images/empty_product.png',
                   message: 'No Product added yet !',
                 );
