@@ -6,14 +6,28 @@ class StockEntryUtils {
   /// Show shimmer and load all products
   static Future<void> loadAllProducts() async {
     isStockEntryLoadingNotifier.value = true;
-    await _fetchSortedProductsAndUpdateNotifier();
+
+    final box = await Hive.openBox<ProductModel>('productBox');
+    final all =
+        box.values.toList()
+          ..sort((a, b) => b.createdDate.compareTo(a.createdDate));
+
+    allStockEntryNotifier.value = [...all]; // full db list
+    stockEntryNotifier.value = [...all]; // filtered/shown list
+
     await Future.delayed(const Duration(milliseconds: 300));
     isStockEntryLoadingNotifier.value = false;
   }
 
   /// Load all products without shimmer
   static Future<void> loadProductsWithoutShimmer() async {
-    await _fetchSortedProductsAndUpdateNotifier();
+    final box = await Hive.openBox<ProductModel>('productBox');
+    final all =
+        box.values.toList()
+          ..sort((a, b) => b.createdDate.compareTo(a.createdDate));
+
+    allStockEntryNotifier.value = [...all];
+    stockEntryNotifier.value = [...all];
   }
 
   /// Filter based on name/code and date
@@ -52,13 +66,5 @@ class StockEntryUtils {
 
     await Future.delayed(const Duration(milliseconds: 300));
     isStockEntryLoadingNotifier.value = false;
-  }
-
-  static Future<void> _fetchSortedProductsAndUpdateNotifier() async {
-    final box = await Hive.openBox<ProductModel>('productBox');
-    final all =
-        box.values.toList()
-          ..sort((a, b) => b.createdDate.compareTo(a.createdDate));
-    stockEntryNotifier.value = [...all];
   }
 }

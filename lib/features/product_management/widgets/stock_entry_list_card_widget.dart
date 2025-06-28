@@ -12,8 +12,8 @@ class StockEntryListCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 12.h),
-      padding: EdgeInsets.all(16.r),
+      margin: EdgeInsets.only(bottom: 14.h),
+      padding: EdgeInsets.all(10.r),
       decoration: BoxDecoration(
         color: AppColors.contColor,
         borderRadius: BorderRadius.circular(12.r),

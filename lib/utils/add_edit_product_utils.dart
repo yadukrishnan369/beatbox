@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:beatbox/core/notifiers/stock_entry_notifier.dart';
 import 'package:beatbox/utils/new_arrival_utils.dart';
 import 'package:beatbox/utils/stock_entry_utils.dart';
 import 'package:flutter/material.dart';
@@ -40,8 +41,9 @@ class ProductValidators {
     final sales = double.tryParse(value);
     final purchase = double.tryParse(purchasePriceText);
     if (sales == null) return 'Invalid price';
-    if (purchase != null && sales <= purchase)
+    if (purchase != null && sales <= purchase) {
       return 'Should be > purchase price';
+    }
     return null;
   }
 
@@ -116,6 +118,7 @@ class AddEditProductUtils {
     isProductReloadNeeded.value = true;
     await ProductUtils.loadProducts();
     await NewArrivalUtils.loadNewArrivalProducts();
+    isStockEntryReloadNeeded.value = true;
     await StockEntryUtils.loadAllProducts();
     showSuccessMessage(context, 'Product updated successfully');
     if (context.mounted) Navigator.pop(context);
@@ -130,6 +133,7 @@ class AddEditProductUtils {
     isProductReloadNeeded.value = true;
     await ProductUtils.loadProducts();
     await NewArrivalUtils.loadNewArrivalProducts();
+    isStockEntryReloadNeeded.value = true;
     await StockEntryUtils.loadAllProducts();
     showSuccessMessage(context, 'Product added successfully');
     if (context.mounted) Navigator.pop(context);
