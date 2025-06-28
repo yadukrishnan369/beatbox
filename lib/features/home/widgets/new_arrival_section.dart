@@ -108,7 +108,7 @@ class _NewArrivalSectionState extends State<NewArrivalSection> {
                       ),
                       SizedBox(height: 8.h),
                       Text(
-                        'No New Products Added Yet',
+                        'No New Products Added Yet !',
                         style: TextStyle(
                           fontSize: 16.sp,
                           color: AppColors.primary,

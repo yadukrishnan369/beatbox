@@ -102,7 +102,8 @@ class _CartScreenState extends State<CartScreen> {
                     )
                     : EmptyPlaceholder(
                       imagePath: 'assets/images/empty_cart.webp',
-                      message: 'Your cart is empty!',
+                      message:
+                          'Your cart is empty.\nAdd items to start billing !',
                       imageSize: 300.w,
                       actionText: 'Explore Product',
                       actionIcon: Icons.shopping_cart,

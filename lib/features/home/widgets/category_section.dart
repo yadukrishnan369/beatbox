@@ -99,7 +99,7 @@ class _CategorySectionState extends State<CategorySection> {
                     ),
                     SizedBox(height: 12.h),
                     Text(
-                      'No categories added yet!',
+                      'No categories added yet !',
                       style: TextStyle(
                         fontSize: 16.sp,
                         color: AppColors.primary,

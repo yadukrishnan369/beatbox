@@ -1,4 +1,5 @@
 import 'package:beatbox/features/product_management/model/product_model.dart';
+import 'package:beatbox/routes/app_routes.dart';
 import 'package:beatbox/utils/current_stock_utils.dart';
 import 'package:beatbox/widgets/custom_search_bar.dart';
 import 'package:flutter/material.dart';
@@ -122,11 +123,18 @@ class _CurrentStockScreenState extends State<CurrentStockScreen> {
                                           ),
                                         ],
                                       )
-                                      : const EmptyPlaceholder(
+                                      : EmptyPlaceholder(
                                         imagePath:
                                             'assets/images/empty_product.png',
                                         message:
                                             'No products available in stock now.\nPlease add items to see them here !',
+                                        onActionTap:
+                                            () => Navigator.pushNamed(
+                                              context,
+                                              AppRoutes.addProduct,
+                                            ),
+                                        actionIcon: Icons.library_add,
+                                        actionText: 'add product',
                                       );
                                 }
 

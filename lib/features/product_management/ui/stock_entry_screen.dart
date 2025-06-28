@@ -158,10 +158,17 @@ class _StockEntryScreenState extends State<StockEntryScreen> {
                           valueListenable: allStockEntryNotifier,
                           builder: (context, allProducts, _) {
                             if (allProducts.isEmpty) {
-                              return const EmptyPlaceholder(
+                              return EmptyPlaceholder(
                                 imagePath: 'assets/images/empty_product.png',
                                 message:
                                     'No stock entries found.\nAdd products to track your stock entries here !',
+                                onActionTap:
+                                    () => Navigator.pushNamed(
+                                      context,
+                                      AppRoutes.addProduct,
+                                    ),
+                                actionIcon: Icons.library_add,
+                                actionText: 'add product',
                               );
                             }
 

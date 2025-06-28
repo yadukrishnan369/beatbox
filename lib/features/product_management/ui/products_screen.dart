@@ -2,6 +2,7 @@ import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/core/notifiers/product_add_notifier.dart';
 import 'package:beatbox/features/product_management/widgets/product_filter_sheet.dart';
 import 'package:beatbox/features/product_management/widgets/product_view_switcher.dart';
+import 'package:beatbox/routes/app_routes.dart';
 import 'package:beatbox/utils/product_utils.dart';
 import 'package:beatbox/widgets/custom_search_bar.dart';
 import 'package:beatbox/widgets/empty_placeholder.dart';
@@ -122,7 +123,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 // No products in screen
                 return EmptyPlaceholder(
                   imagePath: 'assets/images/empty_product.png',
-                  message: 'No Product added yet !',
+                  message:
+                      'No products added yet.\nAdd products to start selling !',
+                  onActionTap:
+                      () => Navigator.pushNamed(context, AppRoutes.addProduct),
+                  actionIcon: Icons.library_add,
+                  actionText: 'add product',
                 );
               }
 

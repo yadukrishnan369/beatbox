@@ -139,10 +139,17 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
                       builder: (context, salesList, _) {
                         // No sales in DB
                         if (allSalesNotifier.value.isEmpty) {
-                          return const EmptyPlaceholder(
+                          return EmptyPlaceholder(
                             imagePath: 'assets/images/empty_product.png',
                             message:
                                 "No sales have been recorded yet.\nStart selling to see your sales history here !",
+                            onActionTap:
+                                () => Navigator.pushNamed(
+                                  context,
+                                  AppRoutes.products,
+                                ),
+                            actionIcon: Icons.shopping_bag,
+                            actionText: 'Explore products',
                           );
                         }
                         // Loading shimmer
