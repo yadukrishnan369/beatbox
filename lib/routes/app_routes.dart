@@ -11,7 +11,7 @@ import 'package:beatbox/features/product_management/ui/product_details_screen.da
 import 'package:beatbox/features/product_management/ui/products_screen.dart';
 import 'package:beatbox/features/product_management/ui/stock_entry_details_screen.dart';
 import 'package:beatbox/features/product_management/ui/stock_entry_screen.dart';
-import 'package:beatbox/features/product_management/ui/update_delete_product_screen.dart';
+import 'package:beatbox/features/product_management/ui/edit_delete_product_screen.dart';
 import 'package:beatbox/features/app_settings_management/ui/app_settings_screen.dart';
 import 'package:beatbox/features/sales_management/ui/billing_screen.dart';
 import 'package:beatbox/features/sales_management/ui/cart_screen.dart';

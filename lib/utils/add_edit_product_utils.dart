@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:beatbox/core/notifiers/product_edit_delete_notifier.dart';
 import 'package:beatbox/core/notifiers/stock_entry_notifier.dart';
 import 'package:beatbox/utils/new_arrival_utils.dart';
 import 'package:beatbox/utils/stock_entry_utils.dart';
@@ -120,6 +121,7 @@ class AddEditProductUtils {
     await NewArrivalUtils.loadNewArrivalProducts();
     isStockEntryReloadNeeded.value = true;
     await StockEntryUtils.loadAllProducts();
+    isEditProductReloadNeeded.value = true;
     showSuccessMessage(context, 'Product updated successfully');
     if (context.mounted) Navigator.pop(context);
   }
@@ -135,6 +137,7 @@ class AddEditProductUtils {
     await NewArrivalUtils.loadNewArrivalProducts();
     isStockEntryReloadNeeded.value = true;
     await StockEntryUtils.loadAllProducts();
+    isEditProductReloadNeeded.value = true;
     showSuccessMessage(context, 'Product added successfully');
     if (context.mounted) Navigator.pop(context);
   }

@@ -29,7 +29,7 @@ import 'package:beatbox/features/product_management/ui/limited_stock_screen.dart
 import 'package:beatbox/features/product_management/ui/manage_stock_screen.dart';
 import 'package:beatbox/features/product_management/ui/product_details_screen.dart';
 import 'package:beatbox/features/product_management/ui/products_screen.dart';
-import 'package:beatbox/features/product_management/ui/update_delete_product_screen.dart';
+import 'package:beatbox/features/product_management/ui/edit_delete_product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
