@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:beatbox/utils/brand_category_validators_utils.dart';
 import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,6 +22,7 @@ class EditCategoryDialog extends StatefulWidget {
 class _EditCategoryDialogState extends State<EditCategoryDialog> {
   late TextEditingController nameController;
   late String updatedImagePath;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -34,37 +36,46 @@ class _EditCategoryDialogState extends State<EditCategoryDialog> {
     return AlertDialog(
       backgroundColor: AppColors.white,
       title: Text('Edit Category', style: TextStyle(color: AppColors.primary)),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: nameController,
-            decoration: InputDecoration(
-              labelText: 'Category Name',
-              labelStyle: TextStyle(color: AppColors.primary),
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              controller: nameController,
+              decoration: InputDecoration(
+                labelText: 'Category Name',
+                labelStyle: TextStyle(color: AppColors.primary),
+              ),
+              validator:
+                  (value) => NameValidators.validateCategoryName(
+                    value,
+                    isEdit: true,
+                    oldName: widget.item.categoryName,
+                  ),
             ),
-          ),
-          SizedBox(height: 16.h),
-          GestureDetector(
-            onTap: () async {
-              final picked = await ImagePicker().pickImage(
-                source: ImageSource.gallery,
-              );
-              if (picked != null) {
-                setState(() => updatedImagePath = picked.path);
-              }
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10.r),
-              child: Image.file(
-                File(updatedImagePath),
-                width: 120.w,
-                height: 120.h,
-                fit: BoxFit.cover,
+            SizedBox(height: 16.h),
+            GestureDetector(
+              onTap: () async {
+                final picked = await ImagePicker().pickImage(
+                  source: ImageSource.gallery,
+                );
+                if (picked != null) {
+                  setState(() => updatedImagePath = picked.path);
+                }
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.r),
+                child: Image.file(
+                  File(updatedImagePath),
+                  width: 120.w,
+                  height: 120.h,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       actions: [
         TextButton(
@@ -73,7 +84,9 @@ class _EditCategoryDialogState extends State<EditCategoryDialog> {
         ),
         TextButton(
           onPressed: () async {
-            widget.item.categoryName = nameController.text;
+            if (!_formKey.currentState!.validate()) return;
+
+            widget.item.categoryName = nameController.text.trim();
             widget.item.categoryImagePath = updatedImagePath;
             await showLoadingDialog(
               context,
@@ -103,6 +116,7 @@ class EditBrandDialog extends StatefulWidget {
 class _EditBrandDialogState extends State<EditBrandDialog> {
   late TextEditingController nameController;
   late String updatedImagePath;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -116,37 +130,46 @@ class _EditBrandDialogState extends State<EditBrandDialog> {
     return AlertDialog(
       backgroundColor: AppColors.white,
       title: Text('Edit Brand', style: TextStyle(color: AppColors.primary)),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: nameController,
-            decoration: InputDecoration(
-              labelText: 'Brand Name',
-              labelStyle: TextStyle(color: AppColors.primary),
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              controller: nameController,
+              decoration: InputDecoration(
+                labelText: 'Brand Name',
+                labelStyle: TextStyle(color: AppColors.primary),
+              ),
+              validator:
+                  (value) => NameValidators.validateBrandName(
+                    value,
+                    isEdit: true,
+                    oldName: widget.item.brandName,
+                  ),
             ),
-          ),
-          SizedBox(height: 16.h),
-          GestureDetector(
-            onTap: () async {
-              final picked = await ImagePicker().pickImage(
-                source: ImageSource.gallery,
-              );
-              if (picked != null) {
-                setState(() => updatedImagePath = picked.path);
-              }
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10.r),
-              child: Image.file(
-                File(updatedImagePath),
-                width: 120.w,
-                height: 120.h,
-                fit: BoxFit.cover,
+            SizedBox(height: 16.h),
+            GestureDetector(
+              onTap: () async {
+                final picked = await ImagePicker().pickImage(
+                  source: ImageSource.gallery,
+                );
+                if (picked != null) {
+                  setState(() => updatedImagePath = picked.path);
+                }
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.r),
+                child: Image.file(
+                  File(updatedImagePath),
+                  width: 120.w,
+                  height: 120.h,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       actions: [
         TextButton(
@@ -155,7 +178,9 @@ class _EditBrandDialogState extends State<EditBrandDialog> {
         ),
         TextButton(
           onPressed: () async {
-            widget.item.brandName = nameController.text;
+            if (!_formKey.currentState!.validate()) return;
+
+            widget.item.brandName = nameController.text.trim();
             widget.item.brandImagePath = updatedImagePath;
             await showLoadingDialog(
               context,

@@ -1,7 +1,9 @@
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/product_management/controller/category_controller.dart';
 import 'package:beatbox/features/product_management/model/category_model.dart';
+import 'package:beatbox/utils/brand_category_validators_utils.dart';
 import 'package:beatbox/utils/image_picker_utils.dart';
+import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -53,6 +55,7 @@ class _AddCategoryModalState extends State<AddCategoryModal> {
     );
 
     CategoryController.addCategory(newCategory);
+    await showLoadingDialog(context, message: "saving...", showSucess: true);
     widget.onSubmit?.call(_categoryController.text, imageToSave);
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -114,16 +117,8 @@ class _AddCategoryModalState extends State<AddCategoryModal> {
                       ),
                     ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Enter category name';
-                    }
-                    final isValid = RegExp(r'[a-zA-Z]').hasMatch(value);
-                    if (!isValid) {
-                      return 'Invalid category name';
-                    }
-                    return null;
-                  },
+                  validator:
+                      (value) => NameValidators.validateCategoryName(value),
                 ),
                 SizedBox(height: 20.h),
 

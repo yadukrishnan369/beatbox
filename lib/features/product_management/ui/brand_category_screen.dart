@@ -53,7 +53,7 @@ class _BrandAndCategoryScreenState extends State<BrandAndCategoryScreen>
               controller: _tabController,
               indicatorColor: AppColors.primary,
               labelColor: AppColors.primary,
-              unselectedLabelColor: AppColors.primary,
+              unselectedLabelColor: AppColors.textDisabled,
               tabs: [
                 Tab(
                   icon: Icon(Icons.category, size: 24.sp),

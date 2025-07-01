@@ -12,9 +12,25 @@ import 'package:beatbox/utils/product_utils.dart';
 import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
 
 class ProductValidators {
-  static String? validateName(String? value) {
+  static String? validateName(
+    String? value, {
+    bool isEdit = false,
+    String? oldName,
+  }) {
     if (value == null || value.trim().isEmpty) return 'This field is required';
     if (!RegExp(r'[a-zA-Z]').hasMatch(value)) return 'Enter valid name';
+
+    final trimmedValue = value.trim().toLowerCase();
+
+    // if editing and the name not changed, skip duplicate check
+    if (isEdit && trimmedValue == oldName?.toLowerCase()) return null;
+
+    // Check for duplicates
+    final existing = ProductController.getAllProducts().any(
+      (product) => product.productName.trim().toLowerCase() == trimmedValue,
+    );
+
+    if (existing) return 'This product already exists in the store.';
     return null;
   }
 

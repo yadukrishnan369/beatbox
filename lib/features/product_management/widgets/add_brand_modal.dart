@@ -1,7 +1,9 @@
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/product_management/controller/brand_controller.dart';
 import 'package:beatbox/features/product_management/model/brand_model.dart';
+import 'package:beatbox/utils/brand_category_validators_utils.dart';
 import 'package:beatbox/utils/image_picker_utils.dart';
+import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -52,6 +54,7 @@ class _AddBrandModalState extends State<AddBrandModal> {
     );
 
     BrandController.addBrand(newBrand);
+    await showLoadingDialog(context, message: "saving...", showSucess: true);
     widget.onSubmit?.call(_brandController.text, imageToSave);
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -113,16 +116,7 @@ class _AddBrandModalState extends State<AddBrandModal> {
                       ),
                     ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Enter brand name';
-                    }
-                    final hasLetter = RegExp(r'[a-zA-Z]').hasMatch(value);
-                    if (!hasLetter) {
-                      return 'Invalid brand name';
-                    }
-                    return null;
-                  },
+                  validator: (value) => NameValidators.validateBrandName(value),
                 ),
                 SizedBox(height: 20.h),
 

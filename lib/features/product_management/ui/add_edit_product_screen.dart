@@ -38,6 +38,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final _descriptionController = TextEditingController();
   final _quantityController = TextEditingController();
 
+  late bool isEditing;
+
   @override
   void initState() {
     super.initState();
@@ -190,7 +192,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         label: 'Product Name',
                         hintText: 'Enter product name',
                         icon: Icons.shopping_bag_outlined,
-                        validator: ProductValidators.validateName,
+                        validator:
+                            (value) => ProductValidators.validateName(
+                              value,
+                              isEdit: widget.productToEdit != null,
+                              oldName: widget.productToEdit?.productName,
+                            ),
                       ),
                       ProductDropdownField(
                         label: 'Category',
