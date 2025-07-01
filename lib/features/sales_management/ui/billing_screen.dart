@@ -29,15 +29,19 @@ class _BillingScreenState extends State<BillingScreen> {
   double discount = 0.0;
   double grandTotal = 0.0;
   late String invoiceNumber;
+  late String orderNumber;
   late DateTime billingDate;
   final double gstRate = GSTUtils.getGSTPercentage() / 100;
 
   @override
   void initState() {
     super.initState();
-    invoiceNumber =
-        'INV-${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}';
     billingDate = DateTime.now();
+
+    invoiceNumber =
+        'INV-${billingDate.microsecondsSinceEpoch.toString().substring(7)}';
+    orderNumber =
+        'ORD-${(billingDate.millisecondsSinceEpoch % 100000).toString().padLeft(5, '0')}';
 
     discountController.addListener(() {
       discount = BillingUtils.calculateDiscount(
@@ -89,6 +93,7 @@ class _BillingScreenState extends State<BillingScreen> {
       phone: phone,
       email: email,
       invoiceNumber: invoiceNumber,
+      orderNumber: orderNumber,
       billingDate: billingDate,
       cartItems: cartItems,
       subtotal: subtotal,

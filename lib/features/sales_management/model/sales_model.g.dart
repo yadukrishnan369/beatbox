@@ -27,13 +27,14 @@ class SalesModelAdapter extends TypeAdapter<SalesModel> {
       gst: fields[7] as double,
       discount: fields[8] as double,
       grandTotal: fields[9] as double,
+      orderNumber: fields[10] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, SalesModel obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.customerName)
       ..writeByte(1)
@@ -53,7 +54,9 @@ class SalesModelAdapter extends TypeAdapter<SalesModel> {
       ..writeByte(8)
       ..write(obj.discount)
       ..writeByte(9)
-      ..write(obj.grandTotal);
+      ..write(obj.grandTotal)
+      ..writeByte(10)
+      ..write(obj.orderNumber);
   }
 
   @override

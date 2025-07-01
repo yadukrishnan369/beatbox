@@ -1,6 +1,6 @@
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/sales_management/widgets/sale_customer_detail_card_widget.dart';
-import 'package:beatbox/features/sales_management/widgets/sale_invoice_card_widget.dart';
+import 'package:beatbox/features/sales_management/widgets/sale_order_number_card_widget.dart';
 import 'package:beatbox/features/sales_management/widgets/sale_item_list_widget.dart';
 import 'package:beatbox/features/sales_management/widgets/sale_summary_card_widget.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +36,7 @@ class SalesAndCustomerDetailsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Invoice Card
-              InvoiceCardWidget(sale: sale),
+              OrderNumberCardWidget(sale: sale),
               SizedBox(height: 20.h),
               // Customer Details
               CustomerDetailCard(sale: sale),

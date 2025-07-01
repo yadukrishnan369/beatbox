@@ -71,6 +71,14 @@ class BillHeaderSection extends StatelessWidget {
             color: AppColors.textPrimary,
           ),
         ),
+        Text(
+          'Order no: ${bill.orderNumber}',
+          style: TextStyle(
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textPrimary,
+          ),
+        ),
         SizedBox(height: 10.h),
 
         // Customer Info

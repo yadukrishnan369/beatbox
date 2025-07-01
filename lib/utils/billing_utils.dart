@@ -105,6 +105,7 @@ class BillingUtils {
     required double gst,
     required double discount,
     required double grandTotal,
+    required String orderNumber,
   }) async {
     final sale = SalesModel(
       customerName: name,
@@ -117,6 +118,7 @@ class BillingUtils {
       gst: gst,
       discount: discount,
       grandTotal: grandTotal,
+      orderNumber: orderNumber,
     );
 
     try {

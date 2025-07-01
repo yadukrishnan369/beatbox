@@ -34,7 +34,7 @@ class SoldItemListTile extends StatelessWidget {
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  sale.invoiceNumber,
+                  sale.orderNumber,
                   style: TextStyle(
                     color: AppColors.textDisabled,
                     fontSize: 14.sp,

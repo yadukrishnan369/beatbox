@@ -24,7 +24,7 @@ class BillItemCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  ' Invoice Number : ${bill.invoiceNumber}',
+                  'Invoice Number : ${bill.invoiceNumber}',
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w600,

@@ -3,10 +3,10 @@ import 'package:beatbox/features/sales_management/model/sales_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class InvoiceCardWidget extends StatelessWidget {
+class OrderNumberCardWidget extends StatelessWidget {
   final SalesModel sale;
 
-  const InvoiceCardWidget({super.key, required this.sale});
+  const OrderNumberCardWidget({super.key, required this.sale});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class InvoiceCardWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Invoice Number',
+                  'Order Number',
                   style: TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 14.sp,
@@ -34,7 +34,7 @@ class InvoiceCardWidget extends StatelessWidget {
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  sale.invoiceNumber,
+                  sale.orderNumber,
                   style: TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 16.sp,

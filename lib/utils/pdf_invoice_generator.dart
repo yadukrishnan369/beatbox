@@ -53,6 +53,7 @@ Future<void> generateInvoicePdf(SalesModel bill) async {
               pw.Text(
                 'Date: ${bill.billingDate.day}-${bill.billingDate.month}-${bill.billingDate.year}',
               ),
+              pw.Text('Order No: ${bill.orderNumber}'),
               pw.SizedBox(height: 16),
 
               // Items Table

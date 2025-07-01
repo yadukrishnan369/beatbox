@@ -33,7 +33,10 @@ class SalesModel extends HiveObject {
   final double discount;
 
   @HiveField(9)
-  final double grandTotal;  
+  final double grandTotal;
+
+  @HiveField(10)
+  final String orderNumber;
 
   SalesModel({
     required this.customerName,
@@ -46,5 +49,6 @@ class SalesModel extends HiveObject {
     required this.gst,
     required this.discount,
     required this.grandTotal,
+    required this.orderNumber,
   });
 }
