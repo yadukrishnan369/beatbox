@@ -153,7 +153,7 @@ class ProductUtils {
     FocusNode searchFocusNode,
   ) {
     final isInCart = CartController.isProductInCart(product.id);
-    // showing prevent delete message
+
     if (isInCart) {
       showDialog(
         context: context,
@@ -161,7 +161,7 @@ class ProductUtils {
             (_) => AlertDialog(
               backgroundColor: AppColors.white,
               title: const Text(
-                'Cannot Proceed !',
+                'Cannot Proceed!',
                 style: TextStyle(color: AppColors.primary),
               ),
               content: const Text(
@@ -178,18 +178,18 @@ class ProductUtils {
       return;
     }
 
-    //  confirm delete dialog
+    //  First confirmation dialog
     showDialog(
       context: context,
       builder:
           (_) => AlertDialog(
             backgroundColor: AppColors.white,
-            title: Text(
-              'Delete Product',
+            title: const Text(
+              'Confirm Deletion',
               style: TextStyle(color: AppColors.primary),
             ),
             content: Text(
-              'Are you sure you want to delete ${product.productName}?',
+              'Are you sure you want to delete "${product.productName}"?',
             ),
             actions: [
               TextButton(
@@ -200,21 +200,64 @@ class ProductUtils {
                 ),
               ),
               TextButton(
-                onPressed: () async {
+                onPressed: () {
                   Navigator.pop(context);
-                  await showLoadingDialog(
-                    context,
-                    message: "Deleting...",
-                    showSucess: true,
+
+                  // Second confirmation dialog
+                  showDialog(
+                    context: context,
+                    builder:
+                        (_) => AlertDialog(
+                          backgroundColor: AppColors.white,
+                          title: const Text(
+                            'Final Confirmation',
+                            style: TextStyle(color: AppColors.primary),
+                          ),
+                          content: const Text(
+                            'Do you really want to delete this product permanently?',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text(
+                                'Back',
+                                style: TextStyle(color: AppColors.textPrimary),
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                Navigator.pop(context);
+
+                                await showLoadingDialog(
+                                  context,
+                                  message: "Deleting...",
+                                  showSucess: true,
+                                );
+
+                                await deleteProduct(
+                                  product,
+                                  searchController.text,
+                                );
+                                isProductReloadNeeded.value = true;
+                                await NewArrivalUtils.loadNewArrivalProducts();
+
+                                searchController.clear();
+                                searchFocusNode.unfocus();
+                                filterProducts('');
+                              },
+                              child: Text(
+                                'Delete',
+                                style: TextStyle(color: AppColors.error),
+                              ),
+                            ),
+                          ],
+                        ),
                   );
-                  await deleteProduct(product, searchController.text);
-                  isProductReloadNeeded.value = true;
-                  await NewArrivalUtils.loadNewArrivalProducts();
-                  searchController.clear();
-                  searchFocusNode.unfocus();
-                  filterProducts('');
                 },
-                child: Text('Delete', style: TextStyle(color: AppColors.error)),
+                child: Text(
+                  'Continue',
+                  style: TextStyle(color: AppColors.primary),
+                ),
               ),
             ],
           ),
