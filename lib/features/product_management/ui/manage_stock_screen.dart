@@ -87,14 +87,14 @@ class _StockManageScreenState extends State<StockManageScreen> {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: const [
+              children: [
                 SizedBox(width: 160, height: 120, child: TotalStockCard()),
                 SizedBox(width: 160, height: 120, child: TotalSalesCard()),
               ],
             ),
 
             SizedBox(height: 24.h),
-            const Divider(height: 1),
+            Divider(height: 1.h),
             Padding(
               padding: EdgeInsets.symmetric(vertical: 16.h),
               child: Text(
@@ -117,6 +117,9 @@ class _StockManageScreenState extends State<StockManageScreen> {
             _productActionItem(Icons.receipt_long, 'Bill History', () {
               Navigator.pushNamed(context, AppRoutes.billHistory);
             }),
+            _productActionItem(Icons.apps, 'Brands/Categories', () {
+              Navigator.pushNamed(context, AppRoutes.brandAndCategory);
+            }),
           ],
         ),
       ),
@@ -125,7 +128,7 @@ class _StockManageScreenState extends State<StockManageScreen> {
         items: bottomNavItems,
         currentIndex: _selectedIndex,
         selectedItemColor: AppColors.white,
-        unselectedItemColor: Colors.white,
+        unselectedItemColor: AppColors.white,
         onTap: _onNavBarTap,
         type: BottomNavigationBarType.fixed,
       ),

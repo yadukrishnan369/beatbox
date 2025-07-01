@@ -8,10 +8,10 @@ class BrandModel extends HiveObject {
   final String id;
 
   @HiveField(1)
-  final String brandName;
+  String brandName;
 
   @HiveField(2)
-  final String brandImagePath;
+  String brandImagePath;
 
   BrandModel({
     required this.id,

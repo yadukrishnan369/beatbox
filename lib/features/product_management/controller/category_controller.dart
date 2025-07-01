@@ -1,4 +1,4 @@
-import 'package:beatbox/core/notifiers/category_update_notifiers.dart';
+import 'package:beatbox/core/notifiers/category_update_notifier.dart';
 import 'package:hive/hive.dart';
 import '../model/category_model.dart';
 
@@ -23,7 +23,7 @@ class CategoryController {
   // get all category
   static List<CategoryModel> getAllCategory() {
     final box = Hive.box<CategoryModel>(_boxName);
-    return box.values.toList();
+    return box.values.toList().reversed.toList();
   }
 
   // notifier update method

@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:beatbox/core/app_colors.dart';
-import 'package:beatbox/core/notifiers/category_update_notifiers.dart';
+import 'package:beatbox/core/notifiers/category_update_notifier.dart';
 import 'package:beatbox/routes/app_routes.dart';
 import 'package:beatbox/widgets/shimmer_widgets/shimmer_category_banner.dart';
 import 'package:flutter/material.dart';

@@ -8,10 +8,10 @@ class CategoryModel extends HiveObject {
   final String id;
 
   @HiveField(1)
-  final String categoryName;
+  String categoryName;
 
   @HiveField(2)
-  final String categoryImagePath;
+  String categoryImagePath;
 
   CategoryModel({
     required this.id,
