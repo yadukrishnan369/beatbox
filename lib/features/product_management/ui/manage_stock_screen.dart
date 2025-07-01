@@ -105,7 +105,7 @@ class _StockManageScreenState extends State<StockManageScreen> {
             _productActionItem(Icons.library_add, 'Add Product', () {
               Navigator.pushNamed(context, AppRoutes.addProduct);
             }),
-            _productActionItem(Icons.edit, 'Update/Edit Product', () {
+            _productActionItem(Icons.edit, 'Edit/Delete Product', () {
               Navigator.pushNamed(context, AppRoutes.updateProduct);
             }),
             _productActionItem(Icons.history, 'Sales/Customer History', () {

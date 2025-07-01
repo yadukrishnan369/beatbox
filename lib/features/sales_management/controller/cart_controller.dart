@@ -63,7 +63,13 @@ class CartController {
     _refreshNotifier();
   }
 
-  /// 🔁 Notify all listeners
+  // check if product exist in cart
+  static bool isProductInCart(String productId) {
+    final box = Hive.box<CartItemModel>(_boxName);
+    return box.values.any((item) => item.product.id == productId);
+  }
+
+  ///  Notify all listeners
   static void _refreshNotifier() {
     final box = Hive.box<CartItemModel>(_boxName);
     cartUpdatedNotifier.value = box.values.toList();

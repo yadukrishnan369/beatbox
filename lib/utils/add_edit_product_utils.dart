@@ -79,7 +79,11 @@ class AddEditProductUtils {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: Text('Confirm $action'),
+            backgroundColor: AppColors.white,
+            title: Text(
+              'Confirm $action',
+              style: TextStyle(color: AppColors.primary),
+            ),
             content: Text('Are you sure you want to $action this product?'),
             actions: [
               TextButton(
@@ -130,8 +134,8 @@ class AddEditProductUtils {
     BuildContext context,
     ProductModel product,
   ) async {
-    await ProductController.updateProduct(product);
     await showLoadingDialog(context, message: "Updating...", showSucess: true);
+    await ProductController.updateProduct(product);
     isProductReloadNeeded.value = true;
     await ProductUtils.loadProducts();
     await NewArrivalUtils.loadNewArrivalProducts();
@@ -146,8 +150,8 @@ class AddEditProductUtils {
     BuildContext context,
     ProductModel product,
   ) async {
-    await ProductController.addProduct(product);
     await showLoadingDialog(context, message: "Adding...", showSucess: true);
+    await ProductController.addProduct(product);
     isProductReloadNeeded.value = true;
     await ProductUtils.loadProducts();
     await NewArrivalUtils.loadNewArrivalProducts();

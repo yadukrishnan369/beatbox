@@ -2,6 +2,9 @@ import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/core/notifiers/filter_product_notifier.dart';
 import 'package:beatbox/features/product_management/controller/product_controller.dart';
 import 'package:beatbox/features/product_management/ui/add_edit_product_screen.dart';
+import 'package:beatbox/features/sales_management/controller/cart_controller.dart';
+import 'package:beatbox/utils/new_arrival_utils.dart';
+import 'package:beatbox/utils/product_edit_delete_utils.dart';
 import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -104,14 +107,42 @@ class ProductUtils {
 
   // edit and delete product functions
   static void editProduct(BuildContext context, ProductModel product) {
+    final isInCart = CartController.isProductInCart(product.id);
+    // showing prevent edit message
+    if (isInCart) {
+      showDialog(
+        context: context,
+        builder:
+            (_) => AlertDialog(
+              backgroundColor: AppColors.white,
+              title: const Text(
+                'Cannot Proceed !',
+                style: TextStyle(color: AppColors.primary),
+              ),
+              content: const Text(
+                'This product is currently in the cart.\nPlease remove it from the cart before editing.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+      );
+      return;
+    }
+
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => AddProductScreen(productToEdit: product),
       ),
-    ).then((_) {
+    ).then((_) async {
       isProductReloadNeeded.value = true;
-      loadProducts();
+      await loadProducts();
+      //  update edit/delete screen
+      await ProductEditDeleteUtils.loadProductsWithoutShimmer();
     });
   }
 
@@ -121,6 +152,33 @@ class ProductUtils {
     TextEditingController searchController,
     FocusNode searchFocusNode,
   ) {
+    final isInCart = CartController.isProductInCart(product.id);
+    // showing prevent delete message
+    if (isInCart) {
+      showDialog(
+        context: context,
+        builder:
+            (_) => AlertDialog(
+              backgroundColor: AppColors.white,
+              title: const Text(
+                'Cannot Proceed !',
+                style: TextStyle(color: AppColors.primary),
+              ),
+              content: const Text(
+                'This product is currently in the cart.\nPlease remove it from the cart before deleting.',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+      );
+      return;
+    }
+
+    //  confirm delete dialog
     showDialog(
       context: context,
       builder:
@@ -144,13 +202,14 @@ class ProductUtils {
               TextButton(
                 onPressed: () async {
                   Navigator.pop(context);
-                  await deleteProduct(product, searchController.text);
-                  isProductReloadNeeded.value = true;
                   await showLoadingDialog(
                     context,
                     message: "Deleting...",
                     showSucess: true,
                   );
+                  await deleteProduct(product, searchController.text);
+                  isProductReloadNeeded.value = true;
+                  await NewArrivalUtils.loadNewArrivalProducts();
                   searchController.clear();
                   searchFocusNode.unfocus();
                   filterProducts('');
@@ -168,6 +227,8 @@ class ProductUtils {
   ) async {
     await ProductController.deleteProduct(product);
     filterProducts(currentQuery);
+    // update edit/delete screen notifiers
+    await ProductEditDeleteUtils.loadProductsWithoutShimmer();
   }
 
   // product quantity adjustment functions
