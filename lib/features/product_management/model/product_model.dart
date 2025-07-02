@@ -43,7 +43,7 @@ class ProductModel extends HiveObject {
   final DateTime createdDate;
 
   @HiveField(13)
-  final int? initialQuantity;
+  int? initialQuantity;
 
   @HiveField(14)
   bool isAvailableForSale;

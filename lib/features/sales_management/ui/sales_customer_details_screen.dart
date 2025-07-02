@@ -58,6 +58,7 @@ class SalesAndCustomerDetailsScreen extends StatelessWidget {
         ],
       ),
       body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
         child: Padding(
           padding: EdgeInsets.all(16.w),
           child: Column(

@@ -38,6 +38,8 @@ void showQuantityPopup({
               final addedQty = int.tryParse(qtyController.text);
               if (addedQty != null && addedQty > 0) {
                 product.productQuantity += addedQty;
+                product.initialQuantity =
+                    (product.initialQuantity ?? 0) + addedQty;
                 await product.save();
                 Navigator.pop(context);
                 await showLoadingDialog(

@@ -51,196 +51,142 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
         backgroundColor: AppColors.white,
         elevation: 0,
       ),
-      body: Padding(
-        padding: EdgeInsets.only(top: 15.h, bottom: 15.h),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Product Image
-              Container(
-                height: 200.h,
-                width: double.infinity,
-                color: AppColors.white,
-                child:
-                    product.image1 != null
-                        ? Image.file(File(product.image1!), fit: BoxFit.cover)
-                        : Icon(
-                          Icons.headset,
-                          size: 100.sp,
-                          color: AppColors.primary,
-                        ),
-              ),
-              // Details
-              Container(
-                color: AppColors.white,
-                child: Padding(
-                  padding: EdgeInsets.all(16.r),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              product.productName,
-                              style: TextStyle(
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
+      body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Padding(
+          padding: EdgeInsets.only(top: 15.h, bottom: 15.h),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                // Product Image
+                Container(
+                  height: 200.h,
+                  width: double.infinity,
+                  color: AppColors.white,
+                  child:
+                      product.image1 != null
+                          ? Image.file(File(product.image1!), fit: BoxFit.cover)
+                          : Icon(
+                            Icons.headset,
+                            size: 100.sp,
+                            color: AppColors.primary,
                           ),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 8.w,
-                              vertical: 4.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color:
-                                  product.isAvailableForSale &&
-                                          product.productQuantity > 0
-                                      ? AppColors.success
-                                      : AppColors.error,
-                              borderRadius: BorderRadius.circular(6.r),
-                            ),
-                            child: Text(
-                              product.isAvailableForSale &&
-                                      product.productQuantity > 0
-                                  ? "Active"
-                                  : "Inactive",
-                              style: TextStyle(
-                                fontSize: 13.sp,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(height: 8.h),
-                      Text(
-                        'Headset',
-                        style: TextStyle(
-                          fontSize: 16.sp,
-                          color: AppColors.textDisabled,
-                        ),
-                      ),
-                      SizedBox(height: 24.h),
-                      _buildDetailRow(
-                        'Purchased Date',
-                        DateFormat('dd MMM yyyy').format(product.createdDate),
-                      ),
-                      _buildDetailRow(
-                        'Purchased Quantity',
-                        product.initialQuantity.toString(),
-                      ),
-                      _buildDetailRow(
-                        'Current Quantity',
-                        product.productQuantity.toString(),
-                      ),
-                      _buildDetailRow(
-                        'Purchase Price per item',
-                        '₹${AmountFormatter.format(product.purchaseRate)}',
-                      ),
-                      _buildDetailRow(
-                        'For sale per item',
-                        '₹${AmountFormatter.format(product.salePrice)}',
-                      ),
-                      _buildDetailRow(
-                        'Profit per item',
-                        '₹ ${AmountFormatter.format(profitPerItem)}',
-                      ),
-                      SizedBox(height: 16.h),
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.all(16.r),
-                        decoration: BoxDecoration(
-                          color: AppColors.contColor,
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                        child: Column(
+                ),
+                // Details
+                Container(
+                  color: AppColors.white,
+                  child: Padding(
+                    padding: EdgeInsets.all(16.r),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'STOCK TOTAL',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16.sp,
-                                  ),
+                            Expanded(
+                              child: Text(
+                                product.productName,
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary,
                                 ),
-                                Text(
-                                  '₹${AmountFormatter.format(totalValue)}',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16.sp,
-                                    color: AppColors.error,
-                                  ),
-                                ),
-                              ],
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    left: 16.w,
-                                    top: 4.h,
-                                  ),
-                                  child: Text(
-                                    '${AmountFormatter.format(product.purchaseRate)} x ${product.initialQuantity}',
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      color: AppColors.primary,
-                                    ),
-                                  ),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8.w,
+                                vertical: 4.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color:
+                                    product.isAvailableForSale &&
+                                            product.productQuantity > 0
+                                        ? AppColors.success
+                                        : AppColors.error,
+                                borderRadius: BorderRadius.circular(6.r),
+                              ),
+                              child: Text(
+                                product.isAvailableForSale &&
+                                        product.productQuantity > 0
+                                    ? "Active"
+                                    : "Inactive",
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppColors.white,
                                 ),
-                              ],
+                              ),
                             ),
-                            SizedBox(height: 10.h),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  'EXPECTED PROFIT',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16.sp,
-                                  ),
-                                ),
-                                Text(
-                                  '₹${AmountFormatter.format(totalProfit)}',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16.sp,
-                                    color: AppColors.success,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    left: 16.w,
-                                    top: 4.h,
-                                  ),
-                                  child: Text(
-                                    '${AmountFormatter.format(profitPerItem)} x ${product.initialQuantity}',
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      color: AppColors.primary,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            if (isOutOfStock)
+                          ],
+                        ),
+
+                        SizedBox(height: 8.h),
+                        Text(
+                          'Headset',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: AppColors.textDisabled,
+                          ),
+                        ),
+                        SizedBox(height: 24.h),
+                        _buildDetailRow(
+                          'Product Entry Date',
+                          DateFormat('dd MMM yyyy').format(product.createdDate),
+                        ),
+                        _buildDetailRow(
+                          'Purchased Quantity',
+                          product.initialQuantity.toString(),
+                        ),
+                        _buildDetailRow(
+                          'Current Quantity',
+                          product.productQuantity.toString(),
+                        ),
+                        _buildDetailRow(
+                          'Purchase Price per item',
+                          '₹${AmountFormatter.format(product.purchaseRate)}',
+                        ),
+                        _buildDetailRow(
+                          'For sale per item',
+                          '₹${AmountFormatter.format(product.salePrice)}',
+                        ),
+                        _buildDetailRow(
+                          'Profit per item',
+                          '₹ ${AmountFormatter.format(profitPerItem)}',
+                        ),
+                        SizedBox(height: 16.h),
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(16.r),
+                          decoration: BoxDecoration(
+                            color: AppColors.contColor,
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: Column(
+                            children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'STOCK TOTAL',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.sp,
+                                    ),
+                                  ),
+                                  Text(
+                                    '₹${AmountFormatter.format(totalValue)}',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.sp,
+                                      color: AppColors.error,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.only(
@@ -248,23 +194,82 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
                                       top: 4.h,
                                     ),
                                     child: Text(
-                                      'Out Of Stock',
+                                      '${AmountFormatter.format(product.purchaseRate)} x ${product.initialQuantity}',
                                       style: TextStyle(
-                                        fontSize: 18.sp,
-                                        color: AppColors.error,
+                                        fontSize: 14.sp,
+                                        color: AppColors.primary,
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
-                          ],
+                              SizedBox(height: 10.h),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'EXPECTED PROFIT',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.sp,
+                                    ),
+                                  ),
+                                  Text(
+                                    '₹${AmountFormatter.format(totalProfit)}',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16.sp,
+                                      color: AppColors.success,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      left: 16.w,
+                                      top: 4.h,
+                                    ),
+                                    child: Text(
+                                      '${AmountFormatter.format(profitPerItem)} x ${product.initialQuantity}',
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              if (isOutOfStock)
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        left: 16.w,
+                                        top: 4.h,
+                                      ),
+                                      child: Text(
+                                        'Out Of Stock',
+                                        style: TextStyle(
+                                          fontSize: 18.sp,
+                                          color: AppColors.error,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
