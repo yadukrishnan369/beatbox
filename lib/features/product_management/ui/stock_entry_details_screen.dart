@@ -99,13 +99,15 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
                             ),
                             decoration: BoxDecoration(
                               color:
-                                  product.isAvailableForSale
+                                  product.isAvailableForSale &&
+                                          product.productQuantity > 0
                                       ? AppColors.success
                                       : AppColors.error,
                               borderRadius: BorderRadius.circular(6.r),
                             ),
                             child: Text(
-                              product.isAvailableForSale
+                              product.isAvailableForSale &&
+                                      product.productQuantity > 0
                                   ? "Active"
                                   : "Inactive",
                               style: TextStyle(

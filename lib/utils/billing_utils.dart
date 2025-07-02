@@ -80,6 +80,23 @@ class BillingUtils {
     return null;
   }
 
+  static Future<List<Map<String, String>>> getPreviousCustomerDetails() async {
+    final box = await Hive.openBox<SalesModel>('salesBox');
+    final List<Map<String, String>> customers = [];
+
+    for (var sale in box.values) {
+      customers.add({
+        'name': sale.customerName,
+        'phone': sale.customerPhone,
+        'email': sale.customerEmail,
+      });
+    }
+
+    // Remove duplicates by name
+    final seen = <String>{};
+    return customers.where((c) => seen.add(c['name']!)).toList();
+  }
+
   //  Confirm & Save Bill
   static Future<void> confirmAndSaveBill(
     BuildContext context, {
