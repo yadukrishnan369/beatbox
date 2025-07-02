@@ -3,6 +3,7 @@ import 'package:beatbox/features/sales_management/widgets/sale_customer_detail_c
 import 'package:beatbox/features/sales_management/widgets/sale_order_number_card_widget.dart';
 import 'package:beatbox/features/sales_management/widgets/sale_item_list_widget.dart';
 import 'package:beatbox/features/sales_management/widgets/sale_summary_card_widget.dart';
+import 'package:beatbox/utils/sales_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/features/sales_management/model/sales_model.dart';
@@ -28,6 +29,33 @@ class SalesAndCustomerDetailsScreen extends StatelessWidget {
           ),
         ),
         centerTitle: false,
+        actions: [
+          SizedBox(
+            width: 80.w,
+            child: PopupMenuButton<String>(
+              color: AppColors.white,
+              icon: Icon(Icons.more_vert, color: AppColors.textPrimary),
+              onSelected: (value) {
+                if (value == 'delete') {
+                  SalesUtils.confirmAndDeleteSale(context, sale);
+                }
+              },
+              itemBuilder:
+                  (BuildContext context) => [
+                    PopupMenuItem(
+                      value: 'delete',
+                      child: Row(
+                        children: [
+                          Icon(Icons.delete_outline, color: AppColors.error),
+                          SizedBox(width: 8.w),
+                          Text('Delete'),
+                        ],
+                      ),
+                    ),
+                  ],
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(

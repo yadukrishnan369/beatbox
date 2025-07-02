@@ -3,6 +3,7 @@ import 'package:beatbox/features/bill_management/widgets/bill_header_section.dar
 import 'package:beatbox/features/bill_management/widgets/bill_table_section.dart';
 import 'package:beatbox/features/bill_management/widgets/bill_total_section.dart';
 import 'package:beatbox/features/sales_management/model/sales_model.dart';
+import 'package:beatbox/utils/bill_utils.dart';
 import 'package:beatbox/utils/pdf_invoice_generator.dart';
 import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,33 @@ class BillDetailsScreen extends StatelessWidget {
             color: AppColors.textPrimary,
           ),
         ),
+        actions: [
+          SizedBox(
+            width: 80.w,
+            child: PopupMenuButton<String>(
+              color: AppColors.white,
+              icon: Icon(Icons.more_vert, color: AppColors.textPrimary),
+              onSelected: (value) {
+                if (value == 'delete') {
+                  BillUtils.confirmAndDeleteBill(context, bill);
+                }
+              },
+              itemBuilder:
+                  (BuildContext context) => [
+                    PopupMenuItem(
+                      value: 'delete',
+                      child: Row(
+                        children: [
+                          Icon(Icons.delete_outline, color: AppColors.error),
+                          SizedBox(width: 8.w),
+                          Text('Delete'),
+                        ],
+                      ),
+                    ),
+                  ],
+            ),
+          ),
+        ],
       ),
       body: Column(
         children: [

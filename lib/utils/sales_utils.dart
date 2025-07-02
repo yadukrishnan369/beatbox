@@ -1,5 +1,8 @@
+import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/core/notifiers/sales_notifier.dart';
 import 'package:beatbox/features/sales_management/model/sales_model.dart';
+import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 class SalesUtils {
@@ -98,5 +101,88 @@ class SalesUtils {
 
     allSalesNotifier.value = [...allSales];
     filteredSalesNotifier.value = [...allSales];
+  }
+
+  static Future<void> confirmAndDeleteSale(
+    BuildContext context,
+    SalesModel sale,
+  ) async {
+    final confirmFirst = await showDialog<bool>(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            backgroundColor: AppColors.white,
+            title: const Text(
+              "Delete Sale",
+              style: TextStyle(color: AppColors.primary),
+            ),
+            content: Text(
+              "Are you sure you want to delete this Sale ${sale.orderNumber}?",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text(
+                  "Continue",
+                  style: TextStyle(color: AppColors.error),
+                ),
+              ),
+            ],
+          ),
+    );
+
+    if (confirmFirst != true) return;
+
+    final confirmSecond = await showDialog<bool>(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            backgroundColor: AppColors.white,
+            title: const Text(
+              "Confirm Deletion",
+              style: TextStyle(color: AppColors.primary),
+            ),
+            content: const Text(
+              "Deleting this Sale is permanent! Do you want to proceed?",
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text(
+                  "Delete",
+                  style: TextStyle(color: AppColors.error),
+                ),
+              ),
+            ],
+          ),
+    );
+
+    if (confirmSecond == true) {
+      await sale.delete();
+      await showLoadingDialog(
+        context,
+        message: 'Deleting...',
+        showSucess: true,
+      );
+      await loadSalesWithoutShimmer();
+      if (!context.mounted) return;
+
+      Navigator.pop(context); // Close details screen
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Sale deleted successfully"),
+          backgroundColor: AppColors.success,
+        ),
+      );
+    }
   }
 }
