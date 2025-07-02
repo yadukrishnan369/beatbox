@@ -53,15 +53,17 @@ class LimitedStockTile extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.error),
+                  border: Border.all(color: AppColors.textPrimary),
                   borderRadius: BorderRadius.circular(6.r),
                 ),
                 child: Text(
-                  "product left : ${product.productQuantity}",
+                  product.productQuantity == 0
+                      ? 'Out of Stock'
+                      : 'product left : ${product.productQuantity}',
                   style: TextStyle(
                     color: AppColors.error,
                     fontWeight: FontWeight.bold,
-                    fontSize: 10.sp,
+                    fontSize: 12.sp,
                   ),
                 ),
               ),

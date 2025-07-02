@@ -43,7 +43,7 @@ class StockEntryListCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Quantity: ${product.initialQuantity}',
+                'purchased Qty: ${product.initialQuantity}',
                 style: TextStyle(fontSize: 14.sp),
               ),
               product.productQuantity == 0

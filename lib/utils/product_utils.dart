@@ -312,7 +312,7 @@ class ProductUtils {
     final isLimitedStock = product.productQuantity < limitedCount;
 
     if (isNewArrival && isLimitedStock) {
-      return 'New Arrival/Limited';
+      return 'New / Limited';
     } else if (isNewArrival) {
       return 'New Arrival';
     } else if (isLimitedStock) {
@@ -332,7 +332,7 @@ class ProductUtils {
         return AppColors.warning;
       case 'New Arrival':
         return AppColors.success;
-      case 'New Arrival/Limited':
+      case 'New / Limited':
         return AppColors.blue;
       default:
         return Colors.transparent;

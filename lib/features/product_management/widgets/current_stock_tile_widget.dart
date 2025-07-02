@@ -57,10 +57,27 @@ class _CurrentStockTileState extends State<CurrentStockTile> {
                   )
                   : Icon(Icons.image, size: 40.sp),
         ),
-        title: Text(
-          widget.product.productName,
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.sp),
+        title: Row(
+          children: [
+            Expanded(
+              child: Text(
+                widget.product.productName,
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16.sp),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            SizedBox(width: 6.w),
+            Container(
+              width: 10.w,
+              height: 10.w,
+              decoration: BoxDecoration(
+                color: isAvailable ? AppColors.success : AppColors.error,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ],
         ),
+
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -133,7 +150,7 @@ class _CurrentStockTileState extends State<CurrentStockTile> {
         trailing: Container(
           padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 4.h),
           decoration: BoxDecoration(
-            border: Border.all(color: AppColors.success),
+            border: Border.all(color: AppColors.textPrimary),
             borderRadius: BorderRadius.circular(6.r),
           ),
           child: Text(
@@ -141,7 +158,7 @@ class _CurrentStockTileState extends State<CurrentStockTile> {
             style: TextStyle(
               color: AppColors.success,
               fontWeight: FontWeight.bold,
-              fontSize: 10.sp,
+              fontSize: 12.sp,
             ),
           ),
         ),

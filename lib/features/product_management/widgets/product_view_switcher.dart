@@ -188,14 +188,19 @@ class ProductViewSwitcher extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(height: 3.h),
-                                Text(
-                                  ProductUtils.getProductLabel(product),
-                                  style: TextStyle(
-                                    fontSize: 13.sp,
-                                    color: ProductUtils.getProductLabelColor(
-                                      product,
+                                Expanded(
+                                  child: Center(
+                                    child: Text(
+                                      ProductUtils.getProductLabel(product),
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        color:
+                                            ProductUtils.getProductLabelColor(
+                                              product,
+                                            ),
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
-                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ],

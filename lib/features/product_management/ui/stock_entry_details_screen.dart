@@ -106,8 +106,8 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
                             ),
                             child: Text(
                               product.isAvailableForSale
-                                  ? "Available"
-                                  : "Not Available",
+                                  ? "Active"
+                                  : "Inactive",
                               style: TextStyle(
                                 fontSize: 13.sp,
                                 fontWeight: FontWeight.w500,
