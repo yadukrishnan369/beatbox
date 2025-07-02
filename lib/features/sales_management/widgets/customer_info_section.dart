@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/core/app_colors.dart';
+import 'package:beatbox/utils/billing_utils.dart';
 
 class CustomerInfoSection extends StatelessWidget {
   final TextEditingController nameController;
@@ -38,11 +39,26 @@ class CustomerInfoSection extends StatelessWidget {
           ),
           child: Column(
             children: [
-              _buildTextField("Name", "customer name", nameController),
+              _buildTextFormField(
+                "Name",
+                "customer name",
+                nameController,
+                BillingUtils.validateName,
+              ),
               SizedBox(height: 12.h),
-              _buildTextField("Phone", "phone number", phoneController),
+              _buildTextFormField(
+                "Phone",
+                "phone number",
+                phoneController,
+                BillingUtils.validatePhone,
+              ),
               SizedBox(height: 12.h),
-              _buildTextField("Email", "email address", emailController),
+              _buildTextFormField(
+                "Email",
+                "email address",
+                emailController,
+                BillingUtils.validateEmail,
+              ),
             ],
           ),
         ),
@@ -50,18 +66,20 @@ class CustomerInfoSection extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(
+  Widget _buildTextFormField(
     String label,
     String hint,
     TextEditingController controller,
+    String? Function(String?)? validator,
   ) {
     return Row(
       children: [
         SizedBox(width: 60.w, child: Text(label)),
         SizedBox(width: 12.w),
         Expanded(
-          child: TextField(
+          child: TextFormField(
             controller: controller,
+            validator: validator,
             decoration: InputDecoration(
               hintText: hint,
               hintStyle: TextStyle(

@@ -1,4 +1,3 @@
-// billing_utils.dart
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/core/notifiers/bill_notifier.dart';
 import 'package:beatbox/core/notifiers/sales_notifier.dart';
@@ -13,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 class BillingUtils {
+  //  billing calculations
   static double calculateSubtotal(List<CartItemModel> cartItems) {
     return cartItems.fold(
       0.0,
@@ -41,58 +41,46 @@ class BillingUtils {
     return subtotal + gst - discount;
   }
 
-  static bool validateCustomerDetails(
-    BuildContext context, {
-    required String name,
-    required String phone,
-    required String email,
-    required String discountText,
-  }) {
-    final messenger = ScaffoldMessenger.of(context);
-    if (name.isEmpty || !RegExp(r'[a-zA-Z]').hasMatch(name)) {
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text("Enter a valid name"),
-          backgroundColor: AppColors.error,
-        ),
-      );
-      return false;
+  //  TextFormField Validators
+  static String? validateName(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return "Name is required";
     }
-    if (phone.isEmpty || !RegExp(r'^[0-9]{10}$').hasMatch(phone)) {
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text("Enter a valid phone number"),
-          backgroundColor: AppColors.error,
-        ),
-      );
-      return false;
+    if (!RegExp(r'[a-zA-Z]').hasMatch(value)) {
+      return "Enter a valid name";
     }
-
-    if (email.isNotEmpty &&
-        !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$').hasMatch(email)) {
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text("Invalid email"),
-          backgroundColor: AppColors.error,
-        ),
-      );
-      return false;
-    }
-
-    final enteredDisc = double.tryParse(discountText);
-    if (discountText.isNotEmpty &&
-        (enteredDisc == null || enteredDisc >= 100)) {
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text("Invalid discount"),
-          backgroundColor: AppColors.error,
-        ),
-      );
-      return false;
-    }
-    return true;
+    return null;
   }
 
+  static String? validatePhone(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return "Phone number is required";
+    }
+    if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
+      return "Enter a valid 10-digit phone";
+    }
+    return null;
+  }
+
+  static String? validateEmail(String? value) {
+    if (value != null &&
+        value.isNotEmpty &&
+        !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}$').hasMatch(value)) {
+      return "Enter valid email";
+    }
+    return null;
+  }
+
+  static String? validateDiscount(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+    final val = double.tryParse(value.trim());
+    if (val == null || val < 0 || val >= 100) {
+      return "invalid discount";
+    }
+    return null;
+  }
+
+  //  Confirm & Save Bill
   static Future<void> confirmAndSaveBill(
     BuildContext context, {
     required String name,
@@ -149,7 +137,7 @@ class BillingUtils {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Error: \${e.toString()}"),
+          content: Text("Error: ${e.toString()}"),
           backgroundColor: AppColors.error,
         ),
       );

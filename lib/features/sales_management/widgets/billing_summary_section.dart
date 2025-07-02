@@ -63,7 +63,6 @@ class BillingSummarySection extends StatelessWidget {
                 subtotal: subtotal,
                 gst: gst,
                 onDiscountChanged: onDiscountChanged,
-                context: context,
               ),
               SizedBox(height: 16.h),
               Container(

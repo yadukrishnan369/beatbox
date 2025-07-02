@@ -35,37 +35,46 @@ class ProductValidators {
   }
 
   static String? validateQuantity(String? value) {
-    if (value == null || value.trim().isEmpty) return 'Required';
+    if (value == null || value.trim().isEmpty) return 'This field is required';
     final qty = int.tryParse(value);
     if (qty == null || qty <= 0) return 'Invalid quantity';
     return null;
   }
 
   static String? validateCode(String? value) {
-    if (value == null || value.trim().isEmpty) return 'Required';
+    if (value == null || value.trim().isEmpty) {
+      return 'This field is required';
+    }
+    final input = value.trim();
+    final hasLetters = RegExp(r'[a-zA-Z]').hasMatch(input);
+    final hasNumbers = RegExp(r'\d').hasMatch(input);
+
+    if (!(hasLetters && hasNumbers)) {
+      return 'Invalid code';
+    }
     return null;
   }
 
   static String? validatePurchasePrice(String? value) {
-    if (value == null || value.trim().isEmpty) return 'Required';
+    if (value == null || value.trim().isEmpty) return 'This field is required';
     final price = double.tryParse(value);
-    if (price == null || price <= 0) return 'Invalid price';
+    if (price == null || price <= 0) return 'Invalid purchase price';
     return null;
   }
 
   static String? validateSalePrice(String? value, String purchasePriceText) {
-    if (value == null || value.trim().isEmpty) return 'Required';
+    if (value == null || value.trim().isEmpty) return 'This field is required';
     final sales = double.tryParse(value);
     final purchase = double.tryParse(purchasePriceText);
-    if (sales == null) return 'Invalid price';
+    if (sales == null) return 'Invalid sales price';
     if (purchase != null && sales <= purchase) {
-      return 'Should be > purchase price';
+      return 'Must be greater than purchase price';
     }
     return null;
   }
 
   static String? validateDescription(String? value) {
-    if (value == null || value.trim().isEmpty) return 'Required';
+    if (value == null || value.trim().isEmpty) return 'This field is required';
     return null;
   }
 }

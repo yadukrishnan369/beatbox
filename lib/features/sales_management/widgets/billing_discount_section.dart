@@ -1,5 +1,6 @@
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/utils/amount_formatter.dart';
+import 'package:beatbox/utils/billing_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -10,20 +11,18 @@ class BillingDiscountSection extends StatelessWidget {
     required this.subtotal,
     required this.gst,
     required this.onDiscountChanged,
-    required this.context,
   });
 
   final TextEditingController discountController;
   final double subtotal;
   final double gst;
   final VoidCallback onDiscountChanged;
-  final BuildContext context;
 
   @override
   Widget build(BuildContext context) {
     double discountValue = 0.0;
     final percentage = double.tryParse(discountController.text.trim());
-    if (percentage != null && percentage > 0 && percentage <= 100) {
+    if (percentage != null && percentage > 0 && percentage < 100) {
       discountValue = ((subtotal + gst) * percentage) / 100;
     }
 
@@ -35,9 +34,9 @@ class BillingDiscountSection extends StatelessWidget {
           children: [
             Text("Discount (%)", style: TextStyle(fontSize: 14.sp)),
             SizedBox(
-              width: 120.w,
+              width: 125.w,
               height: 45.h,
-              child: TextField(
+              child: TextFormField(
                 controller: discountController,
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
@@ -46,6 +45,7 @@ class BillingDiscountSection extends StatelessWidget {
                 onChanged: (_) {
                   onDiscountChanged();
                 },
+                validator: BillingUtils.validateDiscount,
                 decoration: InputDecoration(
                   hintText: "0.0",
                   suffixText: "%",
@@ -57,32 +57,18 @@ class BillingDiscountSection extends StatelessWidget {
                   fillColor: AppColors.white,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(6.r),
-                    borderSide: BorderSide(color: AppColors.primary, width: 1),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(6.r),
-                    borderSide: BorderSide(color: AppColors.primary, width: 1),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(6.r),
-                    borderSide: BorderSide(color: AppColors.primary, width: 2),
+                    borderSide: BorderSide(color: AppColors.primary),
                   ),
                   contentPadding: EdgeInsets.symmetric(
                     horizontal: 8.w,
                     vertical: 8.h,
                   ),
                 ),
-                style: TextStyle(
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.error,
-                ),
               ),
             ),
           ],
         ),
         SizedBox(height: 4.h),
-
         if (discountValue > 0)
           Text(
             "Discount Rate ₹${AmountFormatter.format(discountValue)}",

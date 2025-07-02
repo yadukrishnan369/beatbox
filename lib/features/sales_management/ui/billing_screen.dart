@@ -18,6 +18,8 @@ class BillingScreen extends StatefulWidget {
 }
 
 class _BillingScreenState extends State<BillingScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   final TextEditingController nameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -72,20 +74,11 @@ class _BillingScreenState extends State<BillingScreen> {
   }
 
   void _confirmBill() async {
+    if (!_formKey.currentState!.validate()) return;
+
     final name = nameController.text.trim();
     final phone = phoneController.text.trim();
     final email = emailController.text.trim();
-    final discountText = discountController.text.trim();
-
-    if (!BillingUtils.validateCustomerDetails(
-      context,
-      name: name,
-      phone: phone,
-      email: email,
-      discountText: discountText,
-    )) {
-      return;
-    }
 
     await BillingUtils.confirmAndSaveBill(
       context,
@@ -128,64 +121,76 @@ class _BillingScreenState extends State<BillingScreen> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: EdgeInsets.all(16.w),
         child: Column(
           children: [
-            CustomerInfoSection(
-              nameController: nameController,
-              phoneController: phoneController,
-              emailController: emailController,
-            ),
-            SizedBox(height: 24.h),
-            InvoiceInfoSection(
-              invoiceNumber: invoiceNumber,
-              billingDate: DateFormat('dd-MM-yyyy').format(billingDate),
-              itemCount: cartItems.length,
-            ),
-            SizedBox(height: 24.h),
-            ItemsTableSection(cartItems: cartItems),
-            SizedBox(height: 24.h),
-            BillingSummarySection(
-              subtotal: subtotal,
-              gst: gst,
-              gstRate: gstRate,
-              discountController: discountController,
-              grandTotal: grandTotal,
-              onDiscountChanged: () {
-                discount = BillingUtils.calculateDiscount(
-                  discountController.text,
-                  subtotal,
-                  gst,
-                );
-                grandTotal = BillingUtils.calculateGrandTotal(
-                  subtotal,
-                  gst,
-                  discount,
-                );
-                setState(() {});
-              },
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(16.w),
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.success,
-              padding: EdgeInsets.symmetric(vertical: 16.h),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.r),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      CustomerInfoSection(
+                        nameController: nameController,
+                        phoneController: phoneController,
+                        emailController: emailController,
+                      ),
+                      SizedBox(height: 24.h),
+                      InvoiceInfoSection(
+                        invoiceNumber: invoiceNumber,
+                        billingDate: DateFormat(
+                          'dd-MM-yyyy',
+                        ).format(billingDate),
+                        itemCount: cartItems.length,
+                      ),
+                      SizedBox(height: 24.h),
+                      ItemsTableSection(cartItems: cartItems),
+                      SizedBox(height: 24.h),
+                      BillingSummarySection(
+                        subtotal: subtotal,
+                        gst: gst,
+                        gstRate: gstRate,
+                        discountController: discountController,
+                        grandTotal: grandTotal,
+                        onDiscountChanged: () {
+                          discount = BillingUtils.calculateDiscount(
+                            discountController.text,
+                            subtotal,
+                            gst,
+                          );
+                          grandTotal = BillingUtils.calculateGrandTotal(
+                            subtotal,
+                            gst,
+                            discount,
+                          );
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
-            onPressed: _confirmBill,
-            child: Text(
-              'CONFIRM BILL',
-              style: TextStyle(fontSize: 18.sp, color: AppColors.white),
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.only(top: 16.h),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.success,
+                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                ),
+                onPressed: _confirmBill,
+                child: Text(
+                  'CONFIRM BILL',
+                  style: TextStyle(fontSize: 18.sp, color: AppColors.white),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
