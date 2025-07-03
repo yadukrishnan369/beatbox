@@ -1,3 +1,4 @@
+import 'package:beatbox/features/home/widgets/custom_drawer_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/constants/app_images.dart';
@@ -11,13 +12,17 @@ import '../../../widgets/custom_search_bar.dart';
 
 class HomeScreen extends StatelessWidget {
   final int selectedIndex;
-  const HomeScreen({super.key, this.selectedIndex = 0});
+  HomeScreen({super.key, this.selectedIndex = 0});
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
       child: Scaffold(
+        key: _scaffoldKey,
+        drawer: const CustomDrawer(),
         body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -30,7 +35,7 @@ class HomeScreen extends StatelessWidget {
           child: SafeArea(
             child: Column(
               children: [
-                // logo and app profile
+                // Top Logo & Profile Icon Row
                 Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: 30.w,
@@ -39,23 +44,27 @@ class HomeScreen extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Image.asset(AppImages.logo, width: 40.w, height: 40.h),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          _scaffoldKey.currentState
+                              ?.openDrawer(); // Open drawer using key
+                        },
                         icon: Image.asset(
                           'assets/icons/home_profile.png',
                           width: 30.w,
                           height: 30.h,
+                          color: AppColors.textPrimary,
                         ),
                       ),
+                      Image.asset(AppImages.logo, width: 40.w, height: 40.h),
                     ],
                   ),
                 ),
 
-                // summary Card section
-                SummaryCard(),
+                // Summary card section
+                const SummaryCard(),
 
-                // custom search bar for navigate product screen
+                // Search bar - navigates to product screen
                 GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: () {
@@ -77,11 +86,10 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
 
-                // home screen scroll View
+                // New arrival and category sections
                 Expanded(
                   child: SingleChildScrollView(
                     child: Column(
-                      //call for showing home screen
                       children: const [NewArrivalSection(), CategorySection()],
                     ),
                   ),
@@ -90,7 +98,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ),
-        //custom bottom navigation bar
         bottomNavigationBar: const CustomBottomNavBar(),
       ),
     );

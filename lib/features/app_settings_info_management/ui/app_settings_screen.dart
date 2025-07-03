@@ -1,5 +1,5 @@
 import 'package:beatbox/core/app_colors.dart';
-import 'package:beatbox/features/app_settings_management/widgets/gst_adjustment.dart';
+import 'package:beatbox/features/app_settings_info_management/widgets/gst_adjustment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:beatbox/features/app_settings_info_management/ui/user_manual_screen.dart';
 import 'package:beatbox/features/auth/biometric_screen.dart';
 import 'package:beatbox/features/bill_management/ui/bill_details_screen.dart';
 import 'package:beatbox/features/bill_management/ui/bill_history_screen.dart';
@@ -9,7 +10,7 @@ import 'package:beatbox/features/product_management/ui/stock_entry_screen.dart';
 import 'package:beatbox/features/sales_management/controller/cart_controller.dart';
 import 'package:beatbox/features/sales_management/controller/sales_controller.dart';
 import 'package:beatbox/features/sales_management/model/cart_item_model.dart';
-import 'package:beatbox/features/app_settings_management/ui/app_settings_screen.dart';
+import 'package:beatbox/features/app_settings_info_management/ui/app_settings_screen.dart';
 import 'package:beatbox/features/sales_management/model/sales_model.dart';
 import 'package:beatbox/features/sales_management/ui/billing_screen.dart';
 import 'package:beatbox/features/sales_management/ui/cart_screen.dart';
@@ -167,6 +168,7 @@ class _MyAppState extends State<MyApp> {
                 (context) => SalesAndCustomerDetailsScreen(),
             AppRoutes.billHistory: (context) => BillHistoryScreen(),
             AppRoutes.billDetails: (context) => BillDetailsScreen(),
+            AppRoutes.userManual: (context) => UserManualScreen(),
           },
           // set fixed text size of user device settings
           builder: (context, child) {

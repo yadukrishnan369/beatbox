@@ -1,3 +1,4 @@
+import 'package:beatbox/features/app_settings_info_management/ui/user_manual_screen.dart';
 import 'package:beatbox/features/bill_management/ui/bill_details_screen.dart';
 import 'package:beatbox/features/bill_management/ui/bill_history_screen.dart';
 import 'package:beatbox/features/home/ui/home_screen.dart';
@@ -12,7 +13,7 @@ import 'package:beatbox/features/product_management/ui/products_screen.dart';
 import 'package:beatbox/features/product_management/ui/stock_entry_details_screen.dart';
 import 'package:beatbox/features/product_management/ui/stock_entry_screen.dart';
 import 'package:beatbox/features/product_management/ui/edit_delete_product_screen.dart';
-import 'package:beatbox/features/app_settings_management/ui/app_settings_screen.dart';
+import 'package:beatbox/features/app_settings_info_management/ui/app_settings_screen.dart';
 import 'package:beatbox/features/sales_management/ui/billing_screen.dart';
 import 'package:beatbox/features/sales_management/ui/cart_screen.dart';
 import 'package:beatbox/features/sales_management/ui/sales_customer_details_screen.dart';
@@ -44,6 +45,7 @@ class AppRoutes {
   static const String salesAndCustomerDetails = '/salesAndCustomerDetails';
   static const String billHistory = '/billHistory';
   static const String billDetails = '/billDetails';
+  static const String userManual = '/userManual';
 
   /// set each routes, its screen widget
   static Map<String, WidgetBuilder> get routes => {
@@ -68,6 +70,7 @@ class AppRoutes {
     salesAndCustomerDetails: (context) => SalesAndCustomerDetailsScreen(),
     billHistory: (context) => BillHistoryScreen(),
     billDetails: (context) => BillDetailsScreen(),
+    userManual: (context) => UserManualScreen(),
   };
 
   //tracking navigation and Pause/resume the app
