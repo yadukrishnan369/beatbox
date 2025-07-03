@@ -81,7 +81,9 @@ class CustomDrawer extends StatelessWidget {
                       context,
                       icon: Icons.help_outline,
                       title: 'FAQs section',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.faq);
+                      },
                     ),
                     _buildDivider(),
                     _buildMenuItem(

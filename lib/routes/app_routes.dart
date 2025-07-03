@@ -1,3 +1,4 @@
+import 'package:beatbox/features/app_settings_info_management/ui/faq_screen.dart';
 import 'package:beatbox/features/app_settings_info_management/ui/user_manual_screen.dart';
 import 'package:beatbox/features/bill_management/ui/bill_details_screen.dart';
 import 'package:beatbox/features/bill_management/ui/bill_history_screen.dart';
@@ -46,6 +47,7 @@ class AppRoutes {
   static const String billHistory = '/billHistory';
   static const String billDetails = '/billDetails';
   static const String userManual = '/userManual';
+  static const String faq = '/faq';
 
   /// set each routes, its screen widget
   static Map<String, WidgetBuilder> get routes => {
@@ -71,6 +73,7 @@ class AppRoutes {
     billHistory: (context) => BillHistoryScreen(),
     billDetails: (context) => BillDetailsScreen(),
     userManual: (context) => UserManualScreen(),
+    faq: (context) => FAQScreen(),
   };
 
   //tracking navigation and Pause/resume the app
