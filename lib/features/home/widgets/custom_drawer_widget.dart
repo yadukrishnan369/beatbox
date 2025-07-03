@@ -90,7 +90,9 @@ class CustomDrawer extends StatelessWidget {
                       context,
                       icon: Icons.info_outline,
                       title: 'App info',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.appInfo);
+                      },
                     ),
                   ],
                 ),

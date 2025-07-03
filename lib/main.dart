@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:beatbox/features/app_settings_info_management/ui/app_info_screen.dart';
 import 'package:beatbox/features/app_settings_info_management/ui/faq_screen.dart';
 import 'package:beatbox/features/app_settings_info_management/ui/user_manual_screen.dart';
 import 'package:beatbox/features/auth/biometric_screen.dart';
@@ -171,6 +172,7 @@ class _MyAppState extends State<MyApp> {
             AppRoutes.billDetails: (context) => BillDetailsScreen(),
             AppRoutes.userManual: (context) => UserManualScreen(),
             AppRoutes.faq: (context) => FAQScreen(),
+            AppRoutes.appInfo:(context)=>AppInfoScreen(),
           },
           // set fixed text size of user device settings
           builder: (context, child) {
