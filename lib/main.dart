@@ -3,6 +3,7 @@ import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/app_settings_info_management/controller/theme_controller.dart';
 import 'package:beatbox/features/app_settings_info_management/ui/app_info_screen.dart';
 import 'package:beatbox/features/app_settings_info_management/ui/faq_screen.dart';
+import 'package:beatbox/features/app_settings_info_management/ui/reset_app_data_screen.dart';
 import 'package:beatbox/features/app_settings_info_management/ui/user_manual_screen.dart';
 import 'package:beatbox/features/auth/biometric_screen.dart';
 import 'package:beatbox/features/bill_management/ui/bill_details_screen.dart';
@@ -37,6 +38,7 @@ import 'package:beatbox/features/product_management/ui/product_details_screen.da
 import 'package:beatbox/features/product_management/ui/products_screen.dart';
 import 'package:beatbox/features/product_management/ui/edit_delete_product_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
@@ -65,7 +67,7 @@ void main() async {
   await ThemeController.loadTheme();
   AppColors.updateTheme(ThemeController.isDarkMode.value);
 
-  runApp(const MyApp());
+  runApp(Phoenix(child: const MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -159,6 +161,7 @@ class _MyAppState extends State<MyApp> {
                 AppRoutes.brandAndCategory:
                     (context) => BrandAndCategoryScreen(),
                 AppRoutes.appSettings: (context) => AppSettingsScreen(),
+                AppRoutes.resetApp: (context) => ResetAppDataScreen(),
                 AppRoutes.cart: (context) => CartScreen(),
                 AppRoutes.billing: (context) => BillingScreen(),
                 AppRoutes.salesAndCustomer:

@@ -1,6 +1,7 @@
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/app_settings_info_management/controller/theme_controller.dart';
 import 'package:beatbox/features/app_settings_info_management/widgets/gst_adjustment.dart';
+import 'package:beatbox/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -68,7 +69,9 @@ class AppSettingsScreen extends StatelessWidget {
               leading: Icon(Icons.refresh),
               title: 'Reset App Data',
               trailing: Icon(Icons.chevron_right, size: 24.w),
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.resetApp);
+              },
             ),
             SizedBox(height: 10.h),
             _buildSettingItem(

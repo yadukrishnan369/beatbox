@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 
 class GSTUtils {
-  static const _boxName = 'app_settings';
+  static const _boxName = 'gstBox';
   static const _key = 'gst_rate';
 
   //fetch GST rate

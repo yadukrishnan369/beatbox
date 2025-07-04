@@ -1,5 +1,6 @@
 import 'package:beatbox/features/app_settings_info_management/ui/app_info_screen.dart';
 import 'package:beatbox/features/app_settings_info_management/ui/faq_screen.dart';
+import 'package:beatbox/features/app_settings_info_management/ui/reset_app_data_screen.dart';
 import 'package:beatbox/features/app_settings_info_management/ui/user_manual_screen.dart';
 import 'package:beatbox/features/bill_management/ui/bill_details_screen.dart';
 import 'package:beatbox/features/bill_management/ui/bill_history_screen.dart';
@@ -42,6 +43,7 @@ class AppRoutes {
   static const String productDetails = '/productDetails';
   static const String brandAndCategory = '/brandAndCategory';
   static const String appSettings = '/appSettings';
+  static const String resetApp = '/resetApp';
   static const String cart = '/cart';
   static const String billing = '/billing';
   static const String salesAndCustomer = '/salesAndCustomer';
@@ -70,6 +72,7 @@ class AppRoutes {
     productDetails: (context) => ProductDetailsScreen(),
     brandAndCategory: (context) => BrandAndCategoryScreen(),
     appSettings: (context) => AppSettingsScreen(),
+    resetApp: (context) => ResetAppDataScreen(),
     cart: (context) => CartScreen(),
     billing: (context) => BillingScreen(),
     salesAndCustomer: (context) => SalesAndCustomerScreen(),
