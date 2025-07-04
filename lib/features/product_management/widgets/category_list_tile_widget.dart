@@ -1,35 +1,34 @@
 import 'dart:io';
 import 'package:beatbox/core/app_colors.dart';
-import 'package:beatbox/core/notifiers/brand_update_notifier.dart';
-import 'package:beatbox/features/product_management/controller/brand_controller.dart';
-import 'package:beatbox/features/product_management/model/brand_model.dart';
+import 'package:beatbox/core/notifiers/category_update_notifier.dart';
+import 'package:beatbox/features/product_management/controller/category_controller.dart';
+import 'package:beatbox/features/product_management/model/category_model.dart';
 import 'package:beatbox/features/product_management/widgets/edit_catogory_brand_dialogs.dart';
 import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
+import 'package:beatbox/widgets/empty_placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class BrandListTabTile extends StatelessWidget {
-  const BrandListTabTile({super.key});
+class CatogoryListTabTile extends StatelessWidget {
+  const CatogoryListTabTile({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<List<BrandModel>>(
-      valueListenable: brandUpdatedNotifier,
-      builder: (context, brandList, _) {
-        if (brandList.isEmpty) {
-          return Center(
-            child: Text(
-              "No Brands Found\n please add brands",
-              style: TextStyle(fontSize: 16.sp),
-            ),
+    return ValueListenableBuilder<List<CategoryModel>>(
+      valueListenable: categoryUpdatedNotifier,
+      builder: (context, categoryList, _) {
+        if (categoryList.isEmpty) {
+          return EmptyPlaceholder(
+            imagePath: 'assets/images/empty_product.png',
+            message: 'No Category added yet.\n please add Category !',
           );
         }
 
         return ListView.builder(
           padding: EdgeInsets.all(16.w),
-          itemCount: brandList.length,
+          itemCount: categoryList.length,
           itemBuilder: (context, index) {
-            final item = brandList[index];
+            final item = categoryList[index];
             return Card(
               margin: EdgeInsets.only(bottom: 12.h),
               elevation: 3,
@@ -38,14 +37,14 @@ class BrandListTabTile extends StatelessWidget {
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(8.r),
                   child: Image.file(
-                    File(item.brandImagePath),
+                    File(item.categoryImagePath),
                     width: 70.w,
                     height: 70.h,
                     fit: BoxFit.cover,
                   ),
                 ),
                 title: Text(
-                  item.brandName,
+                  item.categoryName,
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
@@ -60,25 +59,26 @@ class BrandListTabTile extends StatelessWidget {
                       onPressed:
                           () => showDialog(
                             context: context,
-                            builder: (context) => EditBrandDialog(item: item),
+                            builder:
+                                (context) => EditCategoryDialog(item: item),
                           ),
                     ),
                     IconButton(
                       icon: Icon(Icons.delete, color: AppColors.error),
                       onPressed:
-                          () => (BrandModel item) {
+                          () => (CategoryModel item) {
                             showDialog(
                               context: context,
                               builder:
                                   (context) => AlertDialog(
                                     title: Text(
-                                      'Delete Brand',
+                                      'Delete Category',
                                       style: TextStyle(
                                         color: AppColors.primary,
                                       ),
                                     ),
                                     content: Text(
-                                      'Are you sure you want to delete "${item.brandName}"?',
+                                      'Are you sure you want to delete "${item.categoryName}"?',
                                       style: TextStyle(
                                         color: AppColors.textPrimary,
                                       ),
@@ -97,7 +97,7 @@ class BrandListTabTile extends StatelessWidget {
                                           );
                                           await item.delete();
                                           Navigator.pop(context);
-                                          BrandController.initBox();
+                                          CategoryController.initBox();
                                         },
                                         child: Text(
                                           'Delete',

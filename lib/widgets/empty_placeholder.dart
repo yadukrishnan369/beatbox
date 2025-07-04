@@ -52,7 +52,7 @@ class EmptyPlaceholder extends StatelessWidget {
                 icon: Icon(actionIcon),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
-                  foregroundColor: AppColors.white,
+                  foregroundColor: Colors.white,
                 ),
               ),
             ],

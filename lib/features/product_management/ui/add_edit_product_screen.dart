@@ -346,7 +346,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       ? 'Update Product'
                       : 'Add Product',
                   style: TextStyle(
-                    color: AppColors.white,
+                    color: Colors.white,
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w500,
                   ),
