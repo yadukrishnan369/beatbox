@@ -6,11 +6,23 @@ import 'package:shimmer/shimmer.dart';
 class ShimmerBillTile extends StatelessWidget {
   const ShimmerBillTile({super.key});
 
+  Color getBaseColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? Colors.grey[700]!
+        : Colors.grey[300]!;
+  }
+
+  Color getHighlightColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? Colors.grey[500]!
+        : Colors.grey[100]!;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: Colors.grey.shade300,
-      highlightColor: Colors.grey.shade100,
+      baseColor: getBaseColor(context),
+      highlightColor: getHighlightColor(context),
       child: Container(
         padding: EdgeInsets.all(30.r),
         decoration: BoxDecoration(
@@ -23,16 +35,19 @@ class ShimmerBillTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(height: 14.h, width: 100.w, color: AppColors.white),
+                  Container(
+                    height: 14.h,
+                    width: 100.w,
+                    color: getBaseColor(context),
+                  ),
                 ],
               ),
             ),
-
             // Divider
             Container(
               width: 1.w,
               height: 40.h,
-              color: AppColors.white,
+              color: getBaseColor(context),
               margin: EdgeInsets.symmetric(horizontal: 16.w),
             ),
           ],

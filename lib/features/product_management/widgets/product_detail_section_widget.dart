@@ -106,7 +106,11 @@ class ProductDetailSection extends StatelessWidget {
             children: [
               Text(
                 product.productName,
-                style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               SizedBox(height: 6.h),
               Text(
@@ -146,6 +150,7 @@ class ProductDetailSection extends StatelessWidget {
                   Text(
                     '$quantity',
                     style: TextStyle(
+                      color: AppColors.textPrimary,
                       fontSize: 20.sp,
                       fontWeight: FontWeight.bold,
                     ),

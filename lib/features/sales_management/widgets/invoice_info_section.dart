@@ -25,7 +25,11 @@ class InvoiceInfoSection extends StatelessWidget {
             SizedBox(width: 8.w),
             Text(
               "Invoice Info",
-              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
@@ -54,10 +58,17 @@ class InvoiceInfoSection extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: TextStyle(fontSize: 14.sp)),
+        Text(
+          label,
+          style: TextStyle(color: AppColors.textPrimary, fontSize: 14.sp),
+        ),
         Text(
           value,
-          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500),
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ],
     );

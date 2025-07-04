@@ -40,7 +40,7 @@ class CustomSearchBar extends StatelessWidget {
         height: 50.h,
         child: Row(
           children: [
-            Icon(Icons.search, color: AppColors.textPrimary, size: 28.sp),
+            Icon(Icons.search, color: AppColors.bottomNavColor, size: 28.sp),
             SizedBox(width: 6.w),
             Expanded(
               child: TextField(
@@ -49,6 +49,7 @@ class CustomSearchBar extends StatelessWidget {
                 focusNode: focusNode,
                 decoration: InputDecoration(
                   hintText: hintText,
+                  hintStyle: TextStyle(color: AppColors.bottomNavColor),
                   border: InputBorder.none,
                   isDense: true,
                   contentPadding: EdgeInsets.symmetric(vertical: 10.h),
@@ -59,7 +60,7 @@ class CustomSearchBar extends StatelessWidget {
               IconButton(
                 icon: Icon(
                   Icons.filter_list,
-                  color: AppColors.textPrimary,
+                  color: AppColors.bottomNavColor,
                   size: 24.sp,
                 ),
                 onPressed: onFilterTap,

@@ -92,6 +92,7 @@ class _AddBrandModalState extends State<AddBrandModal> {
                   child: Text(
                     'Add Brand',
                     style: TextStyle(
+                      color: AppColors.textPrimary,
                       fontSize: 20.sp,
                       fontWeight: FontWeight.bold,
                     ),
@@ -102,6 +103,7 @@ class _AddBrandModalState extends State<AddBrandModal> {
                 // Brand Name Field
                 TextFormField(
                   controller: _brandController,
+                  style: TextStyle(color: AppColors.textPrimary),
                   decoration: InputDecoration(
                     labelText: 'Brand Name',
                     border: OutlineInputBorder(),
@@ -120,7 +122,7 @@ class _AddBrandModalState extends State<AddBrandModal> {
                 ),
                 SizedBox(height: 20.h),
 
-                // Image Picker Field (optional)
+                // Image Picker Field
                 GestureDetector(
                   onTap: () async {
                     File? picked = await pickImageFromGallery();
@@ -146,7 +148,12 @@ class _AddBrandModalState extends State<AddBrandModal> {
                                   children: [
                                     Icon(Icons.add_a_photo, size: 40.w),
                                     SizedBox(height: 8.h),
-                                    const Text('Add Brand Image'),
+                                    Text(
+                                      'Add Brand Image',
+                                      style: TextStyle(
+                                        color: AppColors.textPrimary,
+                                      ),
+                                    ),
                                   ],
                                 )
                                 : ClipRRect(

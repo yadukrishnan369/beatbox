@@ -93,6 +93,7 @@ class _AddCategoryModalState extends State<AddCategoryModal> {
                   child: Text(
                     'Add Category',
                     style: TextStyle(
+                      color: AppColors.textPrimary,
                       fontSize: 20.sp,
                       fontWeight: FontWeight.bold,
                     ),
@@ -103,6 +104,7 @@ class _AddCategoryModalState extends State<AddCategoryModal> {
                 // Category Name Field
                 TextFormField(
                   controller: _categoryController,
+                  style: TextStyle(color: AppColors.textPrimary),
                   decoration: InputDecoration(
                     labelText: 'Category Name',
                     border: OutlineInputBorder(),
@@ -122,7 +124,7 @@ class _AddCategoryModalState extends State<AddCategoryModal> {
                 ),
                 SizedBox(height: 20.h),
 
-                // Image Field (optional)
+                // Image Field
                 GestureDetector(
                   onTap: () async {
                     File? picked = await pickImageFromGallery();
@@ -148,7 +150,12 @@ class _AddCategoryModalState extends State<AddCategoryModal> {
                                   children: [
                                     Icon(Icons.add_a_photo, size: 40.w),
                                     SizedBox(height: 8.h),
-                                    const Text('Add Category Image'),
+                                    Text(
+                                      'Add Category Image',
+                                      style: TextStyle(
+                                        color: AppColors.textPrimary,
+                                      ),
+                                    ),
                                   ],
                                 )
                                 : ClipRRect(

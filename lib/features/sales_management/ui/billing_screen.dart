@@ -107,90 +107,99 @@ class _BillingScreenState extends State<BillingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: AppBar(
-        backgroundColor: AppColors.white,
-        elevation: 0,
-        title: Text(
-          "Billing Invoice",
-          style: TextStyle(
-            fontSize: 22.sp,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (_) {
+          FocusScope.of(context).unfocus();
+          return false;
+        },
+        child: Scaffold(
+          backgroundColor: AppColors.white,
+          appBar: AppBar(
+            backgroundColor: AppColors.white,
+            elevation: 0,
+            title: Text(
+              "Billing Invoice",
+              style: TextStyle(
+                fontSize: 22.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
+            ),
           ),
-        ),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      CustomerInfoSection(
-                        nameController: nameController,
-                        phoneController: phoneController,
-                        emailController: emailController,
+          body: Padding(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          CustomerInfoSection(
+                            nameController: nameController,
+                            phoneController: phoneController,
+                            emailController: emailController,
+                          ),
+                          SizedBox(height: 24.h),
+                          InvoiceInfoSection(
+                            invoiceNumber: invoiceNumber,
+                            billingDate: DateFormat(
+                              'dd-MM-yyyy',
+                            ).format(billingDate),
+                            itemCount: cartItems.length,
+                          ),
+                          SizedBox(height: 24.h),
+                          ItemsTableSection(cartItems: cartItems),
+                          SizedBox(height: 24.h),
+                          BillingSummarySection(
+                            subtotal: subtotal,
+                            gst: gst,
+                            gstRate: gstRate,
+                            discountController: discountController,
+                            grandTotal: grandTotal,
+                            onDiscountChanged: () {
+                              discount = BillingUtils.calculateDiscount(
+                                discountController.text,
+                                subtotal,
+                                gst,
+                              );
+                              grandTotal = BillingUtils.calculateGrandTotal(
+                                subtotal,
+                                gst,
+                                discount,
+                              );
+                              setState(() {});
+                            },
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 24.h),
-                      InvoiceInfoSection(
-                        invoiceNumber: invoiceNumber,
-                        billingDate: DateFormat(
-                          'dd-MM-yyyy',
-                        ).format(billingDate),
-                        itemCount: cartItems.length,
-                      ),
-                      SizedBox(height: 24.h),
-                      ItemsTableSection(cartItems: cartItems),
-                      SizedBox(height: 24.h),
-                      BillingSummarySection(
-                        subtotal: subtotal,
-                        gst: gst,
-                        gstRate: gstRate,
-                        discountController: discountController,
-                        grandTotal: grandTotal,
-                        onDiscountChanged: () {
-                          discount = BillingUtils.calculateDiscount(
-                            discountController.text,
-                            subtotal,
-                            gst,
-                          );
-                          grandTotal = BillingUtils.calculateGrandTotal(
-                            subtotal,
-                            gst,
-                            discount,
-                          );
-                          setState(() {});
-                        },
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.only(top: 16.h),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.success,
-                  padding: EdgeInsets.symmetric(vertical: 16.h),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
+                Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.only(top: 16.h),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.success,
+                      padding: EdgeInsets.symmetric(vertical: 16.h),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                    ),
+                    onPressed: _confirmBill,
+                    child: Text(
+                      'CONFIRM BILL',
+                      style: TextStyle(fontSize: 18.sp, color: AppColors.white),
+                    ),
                   ),
                 ),
-                onPressed: _confirmBill,
-                child: Text(
-                  'CONFIRM BILL',
-                  style: TextStyle(fontSize: 18.sp, color: AppColors.white),
-                ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -20,7 +20,11 @@ class ItemsTableSection extends StatelessWidget {
             SizedBox(width: 8.w),
             Text(
               "Item Details",
-              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
@@ -112,12 +116,19 @@ class ItemsTableSection extends StatelessWidget {
           decoration: BoxDecoration(color: AppColors.cardColor),
           child: Row(
             children: [
-              Expanded(flex: 3, child: Text(item.product.productName)),
+              Expanded(
+                flex: 3,
+                child: Text(
+                  item.product.productName,
+                  style: TextStyle(color: AppColors.textPrimary),
+                ),
+              ),
               Expanded(
                 flex: 1,
                 child: Text(
                   item.quantity.toString(),
                   textAlign: TextAlign.center,
+                  style: TextStyle(color: AppColors.textPrimary),
                 ),
               ),
               Expanded(

@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:beatbox/core/app_colors.dart';
+import 'package:beatbox/features/app_settings_info_management/controller/theme_controller.dart';
 import 'package:beatbox/features/app_settings_info_management/ui/app_info_screen.dart';
 import 'package:beatbox/features/app_settings_info_management/ui/faq_screen.dart';
 import 'package:beatbox/features/app_settings_info_management/ui/user_manual_screen.dart';
@@ -43,32 +45,25 @@ import 'routes/app_routes.dart';
 import 'core/app_lifecycle_handler.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // initialize Flutter engine
-  Directory directory =
-      await getApplicationDocumentsDirectory(); // get the application local storage directory fetch
+  WidgetsFlutterBinding.ensureInitialized();
+  Directory directory = await getApplicationDocumentsDirectory();
   await Hive.initFlutter(directory.path);
 
-  // register Hive adapters for model classes to enable store object data
   Hive.registerAdapter(CategoryModelAdapter());
   Hive.registerAdapter(BrandModelAdapter());
   Hive.registerAdapter(ProductModelAdapter());
   Hive.registerAdapter(CartItemModelAdapter());
   Hive.registerAdapter(SalesModelAdapter());
 
-  // await Hive.deleteBoxFromDisk('productBox');
-  // await Hive.deleteBoxFromDisk('salesBox');
-  // await Hive.deleteBoxFromDisk('cartBox');
-  // await Hive.deleteBoxFromDisk('categoryBox');
-  // await Hive.deleteBoxFromDisk('brandBox');
-
-  // initialize hive boxes
   await CategoryController.initBox();
   await BrandController.initBox();
   await ProductController.initBox();
   await CartController.initBox();
   await SalesController.initBox();
-
   await Hive.openBox('app_settings');
+
+  await ThemeController.loadTheme();
+  AppColors.updateTheme(ThemeController.isDarkMode.value);
 
   runApp(const MyApp());
 }
@@ -81,19 +76,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late AppLifecycleHandler _lifecycleHandler; // tracks app lifecycle events
+  late AppLifecycleHandler _lifecycleHandler;
   bool _biometricJustDone = false;
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   void initState() {
     super.initState();
-
-    // Initialize lifecycle handler
     _lifecycleHandler = AppLifecycleHandler(
-      // check needs biometric auth
       onRequireBiometric: () {
-        // showing biometric if not recently completed
         if (!_biometricJustDone) {
           Navigator.of(
             navigatorKey.currentContext!,
@@ -101,11 +92,9 @@ class _MyAppState extends State<MyApp> {
         }
       },
       onAppPaused: () {
-        // when app go to background,reset flag.
         _biometricJustDone = false;
       },
     );
-    // register lifecycle observer to receive app state changes
     WidgetsBinding.instance.addObserver(_lifecycleHandler);
   }
 
@@ -115,7 +104,6 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
   }
 
-  /// handles successful biometric authentication
   void onBiometricSuccess() {
     Future.microtask(() {
       if (mounted) {
@@ -128,61 +116,70 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // initialize screenUtil for responsive layout
     return ScreenUtilInit(
       designSize: const Size(375, 812),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return MaterialApp(
-          title: 'BeatBox',
-          // set custom font using Google Fonts
-          theme: ThemeData(
-            textTheme: GoogleFonts.poppinsTextTheme(
-              Theme.of(context).textTheme,
-            ),
-          ),
-          debugShowCheckedModeBanner: false,
-          navigatorKey: navigatorKey,
-          initialRoute: AppRoutes.home,
-          // define all named routes in the app
-          routes: {
-            AppRoutes.splash: (context) => SplashScreen(),
-            AppRoutes.biometric:
-                (context) => BiometricScreen(onSuccess: onBiometricSuccess),
-            AppRoutes.home: (context) => HomeScreen(),
-            AppRoutes.stock: (context) => StockManageScreen(),
-            AppRoutes.limitedStock: (context) => LimitedStockScreen(),
-            AppRoutes.limitedStockDetail:
-                (context) => LimitedStockDetailScreen(),
-            AppRoutes.currentStock: (context) => CurrentStockScreen(),
-            AppRoutes.addProduct: (context) => AddProductScreen(),
-            AppRoutes.updateProduct: (context) => UpdateProductScreen(),
-            AppRoutes.stockEntry: (context) => StockEntryScreen(),
-            AppRoutes.stockEntryDetails: (context) => StockEntryDetailsScreen(),
-            AppRoutes.products: (context) => ProductsScreen(),
-            AppRoutes.productDetails: (context) => ProductDetailsScreen(),
-            AppRoutes.brandAndCategory: (context) => BrandAndCategoryScreen(),
-            AppRoutes.appSettings: (context) => AppSettingsScreen(),
-            AppRoutes.cart: (context) => CartScreen(),
-            AppRoutes.billing: (context) => BillingScreen(),
-            AppRoutes.salesAndCustomer: (context) => SalesAndCustomerScreen(),
-            AppRoutes.salesAndCustomerDetails:
-                (context) => SalesAndCustomerDetailsScreen(),
-            AppRoutes.billHistory: (context) => BillHistoryScreen(),
-            AppRoutes.billDetails: (context) => BillDetailsScreen(),
-            AppRoutes.userManual: (context) => UserManualScreen(),
-            AppRoutes.faq: (context) => FAQScreen(),
-            AppRoutes.appInfo: (context) => AppInfoScreen(),
-            AppRoutes.insight: (context) => InsightScreen(),
-          },
-          // set fixed text size of user device settings
-          builder: (context, child) {
-            return MediaQuery(
-              data: MediaQuery.of(
-                context,
-              ).copyWith(textScaler: TextScaler.linear(1.0)),
-              child: child!,
+        return ValueListenableBuilder<bool>(
+          valueListenable: ThemeController.isDarkMode,
+          builder: (context, isDark, _) {
+            AppColors.updateTheme(isDark); // auto update AppColors
+            return MaterialApp(
+              title: 'BeatBox',
+              theme: ThemeData(
+                textTheme: GoogleFonts.poppinsTextTheme(),
+                brightness: Brightness.light,
+              ),
+              darkTheme: ThemeData(
+                textTheme: GoogleFonts.poppinsTextTheme(),
+                brightness: Brightness.dark,
+              ),
+              themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+              debugShowCheckedModeBanner: false,
+              navigatorKey: navigatorKey,
+              initialRoute: AppRoutes.home,
+              routes: {
+                AppRoutes.splash: (context) => SplashScreen(),
+                AppRoutes.biometric:
+                    (context) => BiometricScreen(onSuccess: onBiometricSuccess),
+                AppRoutes.home: (context) => HomeScreen(),
+                AppRoutes.stock: (context) => StockManageScreen(),
+                AppRoutes.limitedStock: (context) => LimitedStockScreen(),
+                AppRoutes.limitedStockDetail:
+                    (context) => LimitedStockDetailScreen(),
+                AppRoutes.currentStock: (context) => CurrentStockScreen(),
+                AppRoutes.addProduct: (context) => AddProductScreen(),
+                AppRoutes.updateProduct: (context) => UpdateProductScreen(),
+                AppRoutes.stockEntry: (context) => StockEntryScreen(),
+                AppRoutes.stockEntryDetails:
+                    (context) => StockEntryDetailsScreen(),
+                AppRoutes.products: (context) => ProductsScreen(),
+                AppRoutes.productDetails: (context) => ProductDetailsScreen(),
+                AppRoutes.brandAndCategory:
+                    (context) => BrandAndCategoryScreen(),
+                AppRoutes.appSettings: (context) => AppSettingsScreen(),
+                AppRoutes.cart: (context) => CartScreen(),
+                AppRoutes.billing: (context) => BillingScreen(),
+                AppRoutes.salesAndCustomer:
+                    (context) => SalesAndCustomerScreen(),
+                AppRoutes.salesAndCustomerDetails:
+                    (context) => SalesAndCustomerDetailsScreen(),
+                AppRoutes.billHistory: (context) => BillHistoryScreen(),
+                AppRoutes.billDetails: (context) => BillDetailsScreen(),
+                AppRoutes.userManual: (context) => UserManualScreen(),
+                AppRoutes.faq: (context) => FAQScreen(),
+                AppRoutes.appInfo: (context) => AppInfoScreen(),
+                AppRoutes.insight: (context) => InsightScreen(),
+              },
+              builder: (context, child) {
+                return MediaQuery(
+                  data: MediaQuery.of(
+                    context,
+                  ).copyWith(textScaler: TextScaler.linear(1.0)),
+                  child: child!,
+                );
+              },
             );
           },
         );

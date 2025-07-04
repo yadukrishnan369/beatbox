@@ -76,13 +76,13 @@ class BillUtils {
       context: context,
       builder:
           (_) => AlertDialog(
-            backgroundColor: AppColors.white,
-            title: const Text(
+            title: Text(
               "Delete Bill",
               style: TextStyle(color: AppColors.primary),
             ),
             content: Text(
               "Are you sure you want to delete this Bill ${bill.invoiceNumber}?",
+              style: TextStyle(color: AppColors.textPrimary),
             ),
             actions: [
               TextButton(
@@ -106,13 +106,13 @@ class BillUtils {
       context: context,
       builder:
           (_) => AlertDialog(
-            backgroundColor: AppColors.white,
-            title: const Text(
+            title: Text(
               "Confirm Deletion",
               style: TextStyle(color: AppColors.primary),
             ),
-            content: const Text(
+            content: Text(
               "Deleting this Bill is permanent! Do you want to proceed?",
+              style: TextStyle(color: AppColors.textPrimary),
             ),
             actions: [
               TextButton(

@@ -114,18 +114,18 @@ class ProductUtils {
         context: context,
         builder:
             (_) => AlertDialog(
-              backgroundColor: AppColors.white,
-              title: const Text(
+              title: Text(
                 'Cannot Proceed !',
                 style: TextStyle(color: AppColors.primary),
               ),
-              content: const Text(
+              content: Text(
                 'This product is currently in the cart.\nPlease remove it from the cart before editing.',
+                style: TextStyle(color: AppColors.textPrimary),
               ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('OK'),
+                  child: Text('OK'),
                 ),
               ],
             ),
@@ -159,13 +159,13 @@ class ProductUtils {
         context: context,
         builder:
             (_) => AlertDialog(
-              backgroundColor: AppColors.white,
-              title: const Text(
+              title: Text(
                 'Cannot Proceed!',
                 style: TextStyle(color: AppColors.primary),
               ),
-              content: const Text(
+              content: Text(
                 'This product is currently in the cart.\nPlease remove it from the cart before deleting.',
+                style: TextStyle(color: AppColors.textPrimary),
               ),
               actions: [
                 TextButton(
@@ -183,13 +183,13 @@ class ProductUtils {
       context: context,
       builder:
           (_) => AlertDialog(
-            backgroundColor: AppColors.white,
-            title: const Text(
+            title: Text(
               'Confirm Deletion',
               style: TextStyle(color: AppColors.primary),
             ),
             content: Text(
               'Are you sure you want to delete "${product.productName}"?',
+              style: TextStyle(color: AppColors.textPrimary),
             ),
             actions: [
               TextButton(
@@ -208,13 +208,13 @@ class ProductUtils {
                     context: context,
                     builder:
                         (_) => AlertDialog(
-                          backgroundColor: AppColors.white,
-                          title: const Text(
+                          title: Text(
                             'Final Confirmation',
                             style: TextStyle(color: AppColors.primary),
                           ),
-                          content: const Text(
+                          content: Text(
                             'Do you really want to delete this product permanently?',
+                            style: TextStyle(color: AppColors.textPrimary),
                           ),
                           actions: [
                             TextButton(
@@ -256,7 +256,7 @@ class ProductUtils {
                 },
                 child: Text(
                   'Continue',
-                  style: TextStyle(color: AppColors.primary),
+                  style: TextStyle(color: AppColors.error),
                 ),
               ),
             ],
@@ -285,8 +285,13 @@ class ProductUtils {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Only $availableQuantity items available"),
-          backgroundColor: Colors.red,
+          content: Text(
+            availableQuantity == 0
+                ? "No more items available"
+                : "Only $availableQuantity items available",
+            style: const TextStyle(color: Colors.white),
+          ),
+          backgroundColor: AppColors.error,
         ),
       );
       return currentQuantity;

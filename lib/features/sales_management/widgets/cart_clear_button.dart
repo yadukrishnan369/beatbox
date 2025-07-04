@@ -27,13 +27,13 @@ class CartClearButton extends StatelessWidget {
               context: context,
               builder:
                   (context) => AlertDialog(
-                    backgroundColor: AppColors.white,
                     title: Text(
                       'Confirmation',
                       style: TextStyle(color: AppColors.primary),
                     ),
-                    content: const Text(
+                    content: Text(
                       'Are you sure you want to clear all this cart items?',
+                      style: TextStyle(color: AppColors.textPrimary),
                     ),
                     actions: [
                       TextButton(

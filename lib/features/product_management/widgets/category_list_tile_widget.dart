@@ -71,9 +71,17 @@ class BrandListTabTile extends StatelessWidget {
                               context: context,
                               builder:
                                   (context) => AlertDialog(
-                                    title: Text('Delete Brand'),
+                                    title: Text(
+                                      'Delete Brand',
+                                      style: TextStyle(
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
                                     content: Text(
                                       'Are you sure you want to delete "${item.brandName}"?',
+                                      style: TextStyle(
+                                        color: AppColors.textPrimary,
+                                      ),
                                     ),
                                     actions: [
                                       TextButton(

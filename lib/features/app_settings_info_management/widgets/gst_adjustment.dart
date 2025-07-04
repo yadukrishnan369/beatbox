@@ -32,7 +32,6 @@ class _GSTAdjustmentDialogState extends State<GSTAdjustmentDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: AppColors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       child: SingleChildScrollView(
         child: Container(
@@ -83,6 +82,7 @@ class _GSTAdjustmentDialogState extends State<GSTAdjustmentDialog> {
                         keyboardType: TextInputType.number,
                         textAlign: TextAlign.center,
                         style: TextStyle(
+                          color: AppColors.textPrimary,
                           fontSize: 24.sp,
                           fontWeight: FontWeight.bold,
                         ),

@@ -57,7 +57,7 @@ class AddToCartSection extends StatelessWidget {
                   color:
                       product.productQuantity <= 0
                           ? AppColors.error
-                          : AppColors.white,
+                          : Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),

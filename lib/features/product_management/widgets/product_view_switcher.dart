@@ -157,6 +157,7 @@ class ProductViewSwitcher extends StatelessWidget {
                                 Text(
                                   product.productName,
                                   style: TextStyle(
+                                    color: AppColors.textPrimary,
                                     fontSize: 18.sp,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -255,7 +256,10 @@ class ProductViewSwitcher extends StatelessWidget {
                     ),
                     title: Text(
                       product.productName,
-                      style: TextStyle(fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

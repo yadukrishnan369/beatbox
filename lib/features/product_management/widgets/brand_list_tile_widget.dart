@@ -72,10 +72,17 @@ class CatogoryListTabTile extends StatelessWidget {
                               context: context,
                               builder:
                                   (context) => AlertDialog(
-                                    backgroundColor: AppColors.white,
-                                    title: Text('Delete Category'),
+                                    title: Text(
+                                      'Delete Category',
+                                      style: TextStyle(
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
                                     content: Text(
                                       'Are you sure you want to delete "${item.categoryName}"?',
+                                      style: TextStyle(
+                                        color: AppColors.textPrimary,
+                                      ),
                                     ),
                                     actions: [
                                       TextButton(

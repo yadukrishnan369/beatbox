@@ -92,7 +92,6 @@ class _CurrentStockTileState extends State<CurrentStockTile> {
                   context: context,
                   builder:
                       (ctx) => AlertDialog(
-                        backgroundColor: AppColors.white,
                         title: Text(
                           "Are you sure?",
                           style: TextStyle(color: AppColors.primary),
@@ -101,6 +100,7 @@ class _CurrentStockTileState extends State<CurrentStockTile> {
                           isAvailable
                               ? "Do you want to stop sale for this product?"
                               : "Do you want to mark this product as ready for sale?",
+                          style: TextStyle(color: AppColors.textPrimary),
                         ),
                         actions: [
                           TextButton(

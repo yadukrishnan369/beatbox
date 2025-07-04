@@ -31,11 +31,7 @@ class RemoveAndAdjustItem extends StatelessWidget {
                 },
                 child: Container(
                   padding: EdgeInsets.all(4.r),
-                  child: Icon(
-                    Icons.remove,
-                    color: AppColors.white,
-                    size: 16.sp,
-                  ),
+                  child: Icon(Icons.remove, color: Colors.white, size: 16.sp),
                 ),
               ),
               Container(
@@ -43,7 +39,7 @@ class RemoveAndAdjustItem extends StatelessWidget {
                 child: Text(
                   '${item.quantity}',
                   style: TextStyle(
-                    color: AppColors.white,
+                    color: Colors.white,
                     fontWeight: FontWeight.w600,
                     fontSize: 14.sp,
                   ),
@@ -59,6 +55,7 @@ class RemoveAndAdjustItem extends StatelessWidget {
                       SnackBar(
                         content: Text(
                           "Only ${item.product.productQuantity} items available",
+                          style: TextStyle(color: Colors.white),
                         ),
                         backgroundColor: AppColors.error,
                       ),
@@ -67,7 +64,7 @@ class RemoveAndAdjustItem extends StatelessWidget {
                 },
                 child: Container(
                   padding: EdgeInsets.all(4.r),
-                  child: Icon(Icons.add, color: AppColors.white, size: 16.sp),
+                  child: Icon(Icons.add, color: Colors.white, size: 16.sp),
                 ),
               ),
             ],
@@ -82,12 +79,14 @@ class RemoveAndAdjustItem extends StatelessWidget {
               context: context,
               builder: (context) {
                 return AlertDialog(
-                  backgroundColor: AppColors.white,
                   title: Text(
                     'Confirmation',
                     style: TextStyle(color: AppColors.primary),
                   ),
-                  content: Text('Are you sure you want to remove this item?'),
+                  content: Text(
+                    'Are you sure you want to remove this item?',
+                    style: TextStyle(color: AppColors.textPrimary),
+                  ),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),

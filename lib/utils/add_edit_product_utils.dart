@@ -88,12 +88,15 @@ class AddEditProductUtils {
       context: context,
       builder:
           (context) => AlertDialog(
-            backgroundColor: AppColors.white,
             title: Text(
               'Confirm $action',
               style: TextStyle(color: AppColors.primary),
             ),
-            content: Text('Are you sure you want to $action this product?'),
+            content: Text(
+              'Are you sure you want to $action this product?',
+              style: TextStyle(color: AppColors.textPrimary),
+            ),
+
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),

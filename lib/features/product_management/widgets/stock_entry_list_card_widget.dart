@@ -44,7 +44,7 @@ class StockEntryListCard extends StatelessWidget {
             children: [
               Text(
                 'purchased Qty: ${product.initialQuantity}',
-                style: TextStyle(fontSize: 14.sp),
+                style: TextStyle(fontSize: 14.sp, color: AppColors.textPrimary),
               ),
               product.productQuantity == 0
                   ? Text(

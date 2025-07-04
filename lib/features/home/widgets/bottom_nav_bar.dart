@@ -104,7 +104,7 @@ class CustomBottomNavBar extends StatelessWidget {
                           child: Text(
                             '${cartItems.length}',
                             style: TextStyle(
-                              color: AppColors.white,
+                              color: Colors.white,
                               fontSize: 14.sp,
                               fontWeight: FontWeight.bold,
                             ),
@@ -133,13 +133,13 @@ class CustomBottomNavBar extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, color: AppColors.white, size: 24.sp),
+          Icon(icon, color: Colors.white, size: 24.sp),
           SizedBox(height: 4.h),
           Text(
             label,
             style: TextStyle(
               fontSize: 12.sp,
-              color: AppColors.white,
+              color: Colors.white,
               fontWeight: FontWeight.w600,
             ),
           ),

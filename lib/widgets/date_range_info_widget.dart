@@ -39,11 +39,17 @@ class DateRangeInfoWidget extends StatelessWidget {
               children: [
                 Text(
                   'From: ${_format(startDate)}',
-                  style: TextStyle(fontSize: 15.sp),
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 15.sp,
+                  ),
                 ),
                 Text(
                   'To: ${_format(endDate)}',
-                  style: TextStyle(fontSize: 15.sp),
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 15.sp,
+                  ),
                 ),
               ],
             ),

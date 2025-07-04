@@ -1,4 +1,5 @@
 import 'package:beatbox/core/app_colors.dart';
+import 'package:beatbox/features/app_settings_info_management/controller/theme_controller.dart';
 import 'package:beatbox/features/app_settings_info_management/widgets/gst_adjustment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,18 +26,34 @@ class AppSettingsScreen extends StatelessWidget {
         padding: EdgeInsets.only(top: 15.h),
         child: ListView(
           children: [
-            _buildSettingItem(
-              context,
-              title: 'Dark mode',
-              leading: Icon(Icons.dark_mode_outlined),
-              trailing: Transform.scale(
-                scale: 0.9.w,
-                child: Switch(value: false, onChanged: (value) {}),
-              ),
-              onTap: () {
-                // Handle dark mode toggle
+            ValueListenableBuilder<bool>(
+              valueListenable: ThemeController.isDarkMode,
+              builder: (context, isDark, _) {
+                return _buildSettingItem(
+                  context,
+                  title: 'Dark mode',
+                  leading: Icon(Icons.dark_mode_outlined),
+                  trailing: Transform.scale(
+                    scale: 0.9.w,
+                    child: Switch(
+                      value: isDark,
+                      onChanged: (value) async {
+                        await ThemeController.toggleTheme(value);
+                        AppColors.updateTheme(
+                          value,
+                        ); // update AppColors dark/light
+                      },
+                    ),
+                  ),
+                  onTap: () async {
+                    final value = !isDark;
+                    await ThemeController.toggleTheme(value);
+                    AppColors.updateTheme(value);
+                  },
+                );
               },
             ),
+
             SizedBox(height: 10.h),
             _buildSettingItem(
               context,

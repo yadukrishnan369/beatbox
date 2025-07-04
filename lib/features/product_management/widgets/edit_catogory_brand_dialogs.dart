@@ -34,7 +34,6 @@ class _EditCategoryDialogState extends State<EditCategoryDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: AppColors.white,
       title: Text('Edit Category', style: TextStyle(color: AppColors.primary)),
       content: Form(
         key: _formKey,
@@ -43,9 +42,10 @@ class _EditCategoryDialogState extends State<EditCategoryDialog> {
           children: [
             TextFormField(
               controller: nameController,
+              style: TextStyle(color: AppColors.textPrimary),
               decoration: InputDecoration(
                 labelText: 'Category Name',
-                labelStyle: TextStyle(color: AppColors.primary),
+                labelStyle: TextStyle(color: AppColors.textPrimary),
               ),
               validator:
                   (value) => NameValidators.validateCategoryName(
@@ -128,7 +128,6 @@ class _EditBrandDialogState extends State<EditBrandDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: AppColors.white,
       title: Text('Edit Brand', style: TextStyle(color: AppColors.primary)),
       content: Form(
         key: _formKey,
@@ -137,9 +136,10 @@ class _EditBrandDialogState extends State<EditBrandDialog> {
           children: [
             TextFormField(
               controller: nameController,
+              style: TextStyle(color: AppColors.textPrimary),
               decoration: InputDecoration(
                 labelText: 'Brand Name',
-                labelStyle: TextStyle(color: AppColors.primary),
+                labelStyle: TextStyle(color: AppColors.textPrimary),
               ),
               validator:
                   (value) => NameValidators.validateBrandName(

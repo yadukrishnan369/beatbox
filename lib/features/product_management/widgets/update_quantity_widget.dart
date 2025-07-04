@@ -14,10 +14,13 @@ void showQuantityPopup({
     context: context,
     builder: (context) {
       return AlertDialog(
-        backgroundColor: AppColors.white,
-        title: const Text('Add Quantity'),
+        title: Text(
+          'Add Quantity',
+          style: TextStyle(color: AppColors.textPrimary),
+        ),
         content: TextField(
           controller: qtyController,
+          style: TextStyle(color: AppColors.textPrimary),
           keyboardType: TextInputType.number,
           decoration: const InputDecoration(hintText: 'Enter quantity'),
         ),

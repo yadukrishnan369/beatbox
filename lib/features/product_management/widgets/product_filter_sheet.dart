@@ -49,125 +49,154 @@ class _ProductFilterSheetState extends State<ProductFilterSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.6,
       padding: EdgeInsets.only(
         top: 20.h,
         left: 20.w,
         right: 20.w,
         bottom: 20.h + MediaQuery.of(context).viewInsets.bottom,
       ),
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          categories.isNotEmpty || brands.isNotEmpty
-              ? Padding(
-                padding: EdgeInsets.only(bottom: 16.h),
-                child: Text(
-                  'Filter Products',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25.sp,
-                  ),
-                ),
-              )
-              : Padding(
-                padding: EdgeInsets.only(bottom: 16.h),
-                child: Text(
-                  'No Filter Available',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25.sp,
-                  ),
-                ),
-              ),
-
-          Text(
-            'Filter by Category',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),
+          // Drag handle
+          Container(
+            width: 40.w,
+            height: 5.h,
+            decoration: BoxDecoration(
+              color: Colors.grey[400],
+              borderRadius: BorderRadius.circular(10.r),
+            ),
           ),
-          SizedBox(height: 10.h),
-          categories.isEmpty
-              ? Text(
-                'No categories available',
-                style: TextStyle(
-                  color: AppColors.textDisabled,
-                  fontSize: 14.sp,
-                ),
-              )
-              : Wrap(
-                spacing: 10.w,
-                children:
-                    categories.map((cat) {
-                      final isSelected = selectedCategories.contains(
-                        cat.categoryName,
-                      );
-                      return FilterChip(
-                        label: Text(cat.categoryName),
-                        selected: isSelected,
-                        onSelected: (bool selected) {
-                          setState(() {
-                            selected
-                                ? selectedCategories.add(cat.categoryName)
-                                : selectedCategories.remove(cat.categoryName);
-                          });
-                        },
-                        selectedColor: AppColors.primary,
-                        backgroundColor: AppColors.offWhite,
-                        labelStyle: TextStyle(
-                          color:
-                              isSelected
-                                  ? AppColors.white
-                                  : AppColors.textPrimary,
-                        ),
-                      );
-                    }).toList(),
-              ),
+          SizedBox(height: 12.h),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Filter Products',
+                    style: TextStyle(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22.sp,
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
 
-          SizedBox(height: 20.h),
-          Text(
-            'Filter by Brand',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.sp),
+                  /// Category Filters
+                  Text(
+                    'Filter by Category',
+                    style: TextStyle(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                  SizedBox(height: 10.h),
+                  categories.isEmpty
+                      ? Text(
+                        'No categories available',
+                        style: TextStyle(
+                          color: AppColors.textDisabled,
+                          fontSize: 14.sp,
+                        ),
+                      )
+                      : Wrap(
+                        spacing: 10.w,
+                        runSpacing: 10.h,
+                        children:
+                            categories.map((cat) {
+                              final isSelected = selectedCategories.contains(
+                                cat.categoryName,
+                              );
+                              return FilterChip(
+                                label: Text(cat.categoryName),
+                                selected: isSelected,
+                                onSelected: (selected) {
+                                  setState(() {
+                                    selected
+                                        ? selectedCategories.add(
+                                          cat.categoryName,
+                                        )
+                                        : selectedCategories.remove(
+                                          cat.categoryName,
+                                        );
+                                  });
+                                },
+                                selectedColor: AppColors.primary,
+                                backgroundColor: AppColors.offWhite,
+                                labelStyle: TextStyle(
+                                  color:
+                                      isSelected
+                                          ? AppColors.white
+                                          : AppColors.textPrimary,
+                                ),
+                              );
+                            }).toList(),
+                      ),
+
+                  SizedBox(height: 20.h),
+
+                  /// Brand Filters
+                  Text(
+                    'Filter by Brand',
+                    style: TextStyle(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                  SizedBox(height: 10.h),
+                  brands.isEmpty
+                      ? Text(
+                        'No brands available',
+                        style: TextStyle(
+                          color: AppColors.textDisabled,
+                          fontSize: 14.sp,
+                        ),
+                      )
+                      : Wrap(
+                        spacing: 10.w,
+                        runSpacing: 10.h,
+                        children:
+                            brands.map((brand) {
+                              final isSelected = selectedBrands.contains(
+                                brand.brandName,
+                              );
+                              return FilterChip(
+                                label: Text(brand.brandName),
+                                selected: isSelected,
+                                onSelected: (selected) {
+                                  setState(() {
+                                    selected
+                                        ? selectedBrands.add(brand.brandName)
+                                        : selectedBrands.remove(
+                                          brand.brandName,
+                                        );
+                                  });
+                                },
+                                selectedColor: AppColors.primary,
+                                backgroundColor: AppColors.offWhite,
+                                labelStyle: TextStyle(
+                                  color:
+                                      isSelected
+                                          ? AppColors.white
+                                          : AppColors.textPrimary,
+                                ),
+                              );
+                            }).toList(),
+                      ),
+                ],
+              ),
+            ),
           ),
-          SizedBox(height: 10.h),
-          brands.isEmpty
-              ? Text(
-                'No brands available',
-                style: TextStyle(
-                  color: AppColors.textDisabled,
-                  fontSize: 14.sp,
-                ),
-              )
-              : Wrap(
-                spacing: 10.w,
-                children:
-                    brands.map((brand) {
-                      final isSelected = selectedBrands.contains(
-                        brand.brandName,
-                      );
-                      return FilterChip(
-                        label: Text(brand.brandName),
-                        selected: isSelected,
-                        onSelected: (bool selected) {
-                          setState(() {
-                            selected
-                                ? selectedBrands.add(brand.brandName)
-                                : selectedBrands.remove(brand.brandName);
-                          });
-                        },
-                        selectedColor: AppColors.primary,
-                        backgroundColor: AppColors.offWhite,
-                        labelStyle: TextStyle(
-                          color:
-                              isSelected
-                                  ? AppColors.white
-                                  : AppColors.textPrimary,
-                        ),
-                      );
-                    }).toList(),
-              ),
 
-          SizedBox(height: 25.h),
+          // Apply & Clear buttons
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -196,9 +225,9 @@ class _ProductFilterSheetState extends State<ProductFilterSheet> {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    foregroundColor: AppColors.white,
+                    foregroundColor: Colors.white,
                   ),
-                  child: Text('Apply Filter'),
+                  child: const Text('Apply Filter'),
                 ),
             ],
           ),

@@ -60,7 +60,7 @@ class FAQSection extends StatelessWidget {
             color: AppColors.textPrimary,
           ),
         ),
-        trailing: const Icon(
+        trailing: Icon(
           Icons.keyboard_arrow_down_rounded,
           color: AppColors.textPrimary,
         ),

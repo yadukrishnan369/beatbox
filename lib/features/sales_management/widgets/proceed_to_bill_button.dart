@@ -55,7 +55,7 @@ class ProceedToBillButton extends StatelessWidget {
                 'Proceed to Bill',
                 style: TextStyle(
                   fontSize: 22.sp,
-                  color: AppColors.white,
+                  color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),

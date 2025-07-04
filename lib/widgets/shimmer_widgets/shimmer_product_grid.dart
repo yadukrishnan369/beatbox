@@ -8,12 +8,24 @@ class ShimmerProductGrid extends StatelessWidget {
 
   const ShimmerProductGrid({super.key, required this.isGridView});
 
-  @override
-  Widget build(BuildContext context) {
-    return isGridView ? _buildGridView() : _buildListView();
+  Color getBaseColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? Colors.grey[700]!
+        : Colors.grey[300]!;
   }
 
-  Widget _buildGridView() {
+  Color getHighlightColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? Colors.grey[500]!
+        : Colors.grey[100]!;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return isGridView ? _buildGridView(context) : _buildListView(context);
+  }
+
+  Widget _buildGridView(BuildContext context) {
     return GridView.builder(
       padding: EdgeInsets.all(16.r),
       itemCount: 6,
@@ -24,28 +36,28 @@ class ShimmerProductGrid extends StatelessWidget {
         childAspectRatio: 0.75,
       ),
       itemBuilder: (context, index) {
-        return _buildShimmerGridItem();
+        return _buildShimmerGridItem(context);
       },
     );
   }
 
-  Widget _buildListView() {
+  Widget _buildListView(BuildContext context) {
     return ListView.builder(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       itemCount: 6,
       itemBuilder: (context, index) {
         return Padding(
           padding: EdgeInsets.only(bottom: 12.h),
-          child: _buildShimmerListItem(),
+          child: _buildShimmerListItem(context),
         );
       },
     );
   }
 
-  Widget _buildShimmerGridItem() {
+  Widget _buildShimmerGridItem(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: getBaseColor(context),
+      highlightColor: getHighlightColor(context),
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.white,
@@ -59,24 +71,24 @@ class ShimmerProductGrid extends StatelessWidget {
               height: 100.h,
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: getBaseColor(context),
                 borderRadius: BorderRadius.circular(8.r),
               ),
             ),
             SizedBox(height: 12.h),
-            Container(height: 14.h, width: 80.w, color: Colors.grey[300]),
+            Container(height: 14.h, width: 80.w, color: getBaseColor(context)),
             SizedBox(height: 8.h),
-            Container(height: 14.h, width: 50.w, color: Colors.grey[300]),
+            Container(height: 14.h, width: 50.w, color: getBaseColor(context)),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildShimmerListItem() {
+  Widget _buildShimmerListItem(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: getBaseColor(context),
+      highlightColor: getHighlightColor(context),
       child: Container(
         height: 100.h,
         decoration: BoxDecoration(
@@ -90,7 +102,7 @@ class ShimmerProductGrid extends StatelessWidget {
               width: 80.w,
               height: 80.h,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: getBaseColor(context),
                 borderRadius: BorderRadius.circular(8.r),
               ),
             ),
@@ -103,12 +115,20 @@ class ShimmerProductGrid extends StatelessWidget {
                   Container(
                     height: 14.h,
                     width: 120.w,
-                    color: Colors.grey[300],
+                    color: getBaseColor(context),
                   ),
                   SizedBox(height: 8.h),
-                  Container(height: 14.h, width: 80.w, color: Colors.grey[300]),
+                  Container(
+                    height: 14.h,
+                    width: 80.w,
+                    color: getBaseColor(context),
+                  ),
                   SizedBox(height: 8.h),
-                  Container(height: 14.h, width: 60.w, color: Colors.grey[300]),
+                  Container(
+                    height: 14.h,
+                    width: 60.w,
+                    color: getBaseColor(context),
+                  ),
                 ],
               ),
             ),

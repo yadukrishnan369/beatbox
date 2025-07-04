@@ -33,7 +33,6 @@ class SalesAndCustomerDetailsScreen extends StatelessWidget {
           SizedBox(
             width: 80.w,
             child: PopupMenuButton<String>(
-              color: AppColors.white,
               icon: Icon(Icons.more_vert, color: AppColors.textPrimary),
               onSelected: (value) {
                 if (value == 'delete') {

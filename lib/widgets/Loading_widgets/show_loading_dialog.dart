@@ -72,7 +72,7 @@ class _AnimatedLoadingDialogState extends State<_AnimatedLoadingDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: AppColors.white,
+      backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
       child: Padding(
         padding: EdgeInsets.all(20.w),
@@ -99,7 +99,7 @@ class _AnimatedLoadingDialogState extends State<_AnimatedLoadingDialog> {
             Text(
               success ? 'Success' : (widget.message ?? 'Loading...'),
               style: TextStyle(
-                color: AppColors.textPrimary,
+                color: Colors.black,
                 fontWeight: FontWeight.bold,
               ),
             ),

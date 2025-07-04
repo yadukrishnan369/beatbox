@@ -18,17 +18,20 @@ class _StockManageScreenState extends State<StockManageScreen> {
   int _selectedIndex = 0;
 
   static const List<BottomNavigationBarItem> bottomNavItems = [
-    BottomNavigationBarItem(icon: Icon(Icons.category), label: 'Add category'),
     BottomNavigationBarItem(
-      icon: Icon(Icons.branding_watermark),
+      icon: Icon(Icons.category, color: Colors.white),
+      label: 'Add category',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.branding_watermark, color: Colors.white),
       label: 'Add Brand',
     ),
     BottomNavigationBarItem(
-      icon: Icon(Icons.warning_amber_rounded),
+      icon: Icon(Icons.warning_amber_rounded, color: Colors.white),
       label: 'Limited Stock',
     ),
     BottomNavigationBarItem(
-      icon: Icon(Icons.inventory_2),
+      icon: Icon(Icons.inventory_2, color: Colors.white),
       label: 'Current Stock',
     ),
   ];
@@ -99,7 +102,11 @@ class _StockManageScreenState extends State<StockManageScreen> {
               padding: EdgeInsets.symmetric(vertical: 16.h),
               child: Text(
                 'Product Actions',
-                style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             _productActionItem(Icons.library_add, 'Add Product', () {
@@ -127,8 +134,8 @@ class _StockManageScreenState extends State<StockManageScreen> {
         backgroundColor: AppColors.bottomNavColor,
         items: bottomNavItems,
         currentIndex: _selectedIndex,
-        selectedItemColor: AppColors.white,
-        unselectedItemColor: AppColors.white,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white,
         onTap: _onNavBarTap,
         type: BottomNavigationBarType.fixed,
       ),

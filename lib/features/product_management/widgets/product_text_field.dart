@@ -38,11 +38,12 @@ class ProductTextField extends StatelessWidget {
         SizedBox(height: 4.h),
         TextFormField(
           controller: controller,
+          style: TextStyle(color: AppColors.textPrimary),
           maxLines: maxLines,
           keyboardType: keyboardType,
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: TextStyle(color: AppColors.textDisabled),
+            hintStyle: TextStyle(color: AppColors.textPrimary),
             prefixIcon: Icon(icon),
             filled: true,
             fillColor: AppColors.white,

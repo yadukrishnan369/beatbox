@@ -32,12 +32,16 @@ class BillingDiscountSection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("Discount (%)", style: TextStyle(fontSize: 14.sp)),
+            Text(
+              "Discount (%)",
+              style: TextStyle(color: AppColors.textPrimary, fontSize: 14.sp),
+            ),
             SizedBox(
               width: 125.w,
               height: 45.h,
               child: TextFormField(
                 controller: discountController,
+                style: TextStyle(color: AppColors.textPrimary),
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),

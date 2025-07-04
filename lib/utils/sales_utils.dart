@@ -111,13 +111,13 @@ class SalesUtils {
       context: context,
       builder:
           (_) => AlertDialog(
-            backgroundColor: AppColors.white,
-            title: const Text(
+            title: Text(
               "Delete Sale",
               style: TextStyle(color: AppColors.primary),
             ),
             content: Text(
               "Are you sure you want to delete this Sale ${sale.orderNumber}?",
+              style: TextStyle(color: AppColors.textPrimary),
             ),
             actions: [
               TextButton(
@@ -141,13 +141,13 @@ class SalesUtils {
       context: context,
       builder:
           (_) => AlertDialog(
-            backgroundColor: AppColors.white,
-            title: const Text(
+            title: Text(
               "Confirm Deletion",
               style: TextStyle(color: AppColors.primary),
             ),
-            content: const Text(
+            content: Text(
               "Deleting this Sale is permanent! Do you want to proceed?",
+              style: TextStyle(color: AppColors.textPrimary),
             ),
             actions: [
               TextButton(

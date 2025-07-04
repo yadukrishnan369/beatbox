@@ -56,7 +56,11 @@ class _CustomerInfoSectionState extends State<CustomerInfoSection> {
             SizedBox(width: 8.w),
             Text(
               "Customer Info",
-              style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             SizedBox(width: 100.w),
             if (isCustomerAutoFilled)
@@ -113,7 +117,10 @@ class _CustomerInfoSectionState extends State<CustomerInfoSection> {
   Widget _buildAutocompleteNameField() {
     return Row(
       children: [
-        SizedBox(width: 60.w, child: Text("Name")),
+        SizedBox(
+          width: 60.w,
+          child: Text("Name", style: TextStyle(color: AppColors.textPrimary)),
+        ),
         SizedBox(width: 12.w),
         Expanded(
           child: Autocomplete<String>(
@@ -133,7 +140,7 @@ class _CustomerInfoSectionState extends State<CustomerInfoSection> {
               final customer = previousCustomers.firstWhere(
                 (e) => e['name'] == selectedName,
               );
-              _showConfirmationDialog(customer); // show confirm before fill
+              _showConfirmationDialog(customer);
             },
             fieldViewBuilder: (
               context,
@@ -156,15 +163,16 @@ class _CustomerInfoSectionState extends State<CustomerInfoSection> {
                     });
                   }
                 },
+                style: TextStyle(color: AppColors.textPrimary),
                 validator: BillingUtils.validateName,
                 decoration: InputDecoration(
-                  hintText: "customer name",
-                  filled: true,
-                  fillColor: AppColors.white,
+                  hintText: "Customer name",
                   hintStyle: TextStyle(
                     color: AppColors.textDisabled,
                     fontSize: 14.sp,
                   ),
+                  filled: true,
+                  fillColor: AppColors.white,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.r),
                     borderSide: BorderSide.none,
@@ -172,6 +180,34 @@ class _CustomerInfoSectionState extends State<CustomerInfoSection> {
                   contentPadding: EdgeInsets.symmetric(
                     horizontal: 12.w,
                     vertical: 8.h,
+                  ),
+                ),
+              );
+            },
+            optionsViewBuilder: (context, onSelected, options) {
+              return Align(
+                alignment: Alignment.topLeft,
+                child: Material(
+                  elevation: 4,
+                  borderRadius: BorderRadius.circular(8.r),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxHeight: 200.h),
+                    child: ListView.separated(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      itemCount: options.length,
+                      separatorBuilder: (_, __) => Divider(height: 1),
+                      itemBuilder: (context, index) {
+                        final option = options.elementAt(index);
+                        return ListTile(
+                          title: Text(
+                            option,
+                            style: TextStyle(color: AppColors.textPrimary),
+                          ),
+                          onTap: () => onSelected(option),
+                        );
+                      },
+                    ),
                   ),
                 ),
               );
@@ -190,11 +226,15 @@ class _CustomerInfoSectionState extends State<CustomerInfoSection> {
   ) {
     return Row(
       children: [
-        SizedBox(width: 60.w, child: Text(label)),
+        SizedBox(
+          width: 60.w,
+          child: Text(label, style: TextStyle(color: AppColors.textPrimary)),
+        ),
         SizedBox(width: 12.w),
         Expanded(
           child: TextFormField(
             controller: controller,
+            style: TextStyle(color: AppColors.textPrimary),
             validator: validator,
             decoration: InputDecoration(
               hintText: hint,
@@ -224,7 +264,6 @@ class _CustomerInfoSectionState extends State<CustomerInfoSection> {
       context: context,
       builder:
           (_) => AlertDialog(
-            backgroundColor: AppColors.white,
             title: Text(
               "Use this customer?",
               style: TextStyle(color: AppColors.primary),
@@ -233,9 +272,18 @@ class _CustomerInfoSectionState extends State<CustomerInfoSection> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Name: ${customer['name']}"),
-                Text("Phone: ${customer['phone']}"),
-                Text("Email: ${customer['email']}"),
+                Text(
+                  "Name: ${customer['name']}",
+                  style: TextStyle(color: AppColors.textPrimary),
+                ),
+                Text(
+                  "Phone: ${customer['phone']}",
+                  style: TextStyle(color: AppColors.textPrimary),
+                ),
+                Text(
+                  "Email: ${customer['email']}",
+                  style: TextStyle(color: AppColors.textPrimary),
+                ),
               ],
             ),
             actions: [
@@ -248,7 +296,7 @@ class _CustomerInfoSectionState extends State<CustomerInfoSection> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.success,
                 ),
-                child: const Text(
+                child: Text(
                   "Use Details",
                   style: TextStyle(color: AppColors.white),
                 ),

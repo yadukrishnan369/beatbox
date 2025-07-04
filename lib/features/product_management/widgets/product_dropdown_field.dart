@@ -40,6 +40,7 @@ class ProductDropdownField extends StatelessWidget {
             'Select $label',
             style: TextStyle(color: AppColors.textDisabled),
           ),
+          style: TextStyle(color: AppColors.textPrimary),
           decoration: InputDecoration(
             prefixIcon: Icon(icon),
             filled: true,

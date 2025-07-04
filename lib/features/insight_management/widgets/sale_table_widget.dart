@@ -67,12 +67,24 @@ class SalesTable extends StatelessWidget {
                     children: [
                       Expanded(
                         flex: 3,
-                        child: Text(item['product'], style: _cellStyle()),
+                        child: Text(
+                          item['product'],
+                          style: TextStyle(
+                            color: AppColors.primary,
+                            fontSize: 12.sp,
+                          ),
+                        ),
                       ),
                       Expanded(
                         flex: 1,
                         child: Center(
-                          child: Text("${item['qty']}", style: _cellStyle()),
+                          child: Text(
+                            "${item['qty']}",
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontSize: 12.sp,
+                            ),
+                          ),
                         ),
                       ),
                       Expanded(
@@ -80,7 +92,10 @@ class SalesTable extends StatelessWidget {
                         child: Center(
                           child: Text(
                             "₹ ${AmountFormatter.format(item['total'])}",
-                            style: _cellStyle(),
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontSize: 12.sp,
+                            ),
                           ),
                         ),
                       ),
@@ -89,7 +104,10 @@ class SalesTable extends StatelessWidget {
                         child: Center(
                           child: Text(
                             "₹ ${AmountFormatter.format(item['profit'])}",
-                            style: _cellStyle(color: AppColors.success),
+                            style: TextStyle(
+                              color: AppColors.success,
+                              fontSize: 12.sp,
+                            ),
                           ),
                         ),
                       ),
@@ -134,9 +152,6 @@ class SalesTable extends StatelessWidget {
   TextStyle _headerStyle() => TextStyle(
     fontSize: 13.sp,
     fontWeight: FontWeight.w600,
-    color: AppColors.bottomNavColor,
+    color: AppColors.textPrimary,
   );
-
-  TextStyle _cellStyle({Color color = AppColors.textPrimary}) =>
-      TextStyle(fontSize: 12.sp, color: color);
 }

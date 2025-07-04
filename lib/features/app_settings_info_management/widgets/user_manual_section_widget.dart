@@ -24,7 +24,7 @@ class UserManualSection extends StatelessWidget {
           style: TextStyle(
             fontSize: 15.sp,
             fontWeight: FontWeight.w700,
-            color: AppColors.primary,
+            color: AppColors.textPrimary,
           ),
         ),
         children:
@@ -49,7 +49,7 @@ class UserManualSection extends StatelessWidget {
             margin: EdgeInsets.only(top: 6.h, right: 8.w),
             width: 4.w,
             height: 4.w,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: AppColors.textPrimary,
               shape: BoxShape.circle,
             ),
@@ -79,7 +79,7 @@ class UserManualSection extends StatelessWidget {
             margin: EdgeInsets.only(top: 6.h, right: 8.w),
             width: 4.w,
             height: 4.w,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: AppColors.textPrimary,
               shape: BoxShape.circle,
             ),

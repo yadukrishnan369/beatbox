@@ -51,7 +51,7 @@ class _SummaryCardState extends State<SummaryCard> {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16.r),
-                gradient: const LinearGradient(
+                gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [

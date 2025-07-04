@@ -89,7 +89,6 @@ class AppInfoScreen extends StatelessWidget {
     );
   }
 
-  // Common Widgets
   Widget _buildBulletText(String text) {
     return Padding(
       padding: EdgeInsets.only(bottom: 8.h),
@@ -100,7 +99,7 @@ class AppInfoScreen extends StatelessWidget {
             margin: EdgeInsets.only(top: 6.h, right: 8.w),
             width: 4.w,
             height: 4.w,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: AppColors.textPrimary,
               shape: BoxShape.circle,
             ),
