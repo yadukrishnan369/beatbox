@@ -12,7 +12,7 @@ class AppColors {
   static const Color white = Colors.white;
   static const Color offWhite = Color(0xFFF5F5F5);
   static const Color cream = Color(0xFFFFFDE7);
-  static const Color blue = Color.fromARGB(255, 130, 173, 208);
+  static const Color blue = Color.fromARGB(255, 97, 159, 210);
   static const Color cardColor = Color.fromARGB(233, 234, 233, 232);
   static const Color contColor = Color.fromARGB(255, 192, 203, 204);
 

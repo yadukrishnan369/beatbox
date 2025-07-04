@@ -6,6 +6,7 @@ import 'package:beatbox/features/auth/biometric_screen.dart';
 import 'package:beatbox/features/bill_management/ui/bill_details_screen.dart';
 import 'package:beatbox/features/bill_management/ui/bill_history_screen.dart';
 import 'package:beatbox/features/home/ui/home_screen.dart';
+import 'package:beatbox/features/insight_management/ui/insight_screen.dart';
 import 'package:beatbox/features/product_management/ui/limited_stock_detail_screen.dart';
 import 'package:beatbox/features/product_management/ui/stock_entry_details_screen.dart';
 import 'package:beatbox/features/product_management/ui/stock_entry_screen.dart';
@@ -172,7 +173,8 @@ class _MyAppState extends State<MyApp> {
             AppRoutes.billDetails: (context) => BillDetailsScreen(),
             AppRoutes.userManual: (context) => UserManualScreen(),
             AppRoutes.faq: (context) => FAQScreen(),
-            AppRoutes.appInfo:(context)=>AppInfoScreen(),
+            AppRoutes.appInfo: (context) => AppInfoScreen(),
+            AppRoutes.insight: (context) => InsightScreen(),
           },
           // set fixed text size of user device settings
           builder: (context, child) {

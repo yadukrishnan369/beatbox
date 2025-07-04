@@ -78,7 +78,7 @@ class SalesUtils {
     double totalProfit = 0.0;
 
     for (var sale in todaySales) {
-      totalSales += sale.grandTotal;
+      totalSales += sale.subtotal;
 
       for (var item in sale.cartItems) {
         final cost = item.product.purchaseRate;

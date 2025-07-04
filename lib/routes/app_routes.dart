@@ -4,6 +4,7 @@ import 'package:beatbox/features/app_settings_info_management/ui/user_manual_scr
 import 'package:beatbox/features/bill_management/ui/bill_details_screen.dart';
 import 'package:beatbox/features/bill_management/ui/bill_history_screen.dart';
 import 'package:beatbox/features/home/ui/home_screen.dart';
+import 'package:beatbox/features/insight_management/ui/insight_screen.dart';
 import 'package:beatbox/features/product_management/ui/add_edit_product_screen.dart';
 import 'package:beatbox/features/product_management/ui/brand_category_screen.dart';
 import 'package:beatbox/features/product_management/ui/current_stock_screen.dart';
@@ -50,6 +51,7 @@ class AppRoutes {
   static const String userManual = '/userManual';
   static const String faq = '/faq';
   static const String appInfo = '/appInfo';
+  static const String insight = '/insight';
 
   /// set each routes, its screen widget
   static Map<String, WidgetBuilder> get routes => {
@@ -77,6 +79,7 @@ class AppRoutes {
     userManual: (context) => UserManualScreen(),
     faq: (context) => FAQScreen(),
     appInfo: (context) => AppInfoScreen(),
+    insight: (context) => InsightScreen(),
   };
 
   //tracking navigation and Pause/resume the app

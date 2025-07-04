@@ -1,5 +1,6 @@
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/core/notifiers/sales_notifier.dart';
+import 'package:beatbox/routes/app_routes.dart';
 import 'package:beatbox/utils/amount_formatter.dart';
 import 'package:beatbox/utils/sales_utils.dart';
 import 'package:flutter/material.dart';
@@ -38,8 +39,7 @@ class _SummaryCardState extends State<SummaryCard> {
     return ValueListenableBuilder(
       valueListenable: filteredSalesNotifier,
       builder: (context, value, _) {
-        fetchTodaySummary(); // This updates sales & profit whenever notifier updates
-
+        fetchTodaySummary(); // This updates sales & profit
         return Container(
           margin: EdgeInsets.symmetric(horizontal: 20.w),
           width: double.infinity,
@@ -127,7 +127,9 @@ class _SummaryCardState extends State<SummaryCard> {
                         size: 18.sp,
                         color: AppColors.white,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, AppRoutes.insight);
+                      },
                     ),
                   ),
                 ],

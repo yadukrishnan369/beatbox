@@ -22,7 +22,7 @@ class CustomBottomNavBar extends StatelessWidget {
         Navigator.pushNamed(context, AppRoutes.products);
         break;
       case 4:
-        Navigator.pushNamed(context, '/insight');
+        Navigator.pushNamed(context, AppRoutes.insight);
         break;
     }
   }
