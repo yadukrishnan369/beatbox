@@ -4,14 +4,14 @@ import 'package:beatbox/core/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-Future<void> showResetAppLoadingDialog(BuildContext context) async {
+Future<void> showBackupLoadingDialog(BuildContext context) async {
   final completer = Completer<void>();
 
   showDialog(
     context: context,
     barrierDismissible: false,
     builder:
-        (_) => _ResetAppLoadingDialog(
+        (_) => _BackupLoadingDialog(
           onFinished: () {
             if (!completer.isCompleted) completer.complete();
           },
@@ -21,16 +21,16 @@ Future<void> showResetAppLoadingDialog(BuildContext context) async {
   return completer.future;
 }
 
-class _ResetAppLoadingDialog extends StatefulWidget {
+class _BackupLoadingDialog extends StatefulWidget {
   final VoidCallback onFinished;
 
-  const _ResetAppLoadingDialog({required this.onFinished});
+  const _BackupLoadingDialog({required this.onFinished});
 
   @override
-  State<_ResetAppLoadingDialog> createState() => _ResetAppLoadingDialogState();
+  State<_BackupLoadingDialog> createState() => _BackupLoadingDialogState();
 }
 
-class _ResetAppLoadingDialogState extends State<_ResetAppLoadingDialog> {
+class _BackupLoadingDialogState extends State<_BackupLoadingDialog> {
   bool _showSuccess = false;
 
   @override
@@ -87,7 +87,9 @@ class _ResetAppLoadingDialogState extends State<_ResetAppLoadingDialog> {
             ),
             SizedBox(height: 20.h),
             Text(
-              _showSuccess ? "App data reset successfully" : "Resetting app...",
+              _showSuccess
+                  ? "Sales data backed up successfully"
+                  : "Exporting all sales data...",
               style: TextStyle(
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,

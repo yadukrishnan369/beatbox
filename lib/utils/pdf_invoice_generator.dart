@@ -1,24 +1,26 @@
 import 'dart:io';
+import 'package:beatbox/utils/gst_utils.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:beatbox/features/sales_management/model/sales_model.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:open_file/open_file.dart';
 
-Future<void> generateInvoicePdf(SalesModel bill) async {
+Future<void> generateInvoicePdf(SalesModel bill, {String? savePath}) async {
   final pdf = pw.Document();
 
   // Load logo image from assets
   final logoData = await rootBundle.load('assets/images/app_logo.jpg');
   final logoImage = pw.MemoryImage(logoData.buffer.asUint8List());
+  final gstPercentage = GSTUtils.getGSTPercentage();
 
+  // PDF content
   pdf.addPage(
     pw.Page(
       build:
           (context) => pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              // Logo & BEATBOXX Title Row
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
@@ -45,7 +47,6 @@ Future<void> generateInvoicePdf(SalesModel bill) async {
                   ),
                 ],
               ),
-
               pw.SizedBox(height: 8),
               pw.Text('INVOICE', style: pw.TextStyle(fontSize: 16)),
               pw.SizedBox(height: 8),
@@ -55,8 +56,6 @@ Future<void> generateInvoicePdf(SalesModel bill) async {
               ),
               pw.Text('Order No: ${bill.orderNumber}'),
               pw.SizedBox(height: 16),
-
-              // Items Table
               pw.Table(
                 border: pw.TableBorder.all(width: 0.5),
                 columnWidths: {
@@ -98,8 +97,6 @@ Future<void> generateInvoicePdf(SalesModel bill) async {
                       ),
                     ],
                   ),
-
-                  // Items rows
                   ...bill.cartItems.map(
                     (item) => pw.TableRow(
                       children: [
@@ -128,10 +125,7 @@ Future<void> generateInvoicePdf(SalesModel bill) async {
                   ),
                 ],
               ),
-
               pw.SizedBox(height: 16),
-
-              // Totals Section
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.end,
                 children: [
@@ -142,7 +136,7 @@ Future<void> generateInvoicePdf(SalesModel bill) async {
                         'Subtotal: INR - ${bill.subtotal.toStringAsFixed(2)}',
                       ),
                       pw.Text(
-                        'GST Charges (18%): INR - ${bill.gst.toStringAsFixed(2)}',
+                        'GST Charges (${gstPercentage.toStringAsFixed(0)} %): INR - ${bill.gst.toStringAsFixed(2)}',
                       ),
                       pw.Text(
                         'Discount: INR - ${bill.discount.toStringAsFixed(2)}',
@@ -150,16 +144,12 @@ Future<void> generateInvoicePdf(SalesModel bill) async {
                       pw.SizedBox(height: 6),
                       pw.Text(
                         'GRAND TOTAL: INR - ${bill.grandTotal.toStringAsFixed(2)}',
-                        style: pw.TextStyle(
-                          fontSize: 14,
-                          fontWeight: pw.FontWeight.bold,
-                        ),
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                       ),
                     ],
                   ),
                 ],
               ),
-
               pw.SizedBox(height: 16),
               pw.Text('Note: Thank you for choosing BeatBoxx!'),
             ],
@@ -167,10 +157,17 @@ Future<void> generateInvoicePdf(SalesModel bill) async {
     ),
   );
 
-  final output = await getExternalStorageDirectory();
-  final filePath = "${output!.path}/Invoice-${bill.invoiceNumber}.pdf";
-  final file = File(filePath);
-  await file.writeAsBytes(await pdf.save());
+  // Save the PDF
+  if (savePath != null) {
+    final file = File(savePath);
+    await file.writeAsBytes(await pdf.save());
+  } else {
+    // generating single bill flow
+    final directory = await getExternalStorageDirectory();
+    final file = File('${directory!.path}/Invoice-${bill.invoiceNumber}.pdf');
+    await file.writeAsBytes(await pdf.save());
 
-  await OpenFile.open(file.path);
+    // open the generated file
+    await OpenFile.open(file.path);
+  }
 }

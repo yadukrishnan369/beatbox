@@ -61,7 +61,9 @@ class AppSettingsScreen extends StatelessWidget {
               leading: Icon(Icons.backup_outlined),
               title: 'Backup or Export Data',
               trailing: Icon(Icons.chevron_right, size: 24.w),
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.backupData);
+              },
             ),
             SizedBox(height: 10.h),
             _buildSettingItem(

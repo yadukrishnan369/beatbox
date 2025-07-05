@@ -1,4 +1,5 @@
 import 'package:beatbox/features/app_settings_info_management/ui/app_info_screen.dart';
+import 'package:beatbox/features/app_settings_info_management/ui/backup_export_data_screen.dart';
 import 'package:beatbox/features/app_settings_info_management/ui/faq_screen.dart';
 import 'package:beatbox/features/app_settings_info_management/ui/reset_app_data_screen.dart';
 import 'package:beatbox/features/app_settings_info_management/ui/user_manual_screen.dart';
@@ -44,6 +45,7 @@ class AppRoutes {
   static const String brandAndCategory = '/brandAndCategory';
   static const String appSettings = '/appSettings';
   static const String resetApp = '/resetApp';
+  static const String backupData = '/backupData';
   static const String cart = '/cart';
   static const String billing = '/billing';
   static const String salesAndCustomer = '/salesAndCustomer';
@@ -73,6 +75,7 @@ class AppRoutes {
     brandAndCategory: (context) => BrandAndCategoryScreen(),
     appSettings: (context) => AppSettingsScreen(),
     resetApp: (context) => ResetAppDataScreen(),
+    backupData: (context) => BackupExportDataScreen(),
     cart: (context) => CartScreen(),
     billing: (context) => BillingScreen(),
     salesAndCustomer: (context) => SalesAndCustomerScreen(),

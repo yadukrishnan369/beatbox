@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/app_settings_info_management/controller/theme_controller.dart';
 import 'package:beatbox/features/app_settings_info_management/ui/app_info_screen.dart';
+import 'package:beatbox/features/app_settings_info_management/ui/backup_export_data_screen.dart';
 import 'package:beatbox/features/app_settings_info_management/ui/faq_screen.dart';
 import 'package:beatbox/features/app_settings_info_management/ui/reset_app_data_screen.dart';
 import 'package:beatbox/features/app_settings_info_management/ui/user_manual_screen.dart';
@@ -162,6 +163,7 @@ class _MyAppState extends State<MyApp> {
                     (context) => BrandAndCategoryScreen(),
                 AppRoutes.appSettings: (context) => AppSettingsScreen(),
                 AppRoutes.resetApp: (context) => ResetAppDataScreen(),
+                AppRoutes.backupData: (context) => BackupExportDataScreen(),
                 AppRoutes.cart: (context) => CartScreen(),
                 AppRoutes.billing: (context) => BillingScreen(),
                 AppRoutes.salesAndCustomer:

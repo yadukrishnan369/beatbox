@@ -31,7 +31,7 @@ class ProductModelAdapter extends TypeAdapter<ProductModel> {
       image2: fields[10] as String?,
       image3: fields[11] as String?,
       createdDate: fields[12] as DateTime,
-      isAvailableForSale: fields[14] as bool,
+      isAvailableForSale: (fields[14] as bool?) ?? true,
     );
   }
 

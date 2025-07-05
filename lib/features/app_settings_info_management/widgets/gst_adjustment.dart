@@ -1,5 +1,6 @@
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/utils/gst_utils.dart';
+import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -156,6 +157,11 @@ class _GSTAdjustmentDialogState extends State<GSTAdjustmentDialog> {
                         }
                         //save GST into database
                         await GSTUtils.setGSTRate(enteredValue);
+                        await showLoadingDialog(
+                          context,
+                          message: "Updating...",
+                          showSucess: true,
+                        );
                         Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
