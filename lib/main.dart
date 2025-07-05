@@ -62,7 +62,7 @@ void main() async {
   await ProductController.initBox();
   await CartController.initBox();
   await SalesController.initBox();
-  await Hive.openBox('app_settings');
+  await Hive.openBox('gstBox');
 
   await ThemeController.loadTheme();
   AppColors.updateTheme(ThemeController.isDarkMode.value);

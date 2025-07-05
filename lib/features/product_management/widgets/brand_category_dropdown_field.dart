@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/core/app_colors.dart';
 
-class ProductDropdownField extends StatelessWidget {
+class BrandCategoryDropdownField extends StatelessWidget {
   final String label;
   final String? value;
   final List<String> items;
   final IconData icon;
   final String? Function(String?)? validator;
-  final void Function(String?) onChanged;
+  final void Function(String?)? onChanged;
 
-  const ProductDropdownField({
+  const BrandCategoryDropdownField({
     super.key,
     required this.label,
     required this.value,
     required this.items,
     required this.icon,
-    required this.validator,
-    required this.onChanged,
+    this.validator,
+    this.onChanged,
   });
 
   @override
@@ -35,12 +35,14 @@ class ProductDropdownField extends StatelessWidget {
         ),
         SizedBox(height: 4.h),
         DropdownButtonFormField<String>(
-          value: items.contains(value) ? value : null,
+          key: ValueKey(value),
+          value: value != null && items.contains(value) ? value : null,
           hint: Text(
             'Select $label',
-            style: TextStyle(color: AppColors.textDisabled),
+            style: TextStyle(color: AppColors.textPrimary),
           ),
-          style: TextStyle(color: AppColors.textPrimary),
+          isExpanded: true,
+          icon: const Icon(Icons.arrow_drop_down),
           decoration: InputDecoration(
             prefixIcon: Icon(icon),
             filled: true,
@@ -62,12 +64,21 @@ class ProductDropdownField extends StatelessWidget {
               vertical: 16.h,
             ),
           ),
+          menuMaxHeight: 300.h,
           validator: validator,
-          items:
-              items.map((item) {
-                return DropdownMenuItem<String>(value: item, child: Text(item));
-              }).toList(),
           onChanged: onChanged,
+          items:
+              items
+                  .map(
+                    (item) => DropdownMenuItem<String>(
+                      value: item,
+                      child: Text(
+                        item,
+                        style: TextStyle(color: AppColors.textPrimary),
+                      ),
+                    ),
+                  )
+                  .toList(),
         ),
         SizedBox(height: 16.h),
       ],

@@ -1,9 +1,7 @@
-// Updated AddProductScreen (Refactored)
-
 import 'dart:io';
 import 'package:beatbox/features/product_management/controller/brand_controller.dart';
 import 'package:beatbox/features/product_management/controller/category_controller.dart';
-import 'package:beatbox/features/product_management/widgets/product_dropdown_field.dart';
+import 'package:beatbox/features/product_management/widgets/brand_category_dropdown_field.dart';
 import 'package:beatbox/features/product_management/widgets/product_image_picker.dart';
 import 'package:beatbox/features/product_management/widgets/product_text_field.dart';
 import 'package:flutter/material.dart';
@@ -199,7 +197,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                               oldName: widget.productToEdit?.productName,
                             ),
                       ),
-                      ProductDropdownField(
+                      BrandCategoryDropdownField(
                         label: 'Category',
                         value: selectedCategory,
                         items: categoryList.toSet().toList(),
@@ -212,7 +210,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         onChanged:
                             (value) => setState(() => selectedCategory = value),
                       ),
-                      ProductDropdownField(
+                      BrandCategoryDropdownField(
                         label: 'Brand',
                         value: selectedBrand,
                         items: brandList.toSet().toList(),
