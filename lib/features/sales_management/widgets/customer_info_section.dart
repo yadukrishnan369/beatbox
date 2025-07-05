@@ -298,7 +298,7 @@ class _CustomerInfoSectionState extends State<CustomerInfoSection> {
                 ),
                 child: Text(
                   "Use Details",
-                  style: TextStyle(color: AppColors.white),
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ],

@@ -136,7 +136,7 @@ class BillTableSection extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Text(
-              '₹$price',
+              '₹ $price',
               style: TextStyle(
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w500,
@@ -148,7 +148,7 @@ class BillTableSection extends StatelessWidget {
           Expanded(
             flex: 3,
             child: Text(
-              '₹$subTotal',
+              '₹ $subTotal',
               style: TextStyle(
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w500,

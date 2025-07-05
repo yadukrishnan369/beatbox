@@ -43,7 +43,7 @@ class BillTotalSection extends StatelessWidget {
                 ),
               ),
               Text(
-                AmountFormatter.format(bill.grandTotal),
+                '₹ ${AmountFormatter.format(bill.grandTotal)}',
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.bold,
@@ -70,7 +70,7 @@ class BillTotalSection extends StatelessWidget {
           ),
         ),
         Text(
-          AmountFormatter.format(value),
+          '₹ ${AmountFormatter.format(value)}',
           style: TextStyle(
             fontSize: 14.sp,
             fontWeight: FontWeight.w600,

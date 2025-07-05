@@ -88,7 +88,7 @@ class _ProductFilterSheetState extends State<ProductFilterSheet> {
                   ),
                   SizedBox(height: 20.h),
 
-                  /// Category Filters
+                  // Category Filters
                   Text(
                     'Filter by Category',
                     style: TextStyle(
@@ -99,50 +99,56 @@ class _ProductFilterSheetState extends State<ProductFilterSheet> {
                   ),
                   SizedBox(height: 10.h),
                   categories.isEmpty
-                      ? Text(
-                        'No categories available',
-                        style: TextStyle(
-                          color: AppColors.textDisabled,
-                          fontSize: 14.sp,
+                      ? Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'No categories available',
+                          style: TextStyle(
+                            color: AppColors.textDisabled,
+                            fontSize: 14.sp,
+                          ),
                         ),
                       )
-                      : Wrap(
-                        spacing: 10.w,
-                        runSpacing: 10.h,
-                        children:
-                            categories.map((cat) {
-                              final isSelected = selectedCategories.contains(
-                                cat.categoryName,
-                              );
-                              return FilterChip(
-                                label: Text(cat.categoryName),
-                                selected: isSelected,
-                                onSelected: (selected) {
-                                  setState(() {
-                                    selected
-                                        ? selectedCategories.add(
-                                          cat.categoryName,
-                                        )
-                                        : selectedCategories.remove(
-                                          cat.categoryName,
-                                        );
-                                  });
-                                },
-                                selectedColor: AppColors.primary,
-                                backgroundColor: AppColors.offWhite,
-                                labelStyle: TextStyle(
-                                  color:
-                                      isSelected
-                                          ? AppColors.white
-                                          : AppColors.textPrimary,
-                                ),
-                              );
-                            }).toList(),
+                      : Align(
+                        alignment: Alignment.centerLeft,
+                        child: Wrap(
+                          spacing: 10.w,
+                          runSpacing: 10.h,
+                          children:
+                              categories.map((cat) {
+                                final isSelected = selectedCategories.contains(
+                                  cat.categoryName,
+                                );
+                                return FilterChip(
+                                  label: Text(cat.categoryName),
+                                  selected: isSelected,
+                                  onSelected: (selected) {
+                                    setState(() {
+                                      selected
+                                          ? selectedCategories.add(
+                                            cat.categoryName,
+                                          )
+                                          : selectedCategories.remove(
+                                            cat.categoryName,
+                                          );
+                                    });
+                                  },
+                                  selectedColor: AppColors.primary,
+                                  backgroundColor: AppColors.offWhite,
+                                  labelStyle: TextStyle(
+                                    color:
+                                        isSelected
+                                            ? AppColors.white
+                                            : AppColors.textPrimary,
+                                  ),
+                                );
+                              }).toList(),
+                        ),
                       ),
 
                   SizedBox(height: 20.h),
 
-                  /// Brand Filters
+                  // Brand Filters
                   Text(
                     'Filter by Brand',
                     style: TextStyle(
@@ -153,43 +159,49 @@ class _ProductFilterSheetState extends State<ProductFilterSheet> {
                   ),
                   SizedBox(height: 10.h),
                   brands.isEmpty
-                      ? Text(
-                        'No brands available',
-                        style: TextStyle(
-                          color: AppColors.textDisabled,
-                          fontSize: 14.sp,
+                      ? Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'No brands available',
+                          style: TextStyle(
+                            color: AppColors.textDisabled,
+                            fontSize: 14.sp,
+                          ),
                         ),
                       )
-                      : Wrap(
-                        spacing: 10.w,
-                        runSpacing: 10.h,
-                        children:
-                            brands.map((brand) {
-                              final isSelected = selectedBrands.contains(
-                                brand.brandName,
-                              );
-                              return FilterChip(
-                                label: Text(brand.brandName),
-                                selected: isSelected,
-                                onSelected: (selected) {
-                                  setState(() {
-                                    selected
-                                        ? selectedBrands.add(brand.brandName)
-                                        : selectedBrands.remove(
-                                          brand.brandName,
-                                        );
-                                  });
-                                },
-                                selectedColor: AppColors.primary,
-                                backgroundColor: AppColors.offWhite,
-                                labelStyle: TextStyle(
-                                  color:
-                                      isSelected
-                                          ? AppColors.white
-                                          : AppColors.textPrimary,
-                                ),
-                              );
-                            }).toList(),
+                      : Align(
+                        alignment: Alignment.centerLeft,
+                        child: Wrap(
+                          spacing: 10.w,
+                          runSpacing: 10.h,
+                          children:
+                              brands.map((brand) {
+                                final isSelected = selectedBrands.contains(
+                                  brand.brandName,
+                                );
+                                return FilterChip(
+                                  label: Text(brand.brandName),
+                                  selected: isSelected,
+                                  onSelected: (selected) {
+                                    setState(() {
+                                      selected
+                                          ? selectedBrands.add(brand.brandName)
+                                          : selectedBrands.remove(
+                                            brand.brandName,
+                                          );
+                                    });
+                                  },
+                                  selectedColor: AppColors.primary,
+                                  backgroundColor: AppColors.offWhite,
+                                  labelStyle: TextStyle(
+                                    color:
+                                        isSelected
+                                            ? AppColors.white
+                                            : AppColors.textPrimary,
+                                  ),
+                                );
+                              }).toList(),
+                        ),
                       ),
                 ],
               ),
