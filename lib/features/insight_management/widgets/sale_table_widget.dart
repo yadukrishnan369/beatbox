@@ -1,6 +1,8 @@
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/utils/amount_formatter.dart';
 import 'package:beatbox/utils/insight_utils.dart';
+import 'package:beatbox/utils/responsive_utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -9,25 +11,26 @@ class SalesTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isWeb = Responsive.isDesktop(context);
     final tableData = getInsightTableData();
 
     if (tableData.isEmpty) {
       return Center(
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 40.h),
+          padding: EdgeInsets.symmetric(vertical: isWeb ? 10 : 40.h),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
                 Icons.bar_chart_outlined,
-                size: 50.sp,
+                size: isWeb ? 70 : 50.sp,
                 color: AppColors.primary.withOpacity(0.6),
               ),
-              SizedBox(height: 12.h),
+              SizedBox(height: isWeb ? 16 : 8.h),
               Text(
                 "No sales records found !",
                 style: TextStyle(
-                  fontSize: 20.sp,
+                  fontSize: isWeb ? 18 : 20.sp,
                   color: AppColors.primary,
                   fontWeight: FontWeight.w500,
                 ),
@@ -39,13 +42,13 @@ class SalesTable extends StatelessWidget {
     }
 
     return Padding(
-      padding: EdgeInsets.all(12.w),
+      padding: EdgeInsets.all(isWeb ? 24 : 12.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeaderRow(),
           Divider(thickness: 1, color: AppColors.cardColor),
-          SizedBox(height: 8.h),
+          SizedBox(height: isWeb ? 12 : 8.h),
           Expanded(
             child: ListView.separated(
               itemCount: tableData.length,
@@ -55,13 +58,13 @@ class SalesTable extends StatelessWidget {
                 final item = tableData[index];
                 return Container(
                   padding: EdgeInsets.symmetric(
-                    vertical: 10.h,
-                    horizontal: 8.w,
+                    vertical: isWeb ? 12 : 10.h,
+                    horizontal: isWeb ? 16 : 8.w,
                   ),
                   decoration: BoxDecoration(
                     color:
                         index % 2 == 0 ? AppColors.cardColor : AppColors.white,
-                    borderRadius: BorderRadius.circular(6.r),
+                    borderRadius: BorderRadius.circular(isWeb ? 10 : 6.r),
                   ),
                   child: Row(
                     children: [
@@ -71,7 +74,7 @@ class SalesTable extends StatelessWidget {
                           item['product'],
                           style: TextStyle(
                             color: AppColors.primary,
-                            fontSize: 12.sp,
+                            fontSize: isWeb ? 13 : 12.sp,
                           ),
                         ),
                       ),
@@ -82,7 +85,7 @@ class SalesTable extends StatelessWidget {
                             "${item['qty']}",
                             style: TextStyle(
                               color: AppColors.primary,
-                              fontSize: 12.sp,
+                              fontSize: isWeb ? 13 : 12.sp,
                             ),
                           ),
                         ),
@@ -94,7 +97,7 @@ class SalesTable extends StatelessWidget {
                             "₹ ${AmountFormatter.format(item['total'])}",
                             style: TextStyle(
                               color: AppColors.primary,
-                              fontSize: 12.sp,
+                              fontSize: isWeb ? 13 : 12.sp,
                             ),
                           ),
                         ),
@@ -106,7 +109,7 @@ class SalesTable extends StatelessWidget {
                             "₹ ${AmountFormatter.format(item['profit'])}",
                             style: TextStyle(
                               color: AppColors.success,
-                              fontSize: 12.sp,
+                              fontSize: isWeb ? 13 : 12.sp,
                             ),
                           ),
                         ),
@@ -124,10 +127,13 @@ class SalesTable extends StatelessWidget {
 
   Widget _buildHeaderRow() {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
+      padding: EdgeInsets.symmetric(
+        vertical: kIsWeb ? 12 : 10.h,
+        horizontal: kIsWeb ? 16 : 8.w,
+      ),
       decoration: BoxDecoration(
         color: AppColors.contColor,
-        borderRadius: BorderRadius.circular(6.r),
+        borderRadius: BorderRadius.circular(kIsWeb ? 10 : 6.r),
       ),
       child: Row(
         children: [
@@ -150,7 +156,7 @@ class SalesTable extends StatelessWidget {
   }
 
   TextStyle _headerStyle() => TextStyle(
-    fontSize: 13.sp,
+    fontSize: kIsWeb ? 14 : 13.sp,
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
   );

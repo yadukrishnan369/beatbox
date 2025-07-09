@@ -5,6 +5,7 @@ import 'package:beatbox/features/insight_management/widgets/filter_button_widget
 import 'package:beatbox/features/insight_management/widgets/sale_table_widget.dart';
 import 'package:beatbox/utils/amount_formatter.dart';
 import 'package:beatbox/utils/insight_utils.dart';
+import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:beatbox/widgets/shimmer_widgets/shimmer_insight_sale_table.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -43,7 +44,6 @@ class _InsightScreenState extends State<InsightScreen> {
     });
   }
 
-  /// calculate total sales and profit
   Map<String, double> _calculateTotals() {
     double totalSales = 0;
     double totalProfit = 0;
@@ -53,10 +53,11 @@ class _InsightScreenState extends State<InsightScreen> {
         final qty = item.quantity;
         final sell = item.product.salePrice;
         final cost = item.product.purchaseRate;
+        final discount = sale.discount;
         final profit = (sell - cost) * qty;
 
         totalSales += sell * qty;
-        totalProfit += profit;
+        totalProfit += profit - discount;
       }
     }
 
@@ -65,6 +66,8 @@ class _InsightScreenState extends State<InsightScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isWeb = Responsive.isDesktop(context);
+
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
@@ -73,80 +76,104 @@ class _InsightScreenState extends State<InsightScreen> {
         title: Text(
           'Insights',
           style: TextStyle(
-            fontSize: 22.sp,
+            fontSize: isWeb ? 8.sp : 22.sp,
             fontWeight: FontWeight.w600,
             color: AppColors.textPrimary,
           ),
         ),
       ),
-      body: ValueListenableBuilder<bool>(
-        valueListenable: isInsightLoadingNotifier,
-        builder: (context, isLoading, _) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Chart
-              ValueListenableBuilder(
-                valueListenable: insightSalesNotifier,
-                builder: (context, _, __) {
-                  return const BarChartWidget();
-                },
-              ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final bool isWeb =
+              Responsive.isDesktop(context) || constraints.maxWidth > 600;
+          final double maxWidth = isWeb ? 900 : double.infinity;
+          final double horizontalPadding = isWeb ? 32.w : 16.w;
 
-              //  Total Sales and Profit info
-              ValueListenableBuilder(
-                valueListenable: insightSalesNotifier,
-                builder: (context, _, __) {
-                  final totals = _calculateTotals();
-                  return Padding(
+          return ValueListenableBuilder<bool>(
+            valueListenable: isInsightLoadingNotifier,
+            builder: (context, isLoading, _) {
+              return SingleChildScrollView(
+                child: Center(
+                  child: Container(
+                    width: maxWidth,
                     padding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 4.h,
+                      horizontal: horizontalPadding,
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "Sales: ₹ ${AmountFormatter.format(totals['sales']!)}",
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.blue,
-                          ),
+                        // chart
+                        ValueListenableBuilder(
+                          valueListenable: insightSalesNotifier,
+                          builder: (context, _, __) {
+                            return const BarChartWidget();
+                          },
                         ),
-                        Text(
-                          "Profit: ₹ ${AmountFormatter.format(totals['profit']!)}",
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.success,
-                          ),
+
+                        // total sales & profit
+                        ValueListenableBuilder(
+                          valueListenable: insightSalesNotifier,
+                          builder: (context, _, __) {
+                            final totals = _calculateTotals();
+                            return Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8.h),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Text(
+                                    "Sales: ₹ ${AmountFormatter.format(totals['sales']!)}",
+                                    style: TextStyle(
+                                      fontSize: isWeb ? 18 : 14.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.blue,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Profit: ₹ ${AmountFormatter.format(totals['profit']!)}",
+                                    style: TextStyle(
+                                      fontSize: isWeb ? 18 : 14.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.success,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                         ),
+
+                        SizedBox(height: 10.h),
+
+                        // filter buttons
+                        FilterButtons(onFilterSelected: _onRangeSelected),
+
+                        SizedBox(height: 10.h),
+
+                        // table or shimmer section
+                        Container(
+                          constraints: BoxConstraints(
+                            minHeight: 300.h,
+                            maxHeight: isWeb ? 500.h : 400.h,
+                          ),
+                          child:
+                              isLoading
+                                  ? Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: isWeb ? 0 : 16.0,
+                                    ),
+                                    child: const TableShimmerWidget(),
+                                  )
+                                  : const SalesTable(),
+                        ),
+
+                        SizedBox(height: 20.h),
                       ],
                     ),
-                  );
-                },
-              ),
-
-              SizedBox(height: 10.h),
-
-              // Filter Buttons
-              Padding(
-                padding: EdgeInsets.only(left: 16.w, right: 16.w),
-                child: FilterButtons(onFilterSelected: _onRangeSelected),
-              ),
-
-              // Table
-              Expanded(
-                child:
-                    isLoading
-                        ? const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
-                          child: TableShimmerWidget(),
-                        )
-                        : const SalesTable(),
-              ),
-            ],
+                  ),
+                ),
+              );
+            },
           );
         },
       ),

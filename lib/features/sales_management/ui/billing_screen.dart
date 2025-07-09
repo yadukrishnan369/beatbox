@@ -6,6 +6,7 @@ import 'package:beatbox/features/sales_management/widgets/invoice_info_section.d
 import 'package:beatbox/features/sales_management/widgets/items_table_section.dart';
 import 'package:beatbox/utils/billing_utils.dart';
 import 'package:beatbox/utils/gst_utils.dart';
+import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -107,6 +108,8 @@ class _BillingScreenState extends State<BillingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isWeb = Responsive.isDesktop(context);
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -117,7 +120,7 @@ class _BillingScreenState extends State<BillingScreen> {
           title: Text(
             "Billing Invoice",
             style: TextStyle(
-              fontSize: 22.sp,
+              fontSize: isWeb ? 8.sp : 22.sp,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
             ),
@@ -127,8 +130,8 @@ class _BillingScreenState extends State<BillingScreen> {
           builder: (context, constraints) {
             return SingleChildScrollView(
               padding: EdgeInsets.only(
-                left: 16.w,
-                right: 16.w,
+                left: isWeb ? constraints.maxWidth * 0.1 : 16.w,
+                right: isWeb ? constraints.maxWidth * 0.1 : 16.w,
                 top: 16.h,
                 bottom: MediaQuery.of(context).viewInsets.bottom + 80.h,
               ),
@@ -138,13 +141,14 @@ class _BillingScreenState extends State<BillingScreen> {
                   child: Form(
                     key: _formKey,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomerInfoSection(
                           nameController: nameController,
                           phoneController: phoneController,
                           emailController: emailController,
                         ),
-                        SizedBox(height: 24.h),
+                        SizedBox(height: isWeb ? 16 : 24.h),
                         InvoiceInfoSection(
                           invoiceNumber: invoiceNumber,
                           billingDate: DateFormat(
@@ -152,9 +156,9 @@ class _BillingScreenState extends State<BillingScreen> {
                           ).format(billingDate),
                           itemCount: cartItems.length,
                         ),
-                        SizedBox(height: 24.h),
+                        SizedBox(height: isWeb ? 16 : 24.h),
                         ItemsTableSection(cartItems: cartItems),
-                        SizedBox(height: 24.h),
+                        SizedBox(height: isWeb ? 16 : 24.h),
                         BillingSummarySection(
                           subtotal: subtotal,
                           gst: gst,
@@ -185,14 +189,14 @@ class _BillingScreenState extends State<BillingScreen> {
         ),
         bottomNavigationBar: Padding(
           padding: EdgeInsets.only(
-            left: 16.w,
-            right: 16.w,
+            left: isWeb ? MediaQuery.of(context).size.width * 0.4 : 16.w,
+            right: isWeb ? MediaQuery.of(context).size.width * 0.4 : 16.w,
             bottom: MediaQuery.of(context).viewInsets.bottom + 16.h,
           ),
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.success,
-              padding: EdgeInsets.symmetric(vertical: 16.h),
+              padding: EdgeInsets.symmetric(vertical: isWeb ? 20 : 16.h),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.r),
               ),
@@ -200,7 +204,10 @@ class _BillingScreenState extends State<BillingScreen> {
             onPressed: _confirmBill,
             child: Text(
               'CONFIRM BILL',
-              style: TextStyle(fontSize: 18.sp, color: Colors.white),
+              style: TextStyle(
+                fontSize: isWeb ? 18 : 18.sp,
+                color: Colors.white,
+              ),
             ),
           ),
         ),

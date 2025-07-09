@@ -84,142 +84,161 @@ class _SalesAndCustomerScreenState extends State<SalesAndCustomerScreen> {
           appBar: AppBar(
             backgroundColor: AppColors.white,
             elevation: 0,
-            title: Text(
-              'Sales History',
-              style: TextStyle(
-                fontSize: 22.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-              ),
+            title: LayoutBuilder(
+              builder: (context, constraints) {
+                final isWeb = constraints.maxWidth > 600;
+                return Text(
+                  'Sales History',
+                  style: TextStyle(
+                    fontSize: isWeb ? 9.sp : 22.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                );
+              },
             ),
           ),
-          body: Column(
-            children: [
-              ValueListenableBuilder<List<SalesModel>>(
-                valueListenable: allSalesNotifier,
-                builder: (_, allSalesList, __) {
-                  if (allSalesList.isEmpty) {
-                    return const SizedBox();
-                  }
-                  return Padding(
-                    padding: EdgeInsets.all(16.w),
-                    child: CustomSearchBar(
-                      controller: _searchController,
-                      focusNode: _focusNode,
-                      showFilterIcon: true,
-                      hintText: 'Search by customer or invoice ...',
-                      onChanged: (_) => _filterSales(),
-                      onFilterTap: _pickDateRange,
-                    ),
-                  );
-                },
-              ),
-              if (_startDate != null || _endDate != null)
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: DateRangeInfoWidget(
-                    startDate: _startDate,
-                    endDate: _endDate,
-                    onClear: () async {
-                      setState(() {
-                        _startDate = null;
-                        _endDate = null;
-                      });
-                      await _filterSales();
-                    },
-                  ),
-                ),
-              SizedBox(height: 10.h),
-              Expanded(
-                child: ValueListenableBuilder<bool>(
-                  valueListenable: isSalesLoadingNotifier,
-                  builder: (context, isLoading, _) {
-                    return ValueListenableBuilder<List<SalesModel>>(
-                      valueListenable: filteredSalesNotifier,
-                      builder: (context, salesList, _) {
-                        // No sales in DB
-                        if (allSalesNotifier.value.isEmpty) {
-                          return EmptyPlaceholder(
-                            imagePath: 'assets/images/empty_product.png',
-                            message:
-                                "No sales have been recorded yet.\nStart selling to see your sales history here !",
-                            onActionTap:
-                                () => Navigator.pushNamed(
-                                  context,
-                                  AppRoutes.products,
-                                ),
-                            actionIcon: Icons.shopping_bag,
-                            actionText: 'Explore products',
-                          );
-                        }
-                        // Loading shimmer
-                        if (isLoading) {
-                          return ListView.builder(
-                            itemCount: 6,
-                            itemBuilder:
-                                (_, index) => const Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 16.0,
-                                    vertical: 6,
-                                  ),
-                                  child: ShimmerListTile(),
-                                ),
-                          );
-                        }
-                        // Filter/search found no results
-                        if (salesList.isEmpty) {
-                          return Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.search_off_rounded,
-                                  size: 60.sp,
-                                  color: AppColors.primary,
-                                ),
-                                SizedBox(height: 16.h),
-                                Text(
-                                  "No matching sale found",
-                                  style: TextStyle(
-                                    fontSize: 18.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.primary,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
+          body: LayoutBuilder(
+            builder: (context, constraints) {
+              final isWeb = constraints.maxWidth > 600;
+              return Center(
+                child: Container(
+                  width: isWeb ? 300.w : double.infinity,
+                  padding: EdgeInsets.symmetric(horizontal: isWeb ? 20.w : 0),
+                  child: Column(
+                    children: [
+                      ValueListenableBuilder<List<SalesModel>>(
+                        valueListenable: allSalesNotifier,
+                        builder: (_, allSalesList, __) {
+                          if (allSalesList.isEmpty) {
+                            return const SizedBox();
+                          }
+                          return Padding(
+                            padding: EdgeInsets.all(isWeb ? 20.w : 16.w),
+                            child: CustomSearchBar(
+                              controller: _searchController,
+                              focusNode: _focusNode,
+                              showFilterIcon: true,
+                              hintText: 'Search by customer or invoice ...',
+                              onChanged: (_) => _filterSales(),
+                              onFilterTap: _pickDateRange,
                             ),
                           );
-                        }
-                        // Display sale list
-                        return ListView.builder(
-                          itemCount: salesList.length,
-                          itemBuilder: (_, index) {
-                            final sale = salesList[index];
-                            return Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 16.w,
-                                vertical: 6.h,
-                              ),
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    AppRoutes.salesAndCustomerDetails,
-                                    arguments: sale,
+                        },
+                      ),
+                      if (_startDate != null || _endDate != null)
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isWeb ? 20.w : 16.w,
+                          ),
+                          child: DateRangeInfoWidget(
+                            startDate: _startDate,
+                            endDate: _endDate,
+                            onClear: () async {
+                              setState(() {
+                                _startDate = null;
+                                _endDate = null;
+                              });
+                              await _filterSales();
+                            },
+                          ),
+                        ),
+                      SizedBox(height: 10.h),
+                      Expanded(
+                        child: ValueListenableBuilder<bool>(
+                          valueListenable: isSalesLoadingNotifier,
+                          builder: (context, isLoading, _) {
+                            return ValueListenableBuilder<List<SalesModel>>(
+                              valueListenable: filteredSalesNotifier,
+                              builder: (context, salesList, _) {
+                                if (allSalesNotifier.value.isEmpty) {
+                                  return EmptyPlaceholder(
+                                    imagePath:
+                                        'assets/images/empty_product.png',
+                                    message:
+                                        "No sales have been recorded yet.\nStart selling to see your sales history here!",
+                                    onActionTap:
+                                        () => Navigator.pushNamed(
+                                          context,
+                                          AppRoutes.products,
+                                        ),
+                                    actionIcon: Icons.shopping_bag,
+                                    actionText: 'Explore products',
                                   );
-                                },
-                                child: SoldItemListTile(sale: sale),
-                              ),
+                                }
+
+                                if (isLoading) {
+                                  return ListView.builder(
+                                    itemCount: 6,
+                                    itemBuilder:
+                                        (_, index) => const Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 16.0,
+                                            vertical: 6,
+                                          ),
+                                          child: ShimmerListTile(),
+                                        ),
+                                  );
+                                }
+
+                                if (salesList.isEmpty) {
+                                  return Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.search_off_rounded,
+                                          size: isWeb ? 50.sp : 60.sp,
+                                          color: AppColors.primary,
+                                        ),
+                                        SizedBox(height: 16.h),
+                                        Text(
+                                          "No matching sale found",
+                                          style: TextStyle(
+                                            fontSize: isWeb ? 16.sp : 18.sp,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.primary,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
+
+                                return ListView.builder(
+                                  itemCount: salesList.length,
+                                  itemBuilder: (_, index) {
+                                    final sale = salesList[index];
+                                    return Padding(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: isWeb ? 20.w : 16.w,
+                                        vertical: 6.h,
+                                      ),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Navigator.pushNamed(
+                                            context,
+                                            AppRoutes.salesAndCustomerDetails,
+                                            arguments: sale,
+                                          );
+                                        },
+                                        child: SoldItemListTile(sale: sale),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
                             );
                           },
-                        );
-                      },
-                    );
-                  },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              );
+            },
           ),
         ),
       ),

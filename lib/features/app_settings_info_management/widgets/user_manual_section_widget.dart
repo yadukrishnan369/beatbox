@@ -1,4 +1,5 @@
 import 'package:beatbox/core/app_colors.dart';
+import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -14,6 +15,8 @@ class UserManualSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isWeb = Responsive.isDesktop(context);
+
     return Theme(
       data: ThemeData().copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
@@ -22,7 +25,7 @@ class UserManualSection extends StatelessWidget {
         title: Text(
           title,
           style: TextStyle(
-            fontSize: 15.sp,
+            fontSize: isWeb ? 18 : 15.sp,
             fontWeight: FontWeight.w700,
             color: AppColors.textPrimary,
           ),
@@ -30,16 +33,19 @@ class UserManualSection extends StatelessWidget {
         children:
             points.map((point) {
               if (point.startsWith('•')) {
-                return _buildSubBulletPoint(point.replaceFirst('•', '').trim());
+                return _buildSubBulletPoint(
+                  point.replaceFirst('•', '').trim(),
+                  isWeb,
+                );
               } else {
-                return _buildBulletPoint(point);
+                return _buildBulletPoint(point, isWeb);
               }
             }).toList(),
       ),
     );
   }
 
-  Widget _buildBulletPoint(String text) {
+  Widget _buildBulletPoint(String text, bool isWeb) {
     return Padding(
       padding: EdgeInsets.only(bottom: 6.h),
       child: Row(
@@ -58,7 +64,7 @@ class UserManualSection extends StatelessWidget {
             child: Text(
               text,
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: isWeb ? 15 : 14.sp,
                 color: AppColors.textPrimary,
                 height: 1.4,
               ),
@@ -69,7 +75,7 @@ class UserManualSection extends StatelessWidget {
     );
   }
 
-  Widget _buildSubBulletPoint(String text) {
+  Widget _buildSubBulletPoint(String text, bool isWeb) {
     return Padding(
       padding: EdgeInsets.only(bottom: 6.h, left: 16.w),
       child: Row(
@@ -88,7 +94,7 @@ class UserManualSection extends StatelessWidget {
             child: Text(
               text,
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: isWeb ? 15 : 14.sp,
                 color: AppColors.textPrimary,
                 height: 1.4,
               ),

@@ -8,7 +8,7 @@ import 'package:beatbox/widgets/Loading_widgets/backup_data_loading_widget.dart'
 class BackupUtils {
   static Future<void> generateAllSalesBackup(BuildContext context) async {
     try {
-      // Showing loading widget in background
+      // showing loading widget in background
       showBackupLoadingDialog(context);
 
       // fetch sales data
@@ -26,19 +26,19 @@ class BackupUtils {
         return;
       }
 
-      // create folder in Download
+      // create folder in download
       final Directory baseDir = Directory('/storage/emulated/0/Download');
       final exportFolder = Directory('${baseDir.path}/BeatBoxxExports');
       if (!await exportFolder.exists()) {
         await exportFolder.create(recursive: true);
       }
 
-      // generate PDF for each sale
+      // generate pdf for each sale
       int index = 1;
       for (final sale in allSales) {
         final filePath =
             '${exportFolder.path}/Invoice_${sale.invoiceNumber}_$index.pdf';
-        await generateInvoicePdf(sale, savePath: filePath);
+        await generateInvoicePdf(sale, savePath: filePath, shouldOpen: false);
         index++;
       }
       // close the loading dialog
@@ -87,7 +87,7 @@ class BackupUtils {
         Navigator.of(context).pop();
       });
 
-      //close backup screen
+      // close backup screen
       Future.delayed(Duration(seconds: 3), () {
         Navigator.of(context).pop();
       });

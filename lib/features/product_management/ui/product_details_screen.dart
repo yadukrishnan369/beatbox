@@ -1,5 +1,6 @@
 import 'package:beatbox/features/product_management/widgets/add_to_cart_button_widget.dart';
 import 'package:beatbox/features/product_management/widgets/product_detail_section_widget.dart';
+import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/core/app_colors.dart';
@@ -65,6 +66,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isWeb = Responsive.isDesktop(context);
+
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
@@ -73,31 +76,45 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         title: Text(
           'Product Details',
           style: TextStyle(
-            fontSize: 22.sp,
+            fontSize: isWeb ? 20 : 22.sp,
             fontWeight: FontWeight.w600,
             color: AppColors.textPrimary,
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: ProductDetailSection(
-          product: product,
-          imageList: imageList,
-          pageController: _pageController,
-          currentPage: _currentPage,
-          quantity: quantity,
-          onPageChanged: (index) {
-            setState(() {
-              _currentPage = index;
-            });
-          },
-          onQuantityChanged: _updateQuantity,
+      body: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: isWeb ? 1000 : double.infinity),
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(
+              horizontal: isWeb ? 24 : 16.w,
+              vertical: 16.h,
+            ),
+            child: ProductDetailSection(
+              product: product,
+              pageController: _pageController,
+              currentPage: _currentPage,
+              quantity: quantity,
+              onPageChanged: (index) {
+                setState(() {
+                  _currentPage = index;
+                });
+              },
+              onQuantityChanged: _updateQuantity,
+            ),
+          ),
         ),
       ),
-      bottomNavigationBar: AddToCartSection(
-        product: product,
-        quantity: quantity,
-        onAddToCart: _addToCart,
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: isWeb ? 24 : 8.w,
+          vertical: isWeb ? 8 : 10.w,
+        ),
+        child: AddToCartSection(
+          product: product,
+          quantity: quantity,
+          onAddToCart: _addToCart,
+        ),
       ),
     );
   }

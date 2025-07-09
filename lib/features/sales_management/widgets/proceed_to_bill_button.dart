@@ -1,19 +1,30 @@
+import 'package:beatbox/utils/responsive_utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/core/notifiers/cart_update_notifier.dart';
 import 'package:beatbox/routes/app_routes.dart';
 import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProceedToBillButton extends StatelessWidget {
   const ProceedToBillButton({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final bool isWeb = Responsive.isDesktop(context);
+
+    final double height = isWeb ? 65 : 55.h;
+    final double fontSize = isWeb ? 18 : 22.sp;
+    final double horizontalPadding =
+        isWeb ? MediaQuery.of(context).size.width * 0.3 : 16.w;
+
     return Padding(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontalPadding,
+        vertical: 16.h,
+      ),
       child: SizedBox(
-        height: 55.h,
+        height: height,
         width: double.infinity,
         child: ElevatedButton(
           onPressed: () async {
@@ -50,11 +61,11 @@ class ProceedToBillButton extends StatelessWidget {
             ),
             child: Container(
               alignment: Alignment.center,
-              height: 55.h,
+              height: height,
               child: Text(
                 'Proceed to Bill',
                 style: TextStyle(
-                  fontSize: 22.sp,
+                  fontSize: fontSize,
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),

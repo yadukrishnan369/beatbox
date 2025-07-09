@@ -1,5 +1,6 @@
 import 'package:beatbox/features/product_management/widgets/limited_stock_tile_widget.dart';
 import 'package:beatbox/utils/limited_stock_utils.dart';
+import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/core/app_colors.dart';
@@ -42,6 +43,8 @@ class _LimitedStockScreenState extends State<LimitedStockScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isWeb = Responsive.isDesktop(context);
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: NotificationListener<ScrollNotification>(
@@ -57,7 +60,7 @@ class _LimitedStockScreenState extends State<LimitedStockScreen> {
             title: Text(
               "Limited stock",
               style: TextStyle(
-                fontSize: 22.sp,
+                fontSize: isWeb ? 20 : 22.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
               ),
@@ -73,7 +76,10 @@ class _LimitedStockScreenState extends State<LimitedStockScreen> {
                     builder: (_, productList, __) {
                       return productList.isNotEmpty || _isSearching
                           ? Padding(
-                            padding: EdgeInsets.all(16.w),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: isWeb ? 24 : 16.w,
+                              vertical: isWeb ? 12 : 8.h,
+                            ),
                             child: CustomSearchBar(
                               controller: _searchController,
                               onChanged: _onSearch,
@@ -85,67 +91,16 @@ class _LimitedStockScreenState extends State<LimitedStockScreen> {
                     },
                   ),
                   Expanded(
-                    child:
-                        isShimmer
-                            ? ListView.builder(
-                              itemCount: 6,
-                              padding: EdgeInsets.symmetric(horizontal: 16.w),
-                              itemBuilder:
-                                  (_, index) => Padding(
-                                    padding: EdgeInsets.only(bottom: 12.h),
-                                    child: const ShimmerBillTile(),
-                                  ),
-                            )
-                            : ValueListenableBuilder<List<ProductModel>>(
-                              valueListenable: limitedStockNotifier,
-                              builder: (_, filteredList, __) {
-                                if (filteredList.isEmpty) {
-                                  return _isSearching
-                                      ? Padding(
-                                        padding: EdgeInsets.all(24.w),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.search_off_rounded,
-                                              size: 60.sp,
-                                              color: AppColors.primary,
-                                            ),
-                                            SizedBox(height: 16.h),
-                                            Text(
-                                              "No matching product found",
-                                              style: TextStyle(
-                                                fontSize: 18.sp,
-                                                fontWeight: FontWeight.w600,
-                                                color: AppColors.primary,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                      : const EmptyPlaceholder(
-                                        imagePath:
-                                            'assets/images/empty_product.png',
-                                        message:
-                                            'All products have sufficient stock.\nNo items are currently in limited stock !',
-                                      );
-                                }
-
-                                return ListView.builder(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 16.w,
-                                  ),
-                                  itemCount: filteredList.length,
-                                  itemBuilder: (_, index) {
-                                    return LimitedStockTile(
-                                      product: filteredList[index],
-                                    );
-                                  },
-                                );
-                              },
-                            ),
+                    child: Center(
+                      child: Container(
+                        width: isWeb ? 700 : double.infinity,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isWeb ? 24 : 0,
+                          vertical: isWeb ? 10 : 0,
+                        ),
+                        child: _buildBodyContent(isWeb),
+                      ),
+                    ),
                   ),
                 ],
               );
@@ -153,6 +108,65 @@ class _LimitedStockScreenState extends State<LimitedStockScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildBodyContent(bool isWeb) {
+    if (limitedStockShimmerNotifier.value) {
+      return ListView.builder(
+        itemCount: 6,
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        itemBuilder:
+            (_, index) => Padding(
+              padding: EdgeInsets.only(bottom: isWeb ? 16 : 12.h),
+              child: const ShimmerBillTile(),
+            ),
+      );
+    }
+
+    return ValueListenableBuilder<List<ProductModel>>(
+      valueListenable: limitedStockNotifier,
+      builder: (_, filteredList, __) {
+        if (filteredList.isEmpty) {
+          return _isSearching
+              ? Padding(
+                padding: EdgeInsets.all(isWeb ? 30 : 24.w),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.search_off_rounded,
+                      size: isWeb ? 64 : 60.sp,
+                      color: AppColors.primary,
+                    ),
+                    SizedBox(height: 16.h),
+                    Text(
+                      "No matching product found",
+                      style: TextStyle(
+                        fontSize: isWeb ? 18 : 18.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primary,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              )
+              : const EmptyPlaceholder(
+                imagePath: 'assets/images/empty_product.png',
+                message:
+                    'All products have sufficient stock.\nNo items are currently in limited stock !',
+              );
+        }
+
+        return ListView.builder(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          itemCount: filteredList.length,
+          itemBuilder: (_, index) {
+            return LimitedStockTile(product: filteredList[index]);
+          },
+        );
+      },
     );
   }
 }

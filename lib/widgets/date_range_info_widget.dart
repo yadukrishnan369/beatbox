@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -21,19 +22,24 @@ class DateRangeInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isWeb = kIsWeb;
+
     if (startDate == null && endDate == null) return const SizedBox();
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.r),
+        borderRadius: BorderRadius.circular(isWeb ? 5.r : 10.r),
         color: AppColors.cardColor,
       ),
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+      padding: EdgeInsets.symmetric(
+        horizontal: isWeb ? 3.w : 12.w,
+        vertical: isWeb ? 6.h : 8.h,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
-            padding: EdgeInsets.all(8.r),
+            padding: EdgeInsets.all(isWeb ? 3.r : 8.r),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -41,20 +47,24 @@ class DateRangeInfoWidget extends StatelessWidget {
                   'From: ${_format(startDate)}',
                   style: TextStyle(
                     color: AppColors.textPrimary,
-                    fontSize: 15.sp,
+                    fontSize: isWeb ? 3.sp : 15.sp,
                   ),
                 ),
                 Text(
                   'To: ${_format(endDate)}',
                   style: TextStyle(
                     color: AppColors.textPrimary,
-                    fontSize: 15.sp,
+                    fontSize: isWeb ? 3.sp : 15.sp,
                   ),
                 ),
               ],
             ),
           ),
-          IconButton(icon: Icon(Icons.clear, size: 18.sp), onPressed: onClear),
+          IconButton(
+            icon: Icon(Icons.clear, size: isWeb ? 4.sp : 18.sp),
+            onPressed: onClear,
+            splashRadius: isWeb ? 5.r : 22.r,
+          ),
         ],
       ),
     );

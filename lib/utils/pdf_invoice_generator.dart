@@ -1,26 +1,33 @@
-import 'dart:io';
-import 'package:beatbox/utils/gst_utils.dart';
+import 'dart:io' as io;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:beatbox/features/sales_management/model/sales_model.dart';
+import 'package:beatbox/utils/gst_utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
+import 'package:universal_html/html.dart' as html;
 
-Future<void> generateInvoicePdf(SalesModel bill, {String? savePath}) async {
+Future<void> generateInvoicePdf(
+  SalesModel bill, {
+  String? savePath,
+  bool shouldOpen = true,
+}) async {
   final pdf = pw.Document();
 
-  // Load logo image from assets
+  // app logo fetch
   final logoData = await rootBundle.load('assets/images/app_logo.jpg');
   final logoImage = pw.MemoryImage(logoData.buffer.asUint8List());
   final gstPercentage = GSTUtils.getGSTPercentage();
 
-  // PDF content
+  // pdf design and contents
   pdf.addPage(
     pw.Page(
       build:
           (context) => pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
+              // header section
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
@@ -56,6 +63,8 @@ Future<void> generateInvoicePdf(SalesModel bill, {String? savePath}) async {
               ),
               pw.Text('Order No: ${bill.orderNumber}'),
               pw.SizedBox(height: 16),
+
+              // table section
               pw.Table(
                 border: pw.TableBorder.all(width: 0.5),
                 columnWidths: {
@@ -125,6 +134,7 @@ Future<void> generateInvoicePdf(SalesModel bill, {String? savePath}) async {
                   ),
                 ],
               ),
+
               pw.SizedBox(height: 16),
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.end,
@@ -136,7 +146,7 @@ Future<void> generateInvoicePdf(SalesModel bill, {String? savePath}) async {
                         'Subtotal: INR - ${bill.subtotal.toStringAsFixed(2)}',
                       ),
                       pw.Text(
-                        'GST Charges (${gstPercentage.toStringAsFixed(0)} %): INR - ${bill.gst.toStringAsFixed(2)}',
+                        'GST (${gstPercentage.toStringAsFixed(0)}%): INR - ${bill.gst.toStringAsFixed(2)}',
                       ),
                       pw.Text(
                         'Discount: INR - ${bill.discount.toStringAsFixed(2)}',
@@ -157,17 +167,31 @@ Future<void> generateInvoicePdf(SalesModel bill, {String? savePath}) async {
     ),
   );
 
-  // Save the PDF
-  if (savePath != null) {
-    final file = File(savePath);
-    await file.writeAsBytes(await pdf.save());
-  } else {
-    // generating single bill flow
-    final directory = await getExternalStorageDirectory();
-    final file = File('${directory!.path}/Invoice-${bill.invoiceNumber}.pdf');
-    await file.writeAsBytes(await pdf.save());
+  final bytes = await pdf.save();
 
-    // open the generated file
-    await OpenFile.open(file.path);
+  if (kIsWeb) {
+    // pdf download in web
+    final blob = html.Blob([bytes]);
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    final anchor =
+        html.AnchorElement(href: url)
+          ..style.display = 'none'
+          ..download = "Invoice-${bill.invoiceNumber}.pdf";
+    html.document.body!.children.add(anchor);
+    anchor.click();
+    html.document.body!.children.remove(anchor);
+    html.Url.revokeObjectUrl(url);
+  } else {
+    // pdf download in mobile
+    final dir = await getExternalStorageDirectory();
+    final file = io.File(
+      savePath ?? '${dir!.path}/Invoice-${bill.invoiceNumber}.pdf',
+    );
+    await file.writeAsBytes(bytes);
+
+    // check shouldOpen for open file after generate pdf
+    if (shouldOpen) {
+      await OpenFile.open(file.path);
+    }
   }
 }

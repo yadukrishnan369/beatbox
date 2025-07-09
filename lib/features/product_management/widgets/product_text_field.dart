@@ -1,3 +1,4 @@
+import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/core/app_colors.dart';
@@ -24,50 +25,62 @@ class ProductTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w500,
-            color: AppColors.textPrimary,
-          ),
-        ),
-        SizedBox(height: 4.h),
-        TextFormField(
-          controller: controller,
-          style: TextStyle(color: AppColors.textPrimary),
-          maxLines: maxLines,
-          keyboardType: keyboardType,
-          decoration: InputDecoration(
-            hintText: hintText,
-            hintStyle: TextStyle(color: AppColors.textPrimary),
-            prefixIcon: Icon(icon),
-            filled: true,
-            fillColor: AppColors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.r),
-              borderSide: BorderSide(color: AppColors.primary),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final bool isWeb =
+            Responsive.isDesktop(context) || constraints.maxWidth > 600;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: isWeb ? 8.sp : 14.sp,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textPrimary,
+              ),
             ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.r),
-              borderSide: BorderSide(color: AppColors.primary),
+            SizedBox(height: 4.h),
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: isWeb ? 200.w : double.infinity,
+              ),
+              child: TextFormField(
+                controller: controller,
+                style: TextStyle(color: AppColors.textPrimary),
+                maxLines: maxLines,
+                keyboardType: keyboardType,
+                decoration: InputDecoration(
+                  hintText: hintText,
+                  hintStyle: TextStyle(color: AppColors.textPrimary),
+                  prefixIcon: Icon(icon),
+                  filled: true,
+                  fillColor: AppColors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.r),
+                    borderSide: BorderSide(color: AppColors.primary),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.r),
+                    borderSide: BorderSide(color: AppColors.primary),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.r),
+                    borderSide: BorderSide(color: AppColors.blue),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: isWeb ? 14.w : 16.w,
+                    vertical: isWeb ? 14.h : 16.h,
+                  ),
+                ),
+                validator: validator,
+              ),
             ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8.r),
-              borderSide: BorderSide(color: AppColors.blue),
-            ),
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 16.w,
-              vertical: 16.h,
-            ),
-          ),
-          validator: validator,
-        ),
-        SizedBox(height: 16.h),
-      ],
+            SizedBox(height: 16.h),
+          ],
+        );
+      },
     );
   }
 }

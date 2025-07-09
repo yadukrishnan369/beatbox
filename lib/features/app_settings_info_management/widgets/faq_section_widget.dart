@@ -1,4 +1,5 @@
 import 'package:beatbox/core/app_colors.dart';
+import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -7,8 +8,10 @@ class FAQSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isWeb = Responsive.isDesktop(context);
+
     return Container(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(isWeb ? 20.w : 16.w),
       decoration: BoxDecoration(
         color: AppColors.cardColor,
         borderRadius: BorderRadius.circular(12.r),
@@ -16,28 +19,34 @@ class FAQSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // FAQ Header
+          // FAQ header
           Row(
             children: [
-              Icon(Icons.chat, size: 22.sp, color: AppColors.textPrimary),
-              SizedBox(width: 8.w),
+              Icon(
+                Icons.chat,
+                size: isWeb ? 9.sp : 22.sp,
+                color: AppColors.textPrimary,
+              ),
+              SizedBox(width: isWeb ? 6.w : 8.w),
               Text(
                 'FAQs',
                 style: TextStyle(
-                  fontSize: 22.sp,
+                  fontSize: isWeb ? 9.sp : 22.sp,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
                 ),
               ),
             ],
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: isWeb ? 20.h : 16.h),
 
-          // FAQ Items
+          // FAQ items
           ..._faqData.map(
             (item) => _buildFAQItem(
+              context,
               question: item['question']!,
               answer: item['answer']!,
+              isWeb: isWeb,
             ),
           ),
         ],
@@ -45,17 +54,26 @@ class FAQSection extends StatelessWidget {
     );
   }
 
-  // ExpansionTile widget
-  Widget _buildFAQItem({required String question, required String answer}) {
+  // expansion tile widget
+  Widget _buildFAQItem(
+    BuildContext context, {
+    required String question,
+    required String answer,
+    required bool isWeb,
+  }) {
     return Theme(
-      data: ThemeData().copyWith(dividerColor: Colors.transparent),
+      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
       child: ExpansionTile(
         tilePadding: EdgeInsets.symmetric(horizontal: 0),
-        childrenPadding: EdgeInsets.only(left: 4.w, right: 4.w, bottom: 8.h),
+        childrenPadding: EdgeInsets.only(
+          left: isWeb ? 8.w : 4.w,
+          right: isWeb ? 8.w : 4.w,
+          bottom: isWeb ? 12.h : 8.h,
+        ),
         title: Text(
           question,
           style: TextStyle(
-            fontSize: 14.sp,
+            fontSize: isWeb ? 5.sp : 14.sp,
             fontWeight: FontWeight.w600,
             color: AppColors.textPrimary,
           ),
@@ -70,9 +88,9 @@ class FAQSection extends StatelessWidget {
             child: Text(
               answer,
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: isWeb ? 4.sp : 14.sp,
                 color: AppColors.textPrimary,
-                height: 1.4,
+                height: 1.5,
               ),
             ),
           ),

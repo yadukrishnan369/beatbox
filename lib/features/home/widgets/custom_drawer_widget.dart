@@ -1,5 +1,6 @@
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/routes/app_routes.dart';
+import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -8,6 +9,8 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isWeb = Responsive.isDesktop(context);
+
     return Drawer(
       backgroundColor: AppColors.white,
       shape: const RoundedRectangleBorder(
@@ -16,18 +19,22 @@ class CustomDrawer extends StatelessWidget {
           bottomRight: Radius.circular(16),
         ),
       ),
+      width: isWeb ? 280 : null,
       child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header with back and title
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 25.h),
-              child: Row(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(
+            horizontal: isWeb ? 12 : 16,
+            vertical: isWeb ? 16 : 25,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // header row
+              Row(
                 children: [
                   Container(
-                    width: 36.w,
-                    height: 36.w,
+                    width: isWeb ? 28 : 36,
+                    height: isWeb ? 28 : 36,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
@@ -39,29 +46,28 @@ class CustomDrawer extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       icon: Icon(
                         Icons.arrow_back,
-                        size: 20.sp,
+                        size: isWeb ? 16 : 20,
                         color: AppColors.textPrimary,
                       ),
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),
-                  SizedBox(width: 12.w),
+                  SizedBox(width: isWeb ? 8 : 12),
                   Text(
                     'Help & Support',
                     style: TextStyle(
-                      fontSize: 18.sp,
+                      fontSize: isWeb ? 16 : 18.sp,
                       fontWeight: FontWeight.w600,
                       color: AppColors.textPrimary,
                     ),
                   ),
                 ],
               ),
-            ),
 
-            // Menu Section
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.w),
-              child: Container(
+              SizedBox(height: isWeb ? 20 : 25),
+
+              // menu section
+              Container(
                 decoration: BoxDecoration(
                   color: AppColors.contColor,
                   borderRadius: BorderRadius.circular(12.r),
@@ -75,6 +81,7 @@ class CustomDrawer extends StatelessWidget {
                       onTap: () {
                         Navigator.pushNamed(context, AppRoutes.userManual);
                       },
+                      isWeb: isWeb,
                     ),
                     _buildDivider(),
                     _buildMenuItem(
@@ -84,6 +91,7 @@ class CustomDrawer extends StatelessWidget {
                       onTap: () {
                         Navigator.pushNamed(context, AppRoutes.faq);
                       },
+                      isWeb: isWeb,
                     ),
                     _buildDivider(),
                     _buildMenuItem(
@@ -93,12 +101,13 @@ class CustomDrawer extends StatelessWidget {
                       onTap: () {
                         Navigator.pushNamed(context, AppRoutes.appInfo);
                       },
+                      isWeb: isWeb,
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -109,20 +118,24 @@ class CustomDrawer extends StatelessWidget {
     required IconData icon,
     required String title,
     required VoidCallback onTap,
+    required bool isWeb,
   }) {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+        padding: EdgeInsets.symmetric(
+          horizontal: isWeb ? 12 : 16,
+          vertical: isWeb ? 10 : 14,
+        ),
         child: Row(
           children: [
-            Icon(icon, size: 22.sp, color: AppColors.textPrimary),
-            SizedBox(width: 16.w),
+            Icon(icon, size: isWeb ? 20 : 22.sp, color: AppColors.textPrimary),
+            SizedBox(width: isWeb ? 12 : 16),
             Expanded(
               child: Text(
                 title,
                 style: TextStyle(
-                  fontSize: 16.sp,
+                  fontSize: isWeb ? 14 : 16.sp,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
                 ),
@@ -130,7 +143,7 @@ class CustomDrawer extends StatelessWidget {
             ),
             Icon(
               Icons.arrow_forward_ios,
-              size: 16.sp,
+              size: isWeb ? 14 : 16.sp,
               color: AppColors.textPrimary,
             ),
           ],
@@ -143,7 +156,7 @@ class CustomDrawer extends StatelessWidget {
     return Container(
       height: 1.h,
       color: AppColors.textPrimary.withOpacity(0.3),
-      margin: EdgeInsets.symmetric(horizontal: 16.w),
+      margin: const EdgeInsets.symmetric(horizontal: 12),
     );
   }
 }

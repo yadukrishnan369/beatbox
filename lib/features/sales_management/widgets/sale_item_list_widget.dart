@@ -1,5 +1,6 @@
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/utils/amount_formatter.dart';
+import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/features/sales_management/model/sales_model.dart';
@@ -11,6 +12,8 @@ class SaleItemListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isWeb = Responsive.isDesktop(context);
+
     double totalSale = 0.0;
     double totalPurchase = 0.0;
 
@@ -23,11 +26,14 @@ class SaleItemListWidget extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.all(isWeb ? 18 : 16.w),
       decoration: BoxDecoration(
         color: AppColors.contColor,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: AppColors.textPrimary, width: 1.w),
+        borderRadius: BorderRadius.circular(isWeb ? 10 : 12.r),
+        border: Border.all(
+          color: AppColors.textPrimary,
+          width: isWeb ? 1.2 : 1.w,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,8 +44,9 @@ class SaleItemListWidget extends StatelessWidget {
                 item.quantity;
 
             return Padding(
-              padding: EdgeInsets.only(bottom: 16.h),
+              padding: EdgeInsets.only(bottom: isWeb ? 18 : 16.h),
               child: _buildProductItem(
+                isWeb: isWeb,
                 productName: item.product.productName,
                 brand: item.product.productBrand,
                 qty: item.quantity,
@@ -50,8 +57,7 @@ class SaleItemListWidget extends StatelessWidget {
               ),
             );
           }),
-
-          Divider(color: Colors.grey.shade500, thickness: 1),
+          Divider(color: Colors.grey.shade500, thickness: isWeb ? 1.2 : 1),
           Align(
             alignment: Alignment.centerRight,
             child: Row(
@@ -60,16 +66,16 @@ class SaleItemListWidget extends StatelessWidget {
                   '(included GST & Discount)',
                   style: TextStyle(
                     color: AppColors.textPrimary,
-                    fontSize: 10.sp,
+                    fontSize: isWeb ? 11 : 10.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                SizedBox(width: 25.w),
+                SizedBox(width: isWeb ? 40 : 25.w),
                 Text(
                   'Total : ₹${AmountFormatter.format(totalProfit)}',
                   style: TextStyle(
                     color: AppColors.success,
-                    fontSize: 16.sp,
+                    fontSize: isWeb ? 18 : 16.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -82,6 +88,7 @@ class SaleItemListWidget extends StatelessWidget {
   }
 
   Widget _buildProductItem({
+    required bool isWeb,
     required String productName,
     required String brand,
     required int qty,
@@ -99,23 +106,26 @@ class SaleItemListWidget extends StatelessWidget {
             '$productName      $brand',
             style: TextStyle(
               color: AppColors.textPrimary,
-              fontSize: 18.sp,
+              fontSize: isWeb ? 17 : 18.sp,
               fontWeight: FontWeight.w500,
             ),
           ),
-          SizedBox(height: 4.h),
+          SizedBox(height: isWeb ? 5 : 4.h),
           Row(
             children: [
-              _infoText('Qty: $qty'),
-              _infoText('Purchase rate: ₹$purchaseRate'),
-              _infoText('Sale rate: ₹$salePrice'),
+              _infoText('Qty: $qty', isWeb),
+              _infoText('Purchase rate: ₹$purchaseRate', isWeb),
+              _infoText('Sale rate: ₹$salePrice', isWeb),
             ],
           ),
-          SizedBox(height: 5.h),
+          SizedBox(height: isWeb ? 6 : 5.h),
           Row(
             children: [
-              _infoText('Total : ₹${AmountFormatter.format(total)}'),
-              _infoText('Profit: ₹${AmountFormatter.format(itemProfit)}'),
+              _infoText('Total : ₹${AmountFormatter.format(total)}', isWeb),
+              _infoText(
+                'Profit: ₹${AmountFormatter.format(itemProfit)}',
+                isWeb,
+              ),
             ],
           ),
         ],
@@ -123,14 +133,14 @@ class SaleItemListWidget extends StatelessWidget {
     );
   }
 
-  Widget _infoText(String text) {
+  Widget _infoText(String text, bool isWeb) {
     return Padding(
-      padding: EdgeInsets.only(right: 18.w),
+      padding: EdgeInsets.only(right: isWeb ? 20 : 18.w),
       child: Text(
         text,
         style: TextStyle(
           color: AppColors.textPrimary,
-          fontSize: 14.sp,
+          fontSize: isWeb ? 14 : 14.sp,
           fontWeight: FontWeight.w400,
         ),
       ),

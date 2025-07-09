@@ -3,7 +3,7 @@ import 'package:beatbox/features/product_management/model/product_model.dart';
 import 'package:hive/hive.dart';
 
 class StockEntryUtils {
-  /// Show shimmer and load all products
+  /// show shimmer and load all products
   static Future<void> loadAllProducts() async {
     isStockEntryLoadingNotifier.value = true;
 
@@ -13,13 +13,13 @@ class StockEntryUtils {
           ..sort((a, b) => b.createdDate.compareTo(a.createdDate));
 
     allStockEntryNotifier.value = [...all]; // full db list
-    stockEntryNotifier.value = [...all]; // filtered/shown list
+    stockEntryNotifier.value = [...all]; // filtered or shown list
 
     await Future.delayed(const Duration(milliseconds: 300));
     isStockEntryLoadingNotifier.value = false;
   }
 
-  /// Load all products without shimmer
+  /// load all products without shimmer
   static Future<void> loadProductsWithoutShimmer() async {
     final box = await Hive.openBox<ProductModel>('productBox');
     final all =
@@ -30,7 +30,7 @@ class StockEntryUtils {
     stockEntryNotifier.value = [...all];
   }
 
-  /// Filter based on name/code and date
+  /// filter based on name or code and date
   static Future<void> filterByNameAndDate({
     required String query,
     DateTime? startDate,
@@ -55,10 +55,21 @@ class StockEntryUtils {
     if (startDate != null && endDate != null) {
       all =
           all.where((p) {
-            return p.createdDate.isAfter(
-                  startDate.subtract(const Duration(days: 1)),
-                ) &&
-                p.createdDate.isBefore(endDate.add(const Duration(days: 1)));
+            final created = DateTime(
+              p.createdDate.year,
+              p.createdDate.month,
+              p.createdDate.day,
+            );
+            final start = DateTime(
+              startDate.year,
+              startDate.month,
+              startDate.day,
+            );
+            final end = DateTime(endDate.year, endDate.month, endDate.day);
+
+            return (created.isAtSameMomentAs(start) ||
+                    created.isAfter(start)) &&
+                (created.isAtSameMomentAs(end) || created.isBefore(end));
           }).toList();
     }
 

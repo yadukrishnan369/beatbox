@@ -1,5 +1,6 @@
 import 'package:beatbox/constants/app_images.dart';
 import 'package:beatbox/core/app_colors.dart';
+import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -12,6 +13,8 @@ class AppInfoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isWeb = Responsive.isDesktop(context);
+
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
@@ -20,7 +23,7 @@ class AppInfoScreen extends StatelessWidget {
         title: Text(
           'App info',
           style: TextStyle(
-            fontSize: 22.sp,
+            fontSize: isWeb ? 20 : 22.sp,
             fontWeight: FontWeight.w600,
             color: AppColors.textPrimary,
           ),
@@ -28,75 +31,98 @@ class AppInfoScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-        child: Container(
-          padding: EdgeInsets.all(16.w),
-          decoration: BoxDecoration(
-            color: AppColors.contColor,
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // App Info logo & Header
-              Row(
+        padding: EdgeInsets.symmetric(
+          horizontal: isWeb ? 24 : 16.w,
+          vertical: isWeb ? 16 : 8.h,
+        ),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: isWeb ? 600 : double.infinity,
+            ),
+            child: Container(
+              padding: EdgeInsets.all(isWeb ? 24 : 16.w),
+              decoration: BoxDecoration(
+                color: AppColors.contColor,
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Image.asset(AppImages.logo, width: 40.w, height: 40.h),
-                  SizedBox(width: 8.w),
-                  Text(
-                    'App Information',
-                    style: TextStyle(
-                      fontSize: 22.sp,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
-                    ),
+                  // app info logo & header
+                  Row(
+                    children: [
+                      Image.asset(
+                        AppImages.logo,
+                        width: isWeb ? 50 : 40.w,
+                        height: isWeb ? 50 : 40.h,
+                      ),
+                      SizedBox(width: isWeb ? 12 : 8.w),
+                      Text(
+                        'App Information',
+                        style: TextStyle(
+                          fontSize: isWeb ? 24 : 22.sp,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: isWeb ? 24 : 20.h),
+
+                  // version details
+                  ...[
+                    'App Version: $version',
+                    'Last Updated: $lastUpdated',
+                    'Developed by $developer',
+                  ].map((e) => _buildBulletText(e, isWeb)),
+
+                  SizedBox(height: isWeb ? 20 : 16.h),
+                  _buildParagraph(
+                    'This is the latest version of the app with improved performance and minor fixes. Please make sure to keep the app updated for the best experience.',
+                    isWeb,
+                  ),
+                  SizedBox(height: isWeb ? 30 : 24.h),
+
+                  // legal section
+                  _buildSectionTitle('Support & Legal', isWeb),
+                  SizedBox(height: isWeb ? 20 : 15.h),
+                  _buildSubTitle('• Privacy Policy', isWeb),
+                  _buildParagraph(
+                    'Learn how we collect, use, and protect your personal information.',
+                    isWeb,
+                  ),
+                  SizedBox(height: isWeb ? 20 : 15.h),
+                  ..._privacyPolicyPoints.map(
+                    (e) => _buildSmallBullet(e, isWeb),
+                  ),
+
+                  SizedBox(height: isWeb ? 24 : 20.h),
+                  _buildSubTitle('• Terms & Conditions', isWeb),
+                  SizedBox(height: isWeb ? 20 : 15.h),
+                  ..._termsConditionsPoints.map(
+                    (e) => _buildSmallBullet(e, isWeb),
                   ),
                 ],
               ),
-              SizedBox(height: 20.h),
-
-              // Version Details
-              ...[
-                'App Version: $version',
-                'Last Updated: $lastUpdated',
-                'Developed by $developer',
-              ].map(_buildBulletText),
-
-              SizedBox(height: 16.h),
-              _buildParagraph(
-                'This is the latest version of the app with improved performance and minor fixes. Please make sure to keep the app updated for the best experience.',
-              ),
-              SizedBox(height: 24.h),
-
-              // Legal Section
-              _buildSectionTitle('Support & Legal'),
-              SizedBox(height: 15.h),
-              _buildSubTitle('• Privacy Policy'),
-              _buildParagraph(
-                'Learn how we collect, use, and protect your personal information.',
-              ),
-              SizedBox(height: 15.h),
-              ..._privacyPolicyPoints.map(_buildSmallBullet),
-
-              SizedBox(height: 20.h),
-              _buildSubTitle('• Terms & Conditions'),
-              SizedBox(height: 15.h),
-              ..._termsConditionsPoints.map(_buildSmallBullet),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildBulletText(String text) {
+  Widget _buildBulletText(String text, bool isWeb) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 8.h),
+      padding: EdgeInsets.only(bottom: isWeb ? 10 : 8.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            margin: EdgeInsets.only(top: 6.h, right: 8.w),
+            margin: EdgeInsets.only(
+              top: isWeb ? 8 : 6.h,
+              right: isWeb ? 10 : 8.w,
+            ),
             width: 4.w,
             height: 4.w,
             decoration: BoxDecoration(
@@ -108,7 +134,7 @@ class AppInfoScreen extends StatelessWidget {
             child: Text(
               text,
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: isWeb ? 15 : 14.sp,
                 color: AppColors.textPrimary,
                 height: 1.4,
               ),
@@ -119,54 +145,60 @@ class AppInfoScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildParagraph(String text) {
+  Widget _buildParagraph(String text, bool isWeb) {
     return Text(
       text,
       style: TextStyle(
-        fontSize: 14.sp,
+        fontSize: isWeb ? 15 : 14.sp,
         color: AppColors.textPrimary,
         height: 1.5,
       ),
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(String title, bool isWeb) {
     return Text(
       title,
       style: TextStyle(
-        fontSize: 20.sp,
+        fontSize: isWeb ? 22 : 20.sp,
         fontWeight: FontWeight.w700,
         color: AppColors.textPrimary,
       ),
     );
   }
 
-  Widget _buildSubTitle(String title) {
+  Widget _buildSubTitle(String title, bool isWeb) {
     return Text(
       title,
       style: TextStyle(
-        fontSize: 18.sp,
+        fontSize: isWeb ? 18 : 18.sp,
         fontWeight: FontWeight.w600,
         color: AppColors.textPrimary,
       ),
     );
   }
 
-  Widget _buildSmallBullet(String text) {
+  Widget _buildSmallBullet(String text, bool isWeb) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 6.h, left: 12.w),
+      padding: EdgeInsets.only(
+        bottom: isWeb ? 10 : 6.h,
+        left: isWeb ? 16 : 12.w,
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             '• ',
-            style: TextStyle(fontSize: 14.sp, color: AppColors.textPrimary),
+            style: TextStyle(
+              fontSize: isWeb ? 15 : 14.sp,
+              color: AppColors.textPrimary,
+            ),
           ),
           Expanded(
             child: Text(
               text,
               style: TextStyle(
-                fontSize: 14.sp,
+                fontSize: isWeb ? 15 : 14.sp,
                 color: AppColors.textPrimary,
                 height: 1.4,
               ),
@@ -177,7 +209,7 @@ class AppInfoScreen extends StatelessWidget {
     );
   }
 
-  // Data Lists
+  // data lists
   final List<String> _privacyPolicyPoints = [
     'We collect basic product data and user interactions locally only.',
     'No personal information is uploaded to external servers.',

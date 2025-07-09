@@ -1,56 +1,61 @@
 import 'dart:io';
-import 'package:beatbox/core/app_colors.dart';
-import 'package:beatbox/features/app_settings_info_management/controller/theme_controller.dart';
-import 'package:beatbox/features/app_settings_info_management/ui/app_info_screen.dart';
-import 'package:beatbox/features/app_settings_info_management/ui/backup_export_data_screen.dart';
-import 'package:beatbox/features/app_settings_info_management/ui/faq_screen.dart';
-import 'package:beatbox/features/app_settings_info_management/ui/reset_app_data_screen.dart';
-import 'package:beatbox/features/app_settings_info_management/ui/user_manual_screen.dart';
-import 'package:beatbox/features/auth/biometric_screen.dart';
-import 'package:beatbox/features/bill_management/ui/bill_details_screen.dart';
-import 'package:beatbox/features/bill_management/ui/bill_history_screen.dart';
-import 'package:beatbox/features/home/ui/home_screen.dart';
-import 'package:beatbox/features/insight_management/ui/insight_screen.dart';
-import 'package:beatbox/features/product_management/ui/limited_stock_detail_screen.dart';
-import 'package:beatbox/features/product_management/ui/stock_entry_details_screen.dart';
-import 'package:beatbox/features/product_management/ui/stock_entry_screen.dart';
-import 'package:beatbox/features/sales_management/controller/cart_controller.dart';
-import 'package:beatbox/features/sales_management/controller/sales_controller.dart';
-import 'package:beatbox/features/sales_management/model/cart_item_model.dart';
 import 'package:beatbox/features/app_settings_info_management/ui/app_settings_screen.dart';
-import 'package:beatbox/features/sales_management/model/sales_model.dart';
-import 'package:beatbox/features/sales_management/ui/billing_screen.dart';
-import 'package:beatbox/features/sales_management/ui/cart_screen.dart';
-import 'package:beatbox/features/sales_management/ui/sales_customer_details_screen.dart';
-import 'package:beatbox/features/sales_management/ui/sales_customer_screen.dart';
-import 'package:beatbox/features/splash/splash_screen.dart';
-import 'package:beatbox/features/product_management/controller/brand_controller.dart';
-import 'package:beatbox/features/product_management/controller/category_controller.dart';
-import 'package:beatbox/features/product_management/controller/product_controller.dart';
-import 'package:beatbox/features/product_management/model/brand_model.dart';
-import 'package:beatbox/features/product_management/model/category_model.dart';
-import 'package:beatbox/features/product_management/model/product_model.dart';
-import 'package:beatbox/features/product_management/ui/add_edit_product_screen.dart';
-import 'package:beatbox/features/product_management/ui/brand_category_screen.dart';
-import 'package:beatbox/features/product_management/ui/current_stock_screen.dart';
-import 'package:beatbox/features/product_management/ui/limited_stock_screen.dart';
-import 'package:beatbox/features/product_management/ui/manage_stock_screen.dart';
-import 'package:beatbox/features/product_management/ui/product_details_screen.dart';
-import 'package:beatbox/features/product_management/ui/products_screen.dart';
-import 'package:beatbox/features/product_management/ui/edit_delete_product_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'routes/app_routes.dart';
+import 'package:path_provider/path_provider.dart';
+import 'core/app_colors.dart';
 import 'core/app_lifecycle_handler.dart';
+import 'features/app_settings_info_management/controller/theme_controller.dart';
+import 'features/app_settings_info_management/ui/app_info_screen.dart';
+import 'features/app_settings_info_management/ui/backup_export_data_screen.dart';
+import 'features/app_settings_info_management/ui/faq_screen.dart';
+import 'features/app_settings_info_management/ui/reset_app_data_screen.dart';
+import 'features/app_settings_info_management/ui/user_manual_screen.dart';
+import 'features/auth/biometric_screen.dart';
+import 'features/bill_management/ui/bill_details_screen.dart';
+import 'features/bill_management/ui/bill_history_screen.dart';
+import 'features/home/ui/home_screen.dart';
+import 'features/insight_management/ui/insight_screen.dart';
+import 'features/product_management/controller/brand_controller.dart';
+import 'features/product_management/controller/category_controller.dart';
+import 'features/product_management/controller/product_controller.dart';
+import 'features/product_management/model/brand_model.dart';
+import 'features/product_management/model/category_model.dart';
+import 'features/product_management/model/product_model.dart';
+import 'features/product_management/ui/add_edit_product_screen.dart';
+import 'features/product_management/ui/brand_category_screen.dart';
+import 'features/product_management/ui/current_stock_screen.dart';
+import 'features/product_management/ui/limited_stock_detail_screen.dart';
+import 'features/product_management/ui/limited_stock_screen.dart';
+import 'features/product_management/ui/manage_stock_screen.dart';
+import 'features/product_management/ui/product_details_screen.dart';
+import 'features/product_management/ui/products_screen.dart';
+import 'features/product_management/ui/edit_delete_product_screen.dart';
+import 'features/product_management/ui/stock_entry_details_screen.dart';
+import 'features/product_management/ui/stock_entry_screen.dart';
+import 'features/sales_management/controller/cart_controller.dart';
+import 'features/sales_management/controller/sales_controller.dart';
+import 'features/sales_management/model/cart_item_model.dart';
+import 'features/sales_management/model/sales_model.dart';
+import 'features/sales_management/ui/billing_screen.dart';
+import 'features/sales_management/ui/cart_screen.dart';
+import 'features/sales_management/ui/sales_customer_details_screen.dart';
+import 'features/sales_management/ui/sales_customer_screen.dart';
+import 'routes/app_routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Directory directory = await getApplicationDocumentsDirectory();
-  await Hive.initFlutter(directory.path);
+
+  if (kIsWeb) {
+    await Hive.initFlutter(); // for web
+  } else {
+    Directory directory = await getApplicationDocumentsDirectory();
+    await Hive.initFlutter(directory.path); // for mobile
+  }
 
   Hive.registerAdapter(CategoryModelAdapter());
   Hive.registerAdapter(BrandModelAdapter());
@@ -88,7 +93,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     _lifecycleHandler = AppLifecycleHandler(
       onRequireBiometric: () {
-        if (!_biometricJustDone) {
+        if (!kIsWeb && !_biometricJustDone) {
           Navigator.of(
             navigatorKey.currentContext!,
           ).pushNamed(AppRoutes.biometric);
@@ -127,7 +132,7 @@ class _MyAppState extends State<MyApp> {
         return ValueListenableBuilder<bool>(
           valueListenable: ThemeController.isDarkMode,
           builder: (context, isDark, _) {
-            AppColors.updateTheme(isDark); // auto update AppColors
+            AppColors.updateTheme(isDark);
             return MaterialApp(
               title: 'BeatBox',
               theme: ThemeData(
@@ -143,10 +148,15 @@ class _MyAppState extends State<MyApp> {
               navigatorKey: navigatorKey,
               initialRoute: AppRoutes.home,
               routes: {
-                AppRoutes.splash: (context) => SplashScreen(),
                 AppRoutes.biometric:
                     (context) => BiometricScreen(onSuccess: onBiometricSuccess),
-                AppRoutes.home: (context) => HomeScreen(),
+                AppRoutes.home: (context) {
+                  if (!kIsWeb && !_biometricJustDone) {
+                    return BiometricScreen(onSuccess: onBiometricSuccess);
+                  } else {
+                    return const HomeScreen();
+                  }
+                },
                 AppRoutes.stock: (context) => StockManageScreen(),
                 AppRoutes.limitedStock: (context) => LimitedStockScreen(),
                 AppRoutes.limitedStockDetail:

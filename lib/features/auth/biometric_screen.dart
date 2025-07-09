@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,12 +23,26 @@ class _BiometricScreenState extends State<BiometricScreen> {
 
   Future<void> authenticateUser() async {
     try {
+      // Skip biometric on web
+      if (kIsWeb) {
+        widget.onSuccess();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            Navigator.pushReplacementNamed(context, AppRoutes.home);
+          }
+        });
+        return;
+      }
+
       bool canCheck = await auth.canCheckBiometrics;
       if (!canCheck) {
-        // No biometrics available then go to home
         if (mounted) {
           widget.onSuccess();
-          Navigator.pushReplacementNamed(context, AppRoutes.home);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              Navigator.pushReplacementNamed(context, AppRoutes.home);
+            }
+          });
         }
         return;
       }
@@ -42,10 +57,31 @@ class _BiometricScreenState extends State<BiometricScreen> {
 
       if (authenticated && mounted) {
         widget.onSuccess();
-        Navigator.pushReplacementNamed(context, AppRoutes.home);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                Navigator.pushReplacementNamed(context, AppRoutes.home);
+              }
+            });
+          }
+        });
       }
     } catch (e) {
       debugPrint('Biometric error: $e');
+
+      if (mounted) {
+        widget.onSuccess();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                Navigator.pushReplacementNamed(context, AppRoutes.home);
+              }
+            });
+          }
+        });
+      }
     }
   }
 

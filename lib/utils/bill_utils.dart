@@ -39,11 +39,23 @@ class BillUtils {
     if (startDate != null && endDate != null) {
       allBills =
           allBills.where((sale) {
-            final billingDate = sale.billingDate;
-            return billingDate.isAfter(
-                  startDate.subtract(const Duration(days: 1)),
-                ) &&
-                billingDate.isBefore(endDate.add(const Duration(days: 1)));
+            final billingDate = DateTime(
+              sale.billingDate.year,
+              sale.billingDate.month,
+              sale.billingDate.day,
+            );
+
+            final start = DateTime(
+              startDate.year,
+              startDate.month,
+              startDate.day,
+            );
+            final end = DateTime(endDate.year, endDate.month, endDate.day);
+
+            return (billingDate.isAtSameMomentAs(start) ||
+                    billingDate.isAfter(start)) &&
+                (billingDate.isAtSameMomentAs(end) ||
+                    billingDate.isBefore(end));
           }).toList();
     }
 
@@ -140,8 +152,8 @@ class BillUtils {
       await loadBillsWithoutShimmer();
       if (!context.mounted) return;
 
-      Navigator.pop(context); // Close details screen
-      // Show success message
+      Navigator.pop(context); // close details screen
+      // show success message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Bill deleted successfully"),

@@ -1,10 +1,22 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/sales_management/model/cart_item_model.dart';
 import 'package:beatbox/features/sales_management/widgets/remove_adjust_cart_item.dart';
 import 'package:beatbox/utils/amount_formatter.dart';
+import 'package:beatbox/utils/responsive_utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+Uint8List? decodeBase64Image(String? base64String) {
+  try {
+    if (base64String == null || base64String.trim().isEmpty) return null;
+    return base64Decode(base64String);
+  } catch (e) {
+    return null;
+  }
+}
 
 class CartProductList extends StatelessWidget {
   const CartProductList({super.key, required this.cartItems});
@@ -13,53 +25,47 @@ class CartProductList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isWeb = Responsive.isDesktop(context);
+
     return ListView.builder(
       itemCount: cartItems.length,
       itemBuilder: (context, index) {
         final item = cartItems[index];
+
         return Container(
-          margin: EdgeInsets.only(bottom: 12.h),
-          padding: EdgeInsets.all(16.r),
+          margin: EdgeInsets.only(bottom: isWeb ? 8.h : 12.h),
+          padding: EdgeInsets.all(isWeb ? 10.r : 16.r),
           decoration: BoxDecoration(
             color: AppColors.contColor,
-            borderRadius: BorderRadius.circular(12.r),
+            borderRadius: BorderRadius.circular(10.r),
+            boxShadow:
+                isWeb
+                    ? [BoxShadow(color: Colors.black12, blurRadius: 2.r)]
+                    : [],
           ),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Product Image
+              // product image
               Container(
-                width: 70.w,
-                height: 70.h,
+                width: isWeb ? 20.w : 70.w,
+                height: isWeb ? 20.w : 70.w,
                 decoration: BoxDecoration(
                   color: AppColors.cardColor,
                   borderRadius: BorderRadius.circular(8.r),
                 ),
-                child:
-                    item.product.image1 != null &&
-                            item.product.image1!.isNotEmpty
-                        ? ClipRRect(
-                          borderRadius: BorderRadius.circular(8.r),
-                          child: Image.file(
-                            File(item.product.image1!),
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Icon(
-                                Icons.headphones,
-                                color: AppColors.primary,
-                                size: 30.sp,
-                              );
-                            },
-                          ),
-                        )
-                        : Icon(
-                          Icons.headphones,
-                          color: AppColors.primary,
-                          size: 30.sp,
-                        ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.r),
+                  child:
+                      isWeb
+                          ? _buildWebImage(item.product.webImage1)
+                          : _buildMobileImage(item.product.image1),
+                ),
               ),
-              SizedBox(width: 12.w),
 
-              // Product Details
+              SizedBox(width: isWeb ? 12.w : 10.w),
+
+              // product info
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,8 +73,8 @@ class CartProductList extends StatelessWidget {
                     Text(
                       item.product.productName,
                       style: TextStyle(
+                        fontSize: isWeb ? 6.sp : 14.sp,
                         fontWeight: FontWeight.w600,
-                        fontSize: 14.sp,
                         color: AppColors.textPrimary,
                       ),
                       maxLines: 1,
@@ -78,38 +84,84 @@ class CartProductList extends StatelessWidget {
                     Text(
                       item.product.productCategory,
                       style: TextStyle(
+                        fontSize: isWeb ? 5.sp : 12.sp,
                         color: AppColors.textDisabled,
-                        fontSize: 12.sp,
                       ),
                     ),
                     SizedBox(height: 2.h),
-                    Text(
-                      'MRP ₹ ${AmountFormatter.format(item.product.salePrice)}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12.sp,
-                        color: AppColors.error,
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          'MRP ₹${AmountFormatter.format(item.product.salePrice)}',
+                          style: TextStyle(
+                            fontSize: isWeb ? 4.sp : 12.sp,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.error,
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 6.h),
-                    Text(
-                      'Total ₹ ${AmountFormatter.format(item.totalPrice)}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.sp,
-                        color: AppColors.success,
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          'Total ₹${AmountFormatter.format(item.totalPrice)}',
+                          style: TextStyle(
+                            fontSize: isWeb ? 4.sp : 14.sp,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.success,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
 
-              // quantity controls and remove button
-              RemoveAndAdjustItem(item: item),
+              SizedBox(width: isWeb ? 8.w : 4.w),
+
+              // qnty controls
+              RemoveAndAdjustItem(item: item, isWeb: isWeb),
             ],
           ),
         );
       },
+    );
+  }
+
+  Widget _buildWebImage(String? base64Image) {
+    final bytes = decodeBase64Image(base64Image);
+    if (bytes != null) {
+      return Image.memory(
+        bytes,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => _errorIcon(),
+      );
+    } else {
+      return _errorIcon();
+    }
+  }
+
+  Widget _buildMobileImage(String? filePath) {
+    if (filePath != null &&
+        filePath.isNotEmpty &&
+        File(filePath).existsSync()) {
+      return Image.file(
+        File(filePath),
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => _errorIcon(),
+      );
+    } else {
+      return _errorIcon();
+    }
+  }
+
+  Widget _errorIcon() {
+    return Center(
+      child: Icon(
+        Icons.headphones,
+        color: AppColors.primary,
+        size: kIsWeb ? 18.sp : 30.sp,
+      ),
     );
   }
 }

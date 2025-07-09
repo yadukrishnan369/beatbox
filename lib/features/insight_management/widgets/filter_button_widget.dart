@@ -1,4 +1,5 @@
 import 'package:beatbox/core/app_colors.dart';
+import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -35,45 +36,61 @@ class _FilterButtonsState extends State<FilterButtons> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 8.h),
-      child: SizedBox(
-        height: 46.h,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              SizedBox(width: 8.w),
-              _buildFilterButton(
-                "Select Range",
-                () => _pickCustomRange(context),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final bool isWeb = Responsive.isDesktop(context);
+        final double height = isWeb ? 42 : 46.h;
+        final double paddingBottom = isWeb ? 10 : 1.h;
+
+        return Padding(
+          padding: EdgeInsets.only(bottom: paddingBottom),
+          child: SizedBox(
+            height: height,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  SizedBox(width: isWeb ? 10 : 8.w),
+                  _buildFilterButton(
+                    "Select Range",
+                    () => _pickCustomRange(context),
+                    isWeb,
+                  ),
+                  _buildFilterButton(
+                    "Today",
+                    () => _handleQuickRange("Today", 1),
+                    isWeb,
+                  ),
+                  _buildFilterButton(
+                    "1 Week",
+                    () => _handleQuickRange("1 Week", 7),
+                    isWeb,
+                  ),
+                  _buildFilterButton(
+                    "1 Month",
+                    () => _handleQuickRange("1 Month", 30),
+                    isWeb,
+                  ),
+                  _buildFilterButton(
+                    "6 Months",
+                    () => _handleQuickRange("6 Months", 180),
+                    isWeb,
+                  ),
+                  SizedBox(width: isWeb ? 10 : 8.w),
+                ],
               ),
-              _buildFilterButton("Today", () => _handleQuickRange("Today", 1)),
-              _buildFilterButton(
-                "1 Week",
-                () => _handleQuickRange("1 Week", 7),
-              ),
-              _buildFilterButton(
-                "1 Month",
-                () => _handleQuickRange("1 Month", 30),
-              ),
-              _buildFilterButton(
-                "6 Months",
-                () => _handleQuickRange("6 Months", 180),
-              ),
-              SizedBox(width: 8.w),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildFilterButton(String label, VoidCallback onPressed) {
+  Widget _buildFilterButton(String label, VoidCallback onPressed, bool isWeb) {
     final isSelected = label == selectedFilter;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 6.w),
+      padding: EdgeInsets.symmetric(horizontal: isWeb ? 12 : 6.w),
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
@@ -81,14 +98,20 @@ class _FilterButtonsState extends State<FilterButtons> {
           foregroundColor: isSelected ? AppColors.white : AppColors.textPrimary,
           elevation: isSelected ? 2 : 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.r),
+            borderRadius: BorderRadius.circular(isWeb ? 18 : 20.r),
             side:
                 isSelected
                     ? BorderSide.none
                     : BorderSide(color: AppColors.contColor),
           ),
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-          textStyle: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500),
+          padding: EdgeInsets.symmetric(
+            horizontal: isWeb ? 26 : 16.w,
+            vertical: isWeb ? 8 : 10.h,
+          ),
+          textStyle: TextStyle(
+            fontSize: isWeb ? 14 : 12.sp,
+            fontWeight: FontWeight.w500,
+          ),
         ),
         child: Text(label),
       ),

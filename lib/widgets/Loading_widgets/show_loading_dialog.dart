@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:beatbox/constants/app_images.dart';
 import 'package:beatbox/core/app_colors.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -57,7 +58,7 @@ class _AnimatedLoadingDialogState extends State<_AnimatedLoadingDialog> {
         Future.delayed(Duration(milliseconds: 1000), () {
           if (mounted) {
             Navigator.of(context).pop();
-            widget.onFinish?.call(); //
+            widget.onFinish?.call();
           }
         });
       } else {
@@ -71,16 +72,24 @@ class _AnimatedLoadingDialogState extends State<_AnimatedLoadingDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isWeb = kIsWeb;
+
     return Dialog(
       backgroundColor: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(isWeb ? 20 : 16.r),
+      ),
       child: Padding(
-        padding: EdgeInsets.all(20.w),
+        padding: EdgeInsets.all(isWeb ? 30 : 20.w),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(AppImages.logo, width: 45.w, height: 45.h),
-            SizedBox(width: 20.w),
+            Image.asset(
+              AppImages.logo,
+              width: isWeb ? 60 : 45.w,
+              height: isWeb ? 60 : 45.h,
+            ),
+            SizedBox(width: isWeb ? 30 : 20.w),
             AnimatedSwitcher(
               duration: Duration(milliseconds: 500),
               transitionBuilder:
@@ -91,14 +100,21 @@ class _AnimatedLoadingDialogState extends State<_AnimatedLoadingDialog> {
                       ? Icon(
                         Icons.check_circle,
                         color: AppColors.success,
-                        size: 30.w,
+                        size: isWeb ? 35 : 30.w,
                       )
-                      : CircularProgressIndicator(color: AppColors.primary),
+                      : SizedBox(
+                        width: isWeb ? 30 : 24.w,
+                        height: isWeb ? 30 : 24.w,
+                        child: CircularProgressIndicator(
+                          color: AppColors.primary,
+                        ),
+                      ),
             ),
-            SizedBox(width: 20.w),
+            SizedBox(width: isWeb ? 30 : 20.w),
             Text(
               success ? 'Success' : (widget.message ?? 'Loading...'),
               style: TextStyle(
+                fontSize: isWeb ? 18 : 14.sp,
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
               ),

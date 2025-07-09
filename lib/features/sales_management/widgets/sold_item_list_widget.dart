@@ -1,6 +1,7 @@
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/sales_management/model/sales_model.dart';
 import 'package:beatbox/utils/amount_formatter.dart';
+import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -11,12 +12,17 @@ class SoldItemListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isWeb = Responsive.isDesktop(context);
+
     return Container(
-      margin: EdgeInsets.only(bottom: 12.h),
-      padding: EdgeInsets.all(16.r),
+      margin: EdgeInsets.only(bottom: isWeb ? 6.h : 12.h),
+      padding: EdgeInsets.symmetric(
+        horizontal: isWeb ? 5.w : 16.r,
+        vertical: isWeb ? 10.h : 16.r,
+      ),
       decoration: BoxDecoration(
         color: AppColors.contColor,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(isWeb ? 10.r : 12.r),
       ),
       child: Row(
         children: [
@@ -28,16 +34,16 @@ class SoldItemListTile extends StatelessWidget {
                   sale.customerName,
                   style: TextStyle(
                     color: AppColors.textPrimary,
-                    fontSize: 12.sp,
+                    fontSize: isWeb ? 5.sp : 12.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(height: 4.h),
+                SizedBox(height: isWeb ? 3.h : 4.h),
                 Text(
                   sale.orderNumber,
                   style: TextStyle(
                     color: AppColors.textDisabled,
-                    fontSize: 14.sp,
+                    fontSize: isWeb ? 5.sp : 14.sp,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
@@ -46,9 +52,9 @@ class SoldItemListTile extends StatelessWidget {
           ),
           Container(
             width: 1.w,
-            height: 40.h,
+            height: isWeb ? 38.h : 40.h,
             color: AppColors.white,
-            margin: EdgeInsets.symmetric(horizontal: 16.w),
+            margin: EdgeInsets.symmetric(horizontal: isWeb ? 14.w : 16.w),
           ),
           Expanded(
             child: Column(
@@ -58,23 +64,27 @@ class SoldItemListTile extends StatelessWidget {
                   'Amount',
                   style: TextStyle(
                     color: AppColors.textPrimary,
-                    fontSize: 12.sp,
+                    fontSize: isWeb ? 5.sp : 12.sp,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(height: 4.h),
+                SizedBox(height: isWeb ? 3.h : 4.h),
                 Text(
                   '₹ ${AmountFormatter.format(sale.grandTotal)}',
                   style: TextStyle(
                     color: AppColors.success,
-                    fontSize: 14.sp,
+                    fontSize: isWeb ? 6.sp : 14.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
             ),
           ),
-          Icon(Icons.list, color: AppColors.primary, size: 20.sp),
+          Icon(
+            Icons.list,
+            color: AppColors.primary,
+            size: isWeb ? 10.sp : 20.sp,
+          ),
         ],
       ),
     );

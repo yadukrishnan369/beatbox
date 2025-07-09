@@ -40,7 +40,7 @@ class ResetController {
       await NewArrivalUtils.loadNewArrivalProducts();
       ThemeController.isDarkMode.value = false;
       AppColors.updateTheme(false);
-      // Restart app
+      // restart app
       Phoenix.rebirth(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

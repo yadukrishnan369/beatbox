@@ -24,7 +24,6 @@ import 'package:beatbox/features/sales_management/ui/cart_screen.dart';
 import 'package:beatbox/features/sales_management/ui/sales_customer_details_screen.dart';
 import 'package:beatbox/features/sales_management/ui/sales_customer_screen.dart';
 import 'package:flutter/material.dart';
-import '../features/splash/splash_screen.dart';
 import '../features/auth/biometric_screen.dart';
 
 class AppRoutes {
@@ -59,7 +58,6 @@ class AppRoutes {
 
   /// set each routes, its screen widget
   static Map<String, WidgetBuilder> get routes => {
-    splash: (context) => const SplashScreen(),
     biometric: (context) => BiometricScreen(onSuccess: () {}),
     home: (context) => HomeScreen(),
     stock: (context) => StockManageScreen(),

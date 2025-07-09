@@ -1,5 +1,6 @@
 import 'package:beatbox/core/notifiers/cart_update_notifier.dart';
 import 'package:beatbox/routes/app_routes.dart';
+import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/core/app_colors.dart';
@@ -29,44 +30,50 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isWeb =
+        Responsive.isDesktop(context) ||
+        MediaQuery.of(context).size.width > 600;
+
     return Container(
-      color: AppColors.white,
+      padding: EdgeInsets.symmetric(
+        vertical: isWeb ? 16.h : 12.h,
+        horizontal: isWeb ? 24.w : 16.w,
+      ),
+      color: Colors.transparent,
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
           Container(
-            height: 75.h,
-            margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            height: isWeb ? 80.h : 75.h,
             decoration: BoxDecoration(
               color: AppColors.bottomNavColor,
               borderRadius: BorderRadius.circular(30.r),
-              boxShadow: [
-                BoxShadow(color: AppColors.primary, blurRadius: 10.r),
-              ],
+              boxShadow: [BoxShadow(color: AppColors.primary, blurRadius: 2.r)],
             ),
+            padding: EdgeInsets.symmetric(horizontal: isWeb ? 24.w : 16.w),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildNavItem(context, Icons.home, "Home", 0),
-                _buildNavItem(context, Icons.inventory, "Stock", 1),
-                SizedBox(width: 60.w),
-                _buildNavItem(context, Icons.shopping_bag, "Product", 3),
-                _buildNavItem(context, Icons.bar_chart, "Insight", 4),
+                _buildNavItem(context, Icons.home, "Home", 0, isWeb),
+                _buildNavItem(context, Icons.inventory, "Stock", 1, isWeb),
+                SizedBox(width: isWeb ? 80.w : 60.w),
+                _buildNavItem(context, Icons.shopping_bag, "Product", 3, isWeb),
+                _buildNavItem(context, Icons.bar_chart, "Insight", 4, isWeb),
               ],
             ),
           ),
-          // Cart Button with Badge Indicator
+
+          // bart button
           Positioned(
-            bottom: 15.5.h,
+            bottom: isWeb ? 3.h : 3.3.h,
             child: GestureDetector(
               onTap: () => _onItemTapped(context, 2),
               child: Stack(
                 alignment: Alignment.topRight,
                 children: [
                   Container(
-                    height: 68.h,
-                    width: 68.w,
+                    height: isWeb ? 75.h : 68.h,
+                    width: isWeb ? 75.w : 68.w,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: AppColors.white,
@@ -82,21 +89,20 @@ class CustomBottomNavBar extends StatelessWidget {
                     child: Icon(
                       Icons.shopping_cart,
                       color: AppColors.textPrimary,
-                      size: 32.sp,
+                      size: isWeb ? 10.sp : 32.sp,
                     ),
                   ),
 
-                  // badge of cart
+                  // cart badge
                   Positioned(
-                    right: 10,
-                    top: 7,
+                    right: isWeb ? 26.w : 10.w,
+                    top: isWeb ? -10.h : 7.h,
                     child: ValueListenableBuilder(
                       valueListenable: cartUpdatedNotifier,
                       builder: (context, cartItems, _) {
                         if (cartItems.isEmpty) return SizedBox.shrink();
-
                         return Container(
-                          padding: EdgeInsets.all(5.r),
+                          padding: EdgeInsets.all(isWeb ? 10.r : 5.r),
                           decoration: BoxDecoration(
                             color: AppColors.error,
                             shape: BoxShape.circle,
@@ -105,7 +111,7 @@ class CustomBottomNavBar extends StatelessWidget {
                             '${cartItems.length}',
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 14.sp,
+                              fontSize: isWeb ? 7.sp : 14.sp,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -127,23 +133,29 @@ class CustomBottomNavBar extends StatelessWidget {
     IconData icon,
     String label,
     int index,
+    bool isWeb,
   ) {
     return GestureDetector(
       onTap: () => _onItemTapped(context, index),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: Colors.white, size: 24.sp),
-          SizedBox(height: 4.h),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12.sp,
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: isWeb ? 12.w : 8.w),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(icon, color: Colors.white, size: isWeb ? 10.sp : 24.sp),
+            SizedBox(height: isWeb ? 0.h : 4.h),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: isWeb ? 4.sp : 12.sp,
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

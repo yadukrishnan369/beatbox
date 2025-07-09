@@ -5,15 +5,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class RemoveAndAdjustItem extends StatelessWidget {
-  const RemoveAndAdjustItem({super.key, required this.item});
+  const RemoveAndAdjustItem({
+    super.key,
+    required this.item,
+    this.isWeb = false,
+  });
 
   final CartItemModel item;
+  final bool isWeb;
 
   @override
   Widget build(BuildContext context) {
+    final double iconSize = isWeb ? 6.sp : 16.sp;
+    final double qtyFont = isWeb ? 4.sp : 14.sp;
+    final double removeFont = isWeb ? 4.sp : 12.sp;
+    final double removePaddingH = isWeb ? 2.w : 12.w;
+    final double removePaddingV = isWeb ? 2.h : 4.h;
+    final double qtyPaddingH = isWeb ? 2.w : 12.w;
+    final double qtyPaddingV = isWeb ? 2.h : 4.h;
+
     return Column(
       children: [
-        // quantity controls
+        // qnty controls
         Container(
           decoration: BoxDecoration(
             color: AppColors.bottomNavColor,
@@ -24,30 +37,35 @@ class RemoveAndAdjustItem extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () {
-                  // decrease quantity logic
                   if (item.quantity > 1) {
                     CartUtils.changeQuantity(item.product, item.quantity - 1);
                   }
                 },
                 child: Container(
                   padding: EdgeInsets.all(4.r),
-                  child: Icon(Icons.remove, color: Colors.white, size: 16.sp),
+                  child: Icon(
+                    Icons.remove,
+                    color: Colors.white,
+                    size: iconSize,
+                  ),
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+                padding: EdgeInsets.symmetric(
+                  horizontal: qtyPaddingH,
+                  vertical: qtyPaddingV,
+                ),
                 child: Text(
                   '${item.quantity}',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
-                    fontSize: 14.sp,
+                    fontSize: qtyFont,
                   ),
                 ),
               ),
               GestureDetector(
                 onTap: () {
-                  // increase quantity logic
                   if (item.quantity < item.product.productQuantity) {
                     CartUtils.changeQuantity(item.product, item.quantity + 1);
                   } else {
@@ -55,7 +73,7 @@ class RemoveAndAdjustItem extends StatelessWidget {
                       SnackBar(
                         content: Text(
                           "Only ${item.product.productQuantity} items available",
-                          style: TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.white),
                         ),
                         backgroundColor: AppColors.error,
                       ),
@@ -64,54 +82,56 @@ class RemoveAndAdjustItem extends StatelessWidget {
                 },
                 child: Container(
                   padding: EdgeInsets.all(4.r),
-                  child: Icon(Icons.add, color: Colors.white, size: 16.sp),
+                  child: Icon(Icons.add, color: Colors.white, size: iconSize),
                 ),
               ),
             ],
           ),
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: isWeb ? 6.h : 8.h),
 
-        // remove Button
+        // remove button
         GestureDetector(
           onTap: () {
             showDialog(
               context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text(
-                    'Confirmation',
-                    style: TextStyle(color: AppColors.primary),
-                  ),
-                  content: Text(
-                    'Are you sure you want to remove this item?',
-                    style: TextStyle(color: AppColors.textPrimary),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(
-                        'Cancel',
-                        style: TextStyle(color: AppColors.textPrimary),
-                      ),
+              builder:
+                  (context) => AlertDialog(
+                    title: Text(
+                      'Confirmation',
+                      style: TextStyle(color: AppColors.primary),
                     ),
-                    TextButton(
-                      onPressed: () {
-                        CartUtils.removeProductFromCart(item.product);
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'Remove',
-                        style: TextStyle(color: AppColors.error),
-                      ),
+                    content: Text(
+                      'Are you sure you want to remove this item?',
+                      style: TextStyle(color: AppColors.textPrimary),
                     ),
-                  ],
-                );
-              },
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(color: AppColors.textPrimary),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          CartUtils.removeProductFromCart(item.product);
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          'Remove',
+                          style: TextStyle(color: AppColors.error),
+                        ),
+                      ),
+                    ],
+                  ),
             );
           },
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+            padding: EdgeInsets.symmetric(
+              horizontal: removePaddingH,
+              vertical: removePaddingV,
+            ),
             decoration: BoxDecoration(
               color: AppColors.error,
               borderRadius: BorderRadius.circular(12.r),
@@ -121,7 +141,7 @@ class RemoveAndAdjustItem extends StatelessWidget {
               style: TextStyle(
                 color: AppColors.white,
                 fontWeight: FontWeight.w600,
-                fontSize: 12.sp,
+                fontSize: removeFont,
               ),
             ),
           ),

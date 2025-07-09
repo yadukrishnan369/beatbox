@@ -4,6 +4,7 @@ import 'package:beatbox/features/bill_management/widgets/bill_item_card_widget.d
 import 'package:beatbox/features/sales_management/model/sales_model.dart';
 import 'package:beatbox/routes/app_routes.dart';
 import 'package:beatbox/utils/bill_utils.dart';
+import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:beatbox/widgets/custom_search_bar.dart';
 import 'package:beatbox/widgets/date_range_info_widget.dart';
 import 'package:beatbox/widgets/empty_placeholder.dart';
@@ -24,7 +25,6 @@ class _BillHistoryScreenState extends State<BillHistoryScreen> {
 
   DateTime? _startDate;
   DateTime? _endDate;
-
   bool _isSearching = false;
 
   @override
@@ -79,148 +79,169 @@ class _BillHistoryScreenState extends State<BillHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: NotificationListener<ScrollNotification>(
-        onNotification: (_) {
-          FocusScope.of(context).unfocus();
-          return false;
-        },
-        child: Scaffold(
-          backgroundColor: AppColors.white,
-          appBar: AppBar(
-            backgroundColor: AppColors.white,
-            elevation: 0,
-            title: Text(
-              'Bill History',
-              style: TextStyle(
-                fontSize: 22.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final bool isWeb =
+            Responsive.isDesktop(context) || constraints.maxWidth > 600;
+
+        return GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (_) {
+              FocusScope.of(context).unfocus();
+              return false;
+            },
+            child: Scaffold(
+              backgroundColor: AppColors.white,
+              appBar: AppBar(
+                backgroundColor: AppColors.white,
+                elevation: 0,
+                title: Text(
+                  'Bill History',
+                  style: TextStyle(
+                    fontSize: isWeb ? 8.sp : 22.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              body: Padding(
+                padding: EdgeInsets.symmetric(horizontal: isWeb ? 40.w : 0),
+                child: Column(
+                  children: [
+                    ValueListenableBuilder<List<SalesModel>>(
+                      valueListenable: allBillNotifier,
+                      builder: (_, allBills, __) {
+                        final hasData = allBills.isNotEmpty;
+                        return hasData || _isSearching
+                            ? Padding(
+                              padding: EdgeInsets.all(isWeb ? 12.w : 16.w),
+                              child: CustomSearchBar(
+                                controller: _searchController,
+                                focusNode: _focusNode,
+                                hintText: 'Search by invoice or customer name',
+                                onChanged: (_) => _filterBills(),
+                                showFilterIcon: true,
+                                onFilterTap: _pickDateRange,
+                              ),
+                            )
+                            : const SizedBox();
+                      },
+                    ),
+                    if (_startDate != null || _endDate != null)
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isWeb ? 6.w : 16.w,
+                        ),
+                        child: DateRangeInfoWidget(
+                          startDate: _startDate,
+                          endDate: _endDate,
+                          onClear: () async {
+                            setState(() {
+                              _startDate = null;
+                              _endDate = null;
+                            });
+                            await _filterBills();
+                          },
+                        ),
+                      ),
+                    SizedBox(height: isWeb ? 6.h : 10.h),
+                    Expanded(
+                      child: ValueListenableBuilder<bool>(
+                        valueListenable: isBillLoadingNotifier,
+                        builder: (context, isLoading, _) {
+                          if (isLoading) {
+                            return ListView.separated(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: isWeb ? 12.w : 16.w,
+                              ),
+                              itemCount: 6,
+                              separatorBuilder:
+                                  (_, __) =>
+                                      SizedBox(height: isWeb ? 8.h : 12.h),
+                              itemBuilder: (_, __) => const ShimmerBillTile(),
+                            );
+                          }
+
+                          return ValueListenableBuilder<List<SalesModel>>(
+                            valueListenable: filteredBillNotifier,
+                            builder: (context, bills, _) {
+                              return ValueListenableBuilder<List<SalesModel>>(
+                                valueListenable: allBillNotifier,
+                                builder: (context, allBills, _) {
+                                  if (allBills.isEmpty) {
+                                    return const EmptyPlaceholder(
+                                      imagePath:
+                                          'assets/images/empty_product.png',
+                                      message:
+                                          'No bills found yet.\nOnce you create a sale, the bill will appear here !',
+                                    );
+                                  }
+
+                                  if (bills.isEmpty) {
+                                    return Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.search_off_rounded,
+                                            size: isWeb ? 40.sp : 60.sp,
+                                            color: AppColors.primary,
+                                          ),
+                                          SizedBox(height: isWeb ? 12.h : 16.h),
+                                          Text(
+                                            "No matching bill found",
+                                            style: TextStyle(
+                                              fontSize: isWeb ? 14.sp : 18.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.primary,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
+
+                                  return ListView.builder(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: isWeb ? 12.w : 16.w,
+                                    ),
+                                    itemCount: bills.length,
+                                    itemBuilder: (context, index) {
+                                      final bill = bills[index];
+                                      return Padding(
+                                        padding: EdgeInsets.only(
+                                          bottom: isWeb ? 8.h : 12.h,
+                                        ),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.pushNamed(
+                                              context,
+                                              AppRoutes.billDetails,
+                                              arguments: bill,
+                                            );
+                                          },
+                                          child: BillItemCard(bill: bill),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-          body: Column(
-            children: [
-              ValueListenableBuilder<List<SalesModel>>(
-                valueListenable: allBillNotifier,
-                builder: (_, allBills, __) {
-                  final hasData = allBills.isNotEmpty;
-                  return hasData || _isSearching
-                      ? Padding(
-                        padding: EdgeInsets.all(16.w),
-                        child: CustomSearchBar(
-                          controller: _searchController,
-                          focusNode: _focusNode,
-                          hintText: 'Search by invoice or customer name',
-                          onChanged: (_) => _filterBills(),
-                          showFilterIcon: true,
-                          onFilterTap: _pickDateRange,
-                        ),
-                      )
-                      : const SizedBox();
-                },
-              ),
-              if (_startDate != null || _endDate != null)
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: DateRangeInfoWidget(
-                    startDate: _startDate,
-                    endDate: _endDate,
-                    onClear: () async {
-                      setState(() {
-                        _startDate = null;
-                        _endDate = null;
-                      });
-                      await _filterBills();
-                    },
-                  ),
-                ),
-              SizedBox(height: 10.h),
-              Expanded(
-                child: ValueListenableBuilder<bool>(
-                  valueListenable: isBillLoadingNotifier,
-                  builder: (context, isLoading, _) {
-                    if (isLoading) {
-                      return ListView.separated(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        itemCount: 6,
-                        separatorBuilder: (_, __) => SizedBox(height: 12.h),
-                        itemBuilder: (_, __) => const ShimmerBillTile(),
-                      );
-                    }
-
-                    return ValueListenableBuilder<List<SalesModel>>(
-                      valueListenable: filteredBillNotifier,
-                      builder: (context, bills, _) {
-                        return ValueListenableBuilder<List<SalesModel>>(
-                          valueListenable: allBillNotifier,
-                          builder: (context, allBills, _) {
-                            if (allBills.isEmpty) {
-                              return const EmptyPlaceholder(
-                                imagePath: 'assets/images/empty_product.png',
-                                message:
-                                    'No bills found yet.\nOnce you create a sale, the bill will appear here !',
-                              );
-                            }
-
-                            if (bills.isEmpty) {
-                              return Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.search_off_rounded,
-                                      size: 60.sp,
-                                      color: AppColors.primary,
-                                    ),
-                                    SizedBox(height: 16.h),
-                                    Text(
-                                      "No matching bill found",
-                                      style: TextStyle(
-                                        fontSize: 18.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.primary,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }
-
-                            return ListView.builder(
-                              itemCount: bills.length,
-                              itemBuilder: (context, index) {
-                                final bill = bills[index];
-                                return Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 16.w,
-                                  ),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                        context,
-                                        AppRoutes.billDetails,
-                                        arguments: bill,
-                                      );
-                                    },
-                                    child: BillItemCard(bill: bill),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

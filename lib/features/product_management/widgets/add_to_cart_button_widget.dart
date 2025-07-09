@@ -1,3 +1,4 @@
+import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/core/app_colors.dart';
@@ -17,10 +18,19 @@ class AddToCartSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isWeb = Responsive.isDesktop(context);
+    final double height = isWeb ? 65 : 55.h;
+    final double fontSize = isWeb ? 18 : 22.sp;
+    final double horizontalPadding =
+        isWeb ? MediaQuery.of(context).size.width * 0.2 : 16.w;
+
     return Padding(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontalPadding,
+        vertical: 16.h,
+      ),
       child: SizedBox(
-        height: 55.h,
+        height: height,
         width: double.infinity,
         child: ElevatedButton(
           onPressed: product.productQuantity <= 0 ? null : onAddToCart,
@@ -49,11 +59,11 @@ class AddToCartSection extends StatelessWidget {
             ),
             child: Container(
               alignment: Alignment.center,
-              height: 55.h,
+              height: height,
               child: Text(
                 product.productQuantity <= 0 ? 'Out of Stock' : 'Add to Cart',
                 style: TextStyle(
-                  fontSize: 22.sp,
+                  fontSize: fontSize,
                   color:
                       product.productQuantity <= 0
                           ? AppColors.error

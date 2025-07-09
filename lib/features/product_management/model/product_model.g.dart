@@ -31,14 +31,17 @@ class ProductModelAdapter extends TypeAdapter<ProductModel> {
       image2: fields[10] as String?,
       image3: fields[11] as String?,
       createdDate: fields[12] as DateTime,
-      isAvailableForSale: (fields[14] as bool?) ?? true,
+      isAvailableForSale: fields[14] as bool,
+      webImage1: fields[15] as String?,
+      webImage2: fields[16] as String?,
+      webImage3: fields[17] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, ProductModel obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(18)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -68,7 +71,13 @@ class ProductModelAdapter extends TypeAdapter<ProductModel> {
       ..writeByte(13)
       ..write(obj.initialQuantity)
       ..writeByte(14)
-      ..write(obj.isAvailableForSale);
+      ..write(obj.isAvailableForSale)
+      ..writeByte(15)
+      ..write(obj.webImage1)
+      ..writeByte(16)
+      ..write(obj.webImage2)
+      ..writeByte(17)
+      ..write(obj.webImage3);
   }
 
   @override

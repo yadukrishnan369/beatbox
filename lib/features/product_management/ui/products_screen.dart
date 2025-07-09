@@ -4,6 +4,7 @@ import 'package:beatbox/features/product_management/widgets/product_filter_sheet
 import 'package:beatbox/features/product_management/widgets/product_view_switcher.dart';
 import 'package:beatbox/routes/app_routes.dart';
 import 'package:beatbox/utils/product_utils.dart';
+import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:beatbox/widgets/custom_search_bar.dart';
 import 'package:beatbox/widgets/empty_placeholder.dart';
 import 'package:flutter/material.dart';
@@ -68,125 +69,137 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: NotificationListener<ScrollNotification>(
-        onNotification: (_) {
-          FocusScope.of(context).unfocus();
-          return false;
-        },
-        child: Scaffold(
-          backgroundColor: AppColors.white,
-          appBar: AppBar(
-            backgroundColor: AppColors.white,
-            elevation: 0,
-            title: Text(
-              'Products',
-              style: TextStyle(
-                fontSize: 22.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isWeb =
+            Responsive.isDesktop(context) || constraints.maxWidth > 600;
+
+        return GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: NotificationListener<ScrollNotification>(
+            onNotification: (_) {
+              FocusScope.of(context).unfocus();
+              return false;
+            },
+            child: Scaffold(
+              backgroundColor: AppColors.white,
+              appBar: AppBar(
+                backgroundColor: AppColors.white,
+                elevation: 0,
+                titleSpacing: isWeb ? 15.w : 16.w,
+                title: Text(
+                  'Products',
+                  style: TextStyle(
+                    fontSize: isWeb ? 9.sp : 22.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                actions: [
+                  ValueListenableBuilder(
+                    valueListenable: productAddNotifier,
+                    builder: (context, productList, _) {
+                      if (productList.isEmpty) return const SizedBox.shrink();
+                      return Row(
+                        children: [
+                          ValueListenableBuilder<bool>(
+                            valueListenable: viewToggleNotifier,
+                            builder:
+                                (_, isGrid, __) => IconButton(
+                                  icon: Icon(
+                                    isGrid ? Icons.list : Icons.grid_view,
+                                    color: AppColors.primary,
+                                    size: isWeb ? 24 : 20.sp,
+                                  ),
+                                  onPressed: () {
+                                    viewToggleNotifier.value = !isGrid;
+                                  },
+                                ),
+                          ),
+                          SizedBox(width: isWeb ? 16 : 8.w),
+                        ],
+                      );
+                    },
+                  ),
+                ],
               ),
-            ),
-            actions: [
-              ValueListenableBuilder(
+              body: ValueListenableBuilder(
                 valueListenable: productAddNotifier,
                 builder: (context, productList, _) {
-                  if (productList.isEmpty) return const SizedBox.shrink();
-                  return Row(
+                  if (productList.isEmpty) {
+                    return EmptyPlaceholder(
+                      imagePath: 'assets/images/empty_product.png',
+                      message:
+                          'No products added yet.\nAdd products to start selling!',
+                      onActionTap:
+                          () => Navigator.pushNamed(
+                            context,
+                            AppRoutes.addProduct,
+                          ),
+                      actionIcon: Icons.library_add,
+                      actionText: 'add product',
+                    );
+                  }
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      ValueListenableBuilder<bool>(
-                        valueListenable: viewToggleNotifier,
-                        builder:
-                            (_, isGrid, __) => IconButton(
-                              icon: Icon(
-                                isGrid ? Icons.list : Icons.grid_view,
-                                color: AppColors.primary,
-                                size: 24.sp,
-                              ),
-                              onPressed: () {
-                                viewToggleNotifier.value = !isGrid;
-                              },
-                            ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isWeb ? 80.w : 16.w,
+                          vertical: 8.h,
+                        ),
+                        child: CustomSearchBar(
+                          controller: _searchController,
+                          onChanged: _filterProducts,
+                          focusNode: _searchFocusNode,
+                          onFilterTap: () => filterProductBottomSheet(context),
+                          showFilterIcon: true,
+                        ),
                       ),
-                      SizedBox(width: 8.w),
+
+                      if (_selectedCategories.isNotEmpty ||
+                          _selectedBrands.isNotEmpty)
+                        Padding(
+                          padding: EdgeInsets.only(right: isWeb ? 80.w : 16.w),
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton.icon(
+                              style: TextButton.styleFrom(
+                                foregroundColor: AppColors.primary,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 12.w,
+                                  vertical: 4.h,
+                                ),
+                              ),
+                              onPressed: _clearFilters,
+                              icon: Icon(Icons.clear, size: isWeb ? 18 : 18.sp),
+                              label: Text(
+                                'Clear Filter',
+                                style: TextStyle(fontSize: isWeb ? 18 : 14.sp),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isWeb ? 80.w : 0,
+                          ),
+                          child: ProductViewSwitcher(
+                            viewToggleNotifier: viewToggleNotifier,
+                          ),
+                        ),
+                      ),
                     ],
                   );
                 },
               ),
-            ],
+            ),
           ),
-          body: ValueListenableBuilder(
-            valueListenable: productAddNotifier,
-            builder: (context, productList, _) {
-              if (productList.isEmpty) {
-                // No products in screen
-                return EmptyPlaceholder(
-                  imagePath: 'assets/images/empty_product.png',
-                  message:
-                      'No products added yet.\nAdd products to start selling !',
-                  onActionTap:
-                      () => Navigator.pushNamed(context, AppRoutes.addProduct),
-                  actionIcon: Icons.library_add,
-                  actionText: 'add product',
-                );
-              }
-
-              // Products available on screen
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Search Bar
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    child: CustomSearchBar(
-                      controller: _searchController,
-                      onChanged: _filterProducts,
-                      focusNode: _searchFocusNode,
-                      onFilterTap: () {
-                        filterProductBottomSheet(context);
-                      },
-                      showFilterIcon: true,
-                    ),
-                  ),
-
-                  // Clear Filter Button
-                  if (_selectedCategories.isNotEmpty ||
-                      _selectedBrands.isNotEmpty)
-                    Padding(
-                      padding: EdgeInsets.only(right: 16.w),
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton.icon(
-                          style: TextButton.styleFrom(
-                            foregroundColor: AppColors.primary,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12.w,
-                              vertical: 4.h,
-                            ),
-                          ),
-                          onPressed: _clearFilters,
-                          icon: Icon(Icons.clear, size: 18.sp),
-                          label: Text(
-                            'Clear Filter',
-                            style: TextStyle(fontSize: 14.sp),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                  // Product View
-                  Expanded(
-                    child: ProductViewSwitcher(
-                      viewToggleNotifier: viewToggleNotifier,
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/product_management/model/brand_model.dart';
 import 'package:beatbox/features/product_management/model/category_model.dart';
+import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
@@ -49,6 +50,7 @@ class _ProductFilterSheetState extends State<ProductFilterSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isWeb = Responsive.isDesktop(context);
     return Container(
       height: MediaQuery.of(context).size.height * 0.6,
       padding: EdgeInsets.only(
@@ -63,7 +65,7 @@ class _ProductFilterSheetState extends State<ProductFilterSheet> {
       ),
       child: Column(
         children: [
-          // Drag handle
+          // drag handle
           Container(
             width: 40.w,
             height: 5.h,
@@ -83,18 +85,18 @@ class _ProductFilterSheetState extends State<ProductFilterSheet> {
                     style: TextStyle(
                       color: AppColors.primary,
                       fontWeight: FontWeight.bold,
-                      fontSize: 22.sp,
+                      fontSize: isWeb ? 9.sp : 22.sp,
                     ),
                   ),
                   SizedBox(height: 20.h),
 
-                  // Category Filters
+                  // category Filters
                   Text(
                     'Filter by Category',
                     style: TextStyle(
                       color: AppColors.textPrimary,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16.sp,
+                      fontSize: isWeb ? 5.sp : 16.sp,
                     ),
                   ),
                   SizedBox(height: 10.h),
@@ -105,7 +107,7 @@ class _ProductFilterSheetState extends State<ProductFilterSheet> {
                           'No categories available',
                           style: TextStyle(
                             color: AppColors.textDisabled,
-                            fontSize: 14.sp,
+                            fontSize: isWeb ? 4 : 14.sp,
                           ),
                         ),
                       )
@@ -148,13 +150,13 @@ class _ProductFilterSheetState extends State<ProductFilterSheet> {
 
                   SizedBox(height: 20.h),
 
-                  // Brand Filters
+                  // brand Filters
                   Text(
                     'Filter by Brand',
                     style: TextStyle(
                       color: AppColors.textPrimary,
                       fontWeight: FontWeight.bold,
-                      fontSize: 16.sp,
+                      fontSize: isWeb ? 5.sp : 16.sp,
                     ),
                   ),
                   SizedBox(height: 10.h),
@@ -165,7 +167,7 @@ class _ProductFilterSheetState extends State<ProductFilterSheet> {
                           'No brands available',
                           style: TextStyle(
                             color: AppColors.textDisabled,
-                            fontSize: 14.sp,
+                            fontSize: isWeb ? 4 : 14.sp,
                           ),
                         ),
                       )
@@ -208,7 +210,7 @@ class _ProductFilterSheetState extends State<ProductFilterSheet> {
             ),
           ),
 
-          // Apply & Clear buttons
+          // apply & Clear buttons
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

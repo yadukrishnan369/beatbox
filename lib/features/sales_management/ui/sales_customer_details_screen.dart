@@ -20,88 +20,131 @@ class SalesAndCustomerDetailsScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
-        title: Text(
-          'Sales details',
-          style: TextStyle(
-            fontSize: 22.sp,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
-          ),
+        title: LayoutBuilder(
+          builder: (context, constraints) {
+            final isWeb = constraints.maxWidth > 600;
+            return Text(
+              'Sales details',
+              style: TextStyle(
+                fontSize: isWeb ? 20 : 22.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textPrimary,
+              ),
+            );
+          },
         ),
         centerTitle: false,
         actions: [
-          SizedBox(
-            width: 80.w,
-            child: PopupMenuButton<String>(
-              icon: Icon(Icons.more_vert, color: AppColors.textPrimary),
-              onSelected: (value) {
-                if (value == 'delete') {
-                  SalesUtils.confirmAndDeleteSale(context, sale);
-                }
-              },
-              itemBuilder:
-                  (BuildContext context) => [
-                    PopupMenuItem(
-                      value: 'delete',
-                      child: Row(
-                        children: [
-                          Icon(Icons.delete_outline, color: AppColors.error),
-                          SizedBox(width: 8.w),
-                          Text('Delete'),
-                        ],
-                      ),
-                    ),
-                  ],
-            ),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final isWeb = constraints.maxWidth > 600;
+              return SizedBox(
+                width: isWeb ? 60 : 80.w,
+                child: PopupMenuButton<String>(
+                  icon: Icon(Icons.more_vert, color: AppColors.textPrimary),
+                  onSelected: (value) {
+                    if (value == 'delete') {
+                      SalesUtils.confirmAndDeleteSale(context, sale);
+                    }
+                  },
+                  itemBuilder:
+                      (BuildContext context) => [
+                        PopupMenuItem(
+                          value: 'delete',
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.delete_outline,
+                                color: AppColors.error,
+                              ),
+                              SizedBox(width: isWeb ? 6 : 8.w),
+                              const Text('Delete'),
+                            ],
+                          ),
+                        ),
+                      ],
+                ),
+              );
+            },
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Padding(
-          padding: EdgeInsets.all(16.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Invoice Card
-              OrderNumberCardWidget(sale: sale),
-              SizedBox(height: 20.h),
-              // Customer Details
-              CustomerDetailCard(sale: sale),
-              SizedBox(height: 20.h),
-              // Sale bill Summary
-              SaleSummaryCard(sale: sale),
-              SizedBox(height: 20.h),
-              //Sold item Details
-              SaleItemListWidget(sale: sale),
-              SizedBox(height: 20.h),
-            ],
-          ),
-        ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isWeb = constraints.maxWidth > 600;
+          final double maxContentWidth = isWeb ? 800 : double.infinity;
+          final EdgeInsets contentPadding = EdgeInsets.symmetric(
+            horizontal: isWeb ? constraints.maxWidth * 0.1 : 16.w,
+            vertical: isWeb ? 20 : 0,
+          );
+
+          return SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: maxContentWidth),
+                child: Padding(
+                  padding: contentPadding,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      OrderNumberCardWidget(sale: sale),
+                      SizedBox(height: isWeb ? 16 : 20.h),
+                      CustomerDetailCard(sale: sale),
+                      SizedBox(height: isWeb ? 16 : 20.h),
+                      SaleSummaryCard(sale: sale),
+                      SizedBox(height: isWeb ? 16 : 20.h),
+                      SaleItemListWidget(sale: sale),
+                      SizedBox(height: isWeb ? 16 : 20.h),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(18.w),
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/billDetails', arguments: sale);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.success,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.r),
+      bottomNavigationBar: LayoutBuilder(
+        builder: (context, constraints) {
+          final isWeb = constraints.maxWidth > 400;
+          final double paddingH = isWeb ? constraints.maxWidth * 0.1 : 18.w;
+
+          return SafeArea(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: paddingH,
+                vertical: isWeb ? 20 : 12.h,
+              ),
+              child: SizedBox(
+                width: isWeb ? 200 : double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/billDetails',
+                      arguments: sale,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.success,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(isWeb ? 10 : 12.r),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: isWeb ? 16 : 14.h),
+                  ),
+                  child: Text(
+                    'View Invoice',
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontSize: isWeb ? 15 : 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
               ),
             ),
-            child: Text(
-              'View Invoice',
-              style: TextStyle(
-                color: AppColors.white,
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

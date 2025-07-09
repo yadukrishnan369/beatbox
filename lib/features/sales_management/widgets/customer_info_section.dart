@@ -1,3 +1,4 @@
+import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/core/app_colors.dart';
@@ -47,78 +48,92 @@ class _CustomerInfoSectionState extends State<CustomerInfoSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
+    final bool isWeb = Responsive.isDesktop(context);
+
+    return Align(
+      alignment: Alignment.center,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: isWeb ? 200.w : double.infinity),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.person_outline, size: 20.sp),
-            SizedBox(width: 8.w),
-            Text(
-              "Customer Info",
-              style: TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 18.sp,
-                fontWeight: FontWeight.bold,
+            Row(
+              children: [
+                Icon(Icons.person_outline, size: isWeb ? 8.sp : 20.sp),
+                SizedBox(width: 6.w),
+                Text(
+                  "Customer Info",
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: isWeb ? 7.sp : 18.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Spacer(),
+                if (isCustomerAutoFilled)
+                  GestureDetector(
+                    onTap: _clearCustomerDetails,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.clear,
+                          size: isWeb ? 7.sp : 18.sp,
+                          color: AppColors.error,
+                        ),
+                        SizedBox(width: 4.w),
+                        Text(
+                          "Clear",
+                          style: TextStyle(
+                            color: AppColors.error,
+                            fontSize: isWeb ? 6.sp : 16.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+            SizedBox(height: isWeb ? 8.h : 12.h),
+            Container(
+              padding: EdgeInsets.all(isWeb ? 7.w : 16.w),
+              decoration: BoxDecoration(
+                color: AppColors.contColor,
+                borderRadius: BorderRadius.circular(isWeb ? 10.r : 12.r),
+              ),
+              child: Column(
+                children: [
+                  _buildAutocompleteNameField(isWeb),
+                  SizedBox(height: isWeb ? 8.h : 12.h),
+                  _buildTextFormField(
+                    isWeb,
+                    "Phone",
+                    "phone number",
+                    widget.phoneController,
+                    BillingUtils.validatePhone,
+                  ),
+                  SizedBox(height: isWeb ? 8.h : 12.h),
+                  _buildTextFormField(
+                    isWeb,
+                    "Email",
+                    "email address",
+                    widget.emailController,
+                    BillingUtils.validateEmail,
+                  ),
+                ],
               ),
             ),
-            SizedBox(width: 100.w),
-            if (isCustomerAutoFilled)
-              GestureDetector(
-                onTap: _clearCustomerDetails,
-                child: Row(
-                  children: [
-                    Icon(Icons.clear, size: 18.sp, color: AppColors.error),
-                    SizedBox(width: 4.w),
-                    Text(
-                      "Clear",
-                      style: TextStyle(
-                        color: AppColors.error,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
           ],
         ),
-        SizedBox(height: 12.h),
-        Container(
-          padding: EdgeInsets.all(16.w),
-          decoration: BoxDecoration(
-            color: AppColors.contColor,
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-          child: Column(
-            children: [
-              _buildAutocompleteNameField(),
-              SizedBox(height: 12.h),
-              _buildTextFormField(
-                "Phone",
-                "phone number",
-                widget.phoneController,
-                BillingUtils.validatePhone,
-              ),
-              SizedBox(height: 12.h),
-              _buildTextFormField(
-                "Email",
-                "email address",
-                widget.emailController,
-                BillingUtils.validateEmail,
-              ),
-            ],
-          ),
-        ),
-      ],
+      ),
     );
   }
 
-  Widget _buildAutocompleteNameField() {
+  Widget _buildAutocompleteNameField(bool isWeb) {
     return Row(
       children: [
         SizedBox(
-          width: 60.w,
+          width: isWeb ? 25.w : 60.w,
           child: Text("Name", style: TextStyle(color: AppColors.textPrimary)),
         ),
         SizedBox(width: 12.w),
@@ -158,9 +173,7 @@ class _CustomerInfoSectionState extends State<CustomerInfoSection> {
                 onChanged: (val) {
                   widget.nameController.text = val;
                   if (!previousCustomers.any((e) => e['name'] == val)) {
-                    setState(() {
-                      isCustomerAutoFilled = false;
-                    });
+                    setState(() => isCustomerAutoFilled = false);
                   }
                 },
                 style: TextStyle(color: AppColors.textPrimary),
@@ -169,17 +182,17 @@ class _CustomerInfoSectionState extends State<CustomerInfoSection> {
                   hintText: "Customer name",
                   hintStyle: TextStyle(
                     color: AppColors.textDisabled,
-                    fontSize: 14.sp,
+                    fontSize: isWeb ? 6.sp : 14.sp,
                   ),
                   filled: true,
                   fillColor: AppColors.white,
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.r),
+                    borderRadius: BorderRadius.circular(isWeb ? 6.r : 8.r),
                     borderSide: BorderSide.none,
                   ),
                   contentPadding: EdgeInsets.symmetric(
-                    horizontal: 12.w,
-                    vertical: 8.h,
+                    horizontal: isWeb ? 5.w : 12.w,
+                    vertical: isWeb ? 3.h : 8.h,
                   ),
                 ),
               );
@@ -219,6 +232,7 @@ class _CustomerInfoSectionState extends State<CustomerInfoSection> {
   }
 
   Widget _buildTextFormField(
+    bool isWeb,
     String label,
     String hint,
     TextEditingController controller,
@@ -227,7 +241,7 @@ class _CustomerInfoSectionState extends State<CustomerInfoSection> {
     return Row(
       children: [
         SizedBox(
-          width: 60.w,
+          width: isWeb ? 25.w : 60.w,
           child: Text(label, style: TextStyle(color: AppColors.textPrimary)),
         ),
         SizedBox(width: 12.w),
@@ -240,17 +254,17 @@ class _CustomerInfoSectionState extends State<CustomerInfoSection> {
               hintText: hint,
               hintStyle: TextStyle(
                 color: AppColors.textDisabled,
-                fontSize: 14.sp,
+                fontSize: isWeb ? 6.sp : 14.sp,
               ),
               filled: true,
               fillColor: AppColors.white,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8.r),
+                borderRadius: BorderRadius.circular(isWeb ? 3.r : 8.r),
                 borderSide: BorderSide.none,
               ),
               contentPadding: EdgeInsets.symmetric(
-                horizontal: 12.w,
-                vertical: 8.h,
+                horizontal: isWeb ? 5.w : 12.w,
+                vertical: isWeb ? 3.h : 8.h,
               ),
             ),
           ),
@@ -296,7 +310,7 @@ class _CustomerInfoSectionState extends State<CustomerInfoSection> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.success,
                 ),
-                child: Text(
+                child: const Text(
                   "Use Details",
                   style: TextStyle(color: Colors.white),
                 ),
@@ -309,9 +323,7 @@ class _CustomerInfoSectionState extends State<CustomerInfoSection> {
       widget.nameController.text = customer['name'] ?? '';
       widget.phoneController.text = customer['phone'] ?? '';
       widget.emailController.text = customer['email'] ?? '';
-      setState(() {
-        isCustomerAutoFilled = true;
-      });
+      setState(() => isCustomerAutoFilled = true);
     }
   }
 }

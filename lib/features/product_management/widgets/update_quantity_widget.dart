@@ -9,6 +9,7 @@ void showQuantityPopup({
   required ProductModel product,
 }) {
   final TextEditingController qtyController = TextEditingController();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   showDialog(
     context: context,
@@ -18,11 +19,34 @@ void showQuantityPopup({
           'Add Quantity',
           style: TextStyle(color: AppColors.textPrimary),
         ),
-        content: TextField(
-          controller: qtyController,
-          style: TextStyle(color: AppColors.textPrimary),
-          keyboardType: TextInputType.number,
-          decoration: const InputDecoration(hintText: 'Enter quantity'),
+        content: Form(
+          key: formKey,
+          child: TextFormField(
+            controller: qtyController,
+            style: TextStyle(color: AppColors.textPrimary),
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(hintText: 'Enter quantity'),
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return null;
+              }
+
+              if (!RegExp(r'^-?\d+$').hasMatch(value.trim())) {
+                return 'Enter valid numbers only';
+              }
+
+              final intValue = int.tryParse(value.trim());
+              if (intValue == null) {
+                return 'Enter valid numbers only';
+              }
+
+              if (intValue < 0) {
+                return 'Enter positive number only';
+              }
+
+              return null;
+            },
+          ),
         ),
         actions: [
           TextButton(
@@ -38,19 +62,21 @@ void showQuantityPopup({
               foregroundColor: AppColors.white,
             ),
             onPressed: () async {
-              final addedQty = int.tryParse(qtyController.text);
-              if (addedQty != null && addedQty > 0) {
-                product.productQuantity += addedQty;
-                product.initialQuantity =
-                    (product.initialQuantity ?? 0) + addedQty;
-                await product.save();
-                Navigator.pop(context);
-                await showLoadingDialog(
-                  context,
-                  message: "Updating...",
-                  showSucess: true,
-                );
-                await LimitedStockUtils.filterLimitedStockProducts();
+              if (formKey.currentState!.validate()) {
+                final addedQty = int.tryParse(qtyController.text);
+                if (addedQty != null && addedQty > 0) {
+                  product.productQuantity += addedQty;
+                  product.initialQuantity =
+                      (product.initialQuantity ?? 0) + addedQty;
+                  await product.save();
+                  Navigator.pop(context);
+                  await showLoadingDialog(
+                    context,
+                    message: "Updating...",
+                    showSucess: true,
+                  );
+                  await LimitedStockUtils.filterLimitedStockProducts();
+                }
               }
             },
             child: const Text('Update'),

@@ -1,6 +1,7 @@
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/core/notifiers/product_edit_delete_notifier.dart';
 import 'package:beatbox/features/product_management/widgets/product_edit_delete_card_widget.dart';
+import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:beatbox/widgets/custom_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,10 +37,10 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
 
   Future<void> _loadProducts() async {
     if (isEditProductReloadNeeded.value) {
-      await ProductEditDeleteUtils.loadProducts(); // this will show shimmer
+      await ProductEditDeleteUtils.loadProducts();
       isEditProductReloadNeeded.value = false;
     } else {
-      await ProductEditDeleteUtils.loadProductsWithoutShimmer(); // no shimmer
+      await ProductEditDeleteUtils.loadProductsWithoutShimmer();
     }
   }
 
@@ -50,7 +51,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
     });
 
     editProductShimmerNotifier.value = true;
-    await Future.delayed(const Duration(milliseconds: 300)); // simulate delay
+    await Future.delayed(const Duration(milliseconds: 300));
 
     if (_isSearching) {
       ProductEditDeleteUtils.filterProducts(query);
@@ -69,6 +70,8 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isWeb = Responsive.isDesktop(context);
+
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: NotificationListener<ScrollNotification>(
@@ -84,7 +87,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
             title: Text(
               'Update Products',
               style: TextStyle(
-                fontSize: 22.sp,
+                fontSize: isWeb ? 26 : 22.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
               ),
@@ -100,45 +103,52 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                     builder: (_, allProducts, __) {
                       return allProducts.isNotEmpty || _isSearching
                           ? Padding(
-                              padding: EdgeInsets.all(16.w),
-                              child: CustomSearchBar(
-                                controller: _searchController,
-                                onChanged: _onSearch,
-                                focusNode: _searchFocusNode,
-                                showFilterIcon: false,
-                              ),
-                            )
+                            padding: EdgeInsets.all(isWeb ? 20 : 16.w),
+                            child: CustomSearchBar(
+                              controller: _searchController,
+                              onChanged: _onSearch,
+                              focusNode: _searchFocusNode,
+                              showFilterIcon: false,
+                            ),
+                          )
                           : const SizedBox();
                     },
                   ),
                   Expanded(
-                    child: isShimmer
-                        ? ListView.builder(
-                            itemCount: 6,
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
-                            itemBuilder: (_, index) => Padding(
-                              padding: EdgeInsets.only(bottom: 12.h),
-                              child: const ShimmerBillTile(),
-                            ),
-                          )
-                        : ValueListenableBuilder<List<ProductModel>>(
-                            valueListenable: filteredEditProductNotifier,
-                            builder: (_, products, __) {
-                              if (products.isEmpty) {
-                                return _isSearching
-                                    ? Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                    child:
+                        isShimmer
+                            ? ListView.builder(
+                              itemCount: 6,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: isWeb ? 30 : 16.w,
+                              ),
+                              itemBuilder:
+                                  (_, index) => Padding(
+                                    padding: EdgeInsets.only(
+                                      bottom: isWeb ? 16 : 12.h,
+                                    ),
+                                    child: const ShimmerBillTile(),
+                                  ),
+                            )
+                            : ValueListenableBuilder<List<ProductModel>>(
+                              valueListenable: filteredEditProductNotifier,
+                              builder: (_, products, __) {
+                                if (products.isEmpty) {
+                                  return _isSearching
+                                      ? Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Icon(
                                             Icons.search_off_rounded,
-                                            size: 60.sp,
+                                            size: isWeb ? 20.sp : 60.sp,
                                             color: AppColors.primary,
                                           ),
-                                          SizedBox(height: 16.h),
+                                          SizedBox(height: isWeb ? 20 : 16.h),
                                           Text(
                                             "No matching product found",
                                             style: TextStyle(
-                                              fontSize: 18.sp,
+                                              fontSize: isWeb ? 6.sp : 18.sp,
                                               fontWeight: FontWeight.w600,
                                               color: AppColors.primary,
                                             ),
@@ -146,30 +156,38 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                                           ),
                                         ],
                                       )
-                                    : EmptyPlaceholder(
-                                        imagePath: 'assets/images/empty_product.png',
-                                        message: 'No products added yet.\nAdd products to manage and edit them here!',
-                                        onActionTap: () => Navigator.pushNamed(context, AppRoutes.addProduct),
+                                      : EmptyPlaceholder(
+                                        imagePath:
+                                            'assets/images/empty_product.png',
+                                        message:
+                                            'No products added yet.\nAdd products to manage and edit them here!',
+                                        onActionTap:
+                                            () => Navigator.pushNamed(
+                                              context,
+                                              AppRoutes.addProduct,
+                                            ),
                                         actionIcon: Icons.add_box_outlined,
                                         actionText: 'add product',
                                       );
-                              }
+                                }
 
-                              return ListView.builder(
-                                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                                itemCount: products.length,
-                                itemBuilder: (_, index) {
-                                  final product = products[index];
-                                  return ProductEditDeleteCard(
-                                    context: context,
-                                    searchController: _searchController,
-                                    searchFocusNode: _searchFocusNode,
-                                    product: product,
-                                  );
-                                },
-                              );
-                            },
-                          ),
+                                return ListView.builder(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: isWeb ? 30 : 16.w,
+                                  ),
+                                  itemCount: products.length,
+                                  itemBuilder: (_, index) {
+                                    final product = products[index];
+                                    return ProductEditDeleteCard(
+                                      context: context,
+                                      searchController: _searchController,
+                                      searchFocusNode: _searchFocusNode,
+                                      product: product,
+                                    );
+                                  },
+                                );
+                              },
+                            ),
                   ),
                 ],
               );

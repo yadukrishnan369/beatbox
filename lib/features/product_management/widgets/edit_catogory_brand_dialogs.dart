@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:beatbox/utils/brand_category_validators_utils.dart';
 import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,6 +12,7 @@ import 'package:beatbox/features/product_management/model/brand_model.dart';
 import 'package:beatbox/features/product_management/controller/brand_controller.dart';
 import 'package:beatbox/features/product_management/controller/category_controller.dart';
 
+// --------------- category edit ------------------
 class EditCategoryDialog extends StatefulWidget {
   final CategoryModel item;
 
@@ -21,14 +24,21 @@ class EditCategoryDialog extends StatefulWidget {
 
 class _EditCategoryDialogState extends State<EditCategoryDialog> {
   late TextEditingController nameController;
-  late String updatedImagePath;
+  String? updatedImagePath;
+  Uint8List? updatedImageBytes;
+
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
     nameController = TextEditingController(text: widget.item.categoryName);
-    updatedImagePath = widget.item.categoryImagePath;
+
+    if (kIsWeb) {
+      updatedImageBytes = base64Decode(widget.item.categoryImagePath);
+    } else {
+      updatedImagePath = widget.item.categoryImagePath;
+    }
   }
 
   @override
@@ -40,6 +50,7 @@ class _EditCategoryDialogState extends State<EditCategoryDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // name field
             TextFormField(
               controller: nameController,
               style: TextStyle(color: AppColors.textPrimary),
@@ -48,30 +59,58 @@ class _EditCategoryDialogState extends State<EditCategoryDialog> {
                 labelStyle: TextStyle(color: AppColors.textPrimary),
               ),
               validator:
-                  (value) => NameValidators.validateCategoryName(
+                  (value) => NameAndImageValidators.validateCategoryName(
                     value,
                     isEdit: true,
                     oldName: widget.item.categoryName,
                   ),
             ),
             SizedBox(height: 16.h),
+
+            // image picker & preview
             GestureDetector(
               onTap: () async {
                 final picked = await ImagePicker().pickImage(
                   source: ImageSource.gallery,
                 );
                 if (picked != null) {
-                  setState(() => updatedImagePath = picked.path);
+                  final bytes = await picked.readAsBytes();
+                  if (kIsWeb) {
+                    setState(() => updatedImageBytes = bytes);
+                  } else {
+                    setState(() => updatedImagePath = picked.path);
+                  }
                 }
               },
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10.r),
-                child: Image.file(
-                  File(updatedImagePath),
-                  width: 120.w,
-                  height: 120.h,
-                  fit: BoxFit.cover,
-                ),
+                child:
+                    kIsWeb
+                        ? (updatedImageBytes != null
+                            ? Image.memory(
+                              updatedImageBytes!,
+                              width: 120.w,
+                              height: 120.h,
+                              fit: BoxFit.cover,
+                            )
+                            : Icon(
+                              Icons.image_not_supported,
+                              size: 80,
+                              color: AppColors.textDisabled,
+                            ))
+                        : (updatedImagePath != null &&
+                                File(updatedImagePath!).existsSync()
+                            ? Image.file(
+                              File(updatedImagePath!),
+                              width: 120.w,
+                              height: 120.h,
+                              fit: BoxFit.cover,
+                            )
+                            : Icon(
+                              Icons.image_not_supported,
+                              size: 80,
+                              color: AppColors.textDisabled,
+                            )),
               ),
             ),
           ],
@@ -80,14 +119,20 @@ class _EditCategoryDialogState extends State<EditCategoryDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
         ),
         TextButton(
           onPressed: () async {
             if (!_formKey.currentState!.validate()) return;
 
             widget.item.categoryName = nameController.text.trim();
-            widget.item.categoryImagePath = updatedImagePath;
+
+            if (kIsWeb) {
+              widget.item.categoryImagePath = base64Encode(updatedImageBytes!);
+            } else {
+              widget.item.categoryImagePath = updatedImagePath!;
+            }
+
             await showLoadingDialog(
               context,
               message: "Updating...",
@@ -104,6 +149,7 @@ class _EditCategoryDialogState extends State<EditCategoryDialog> {
   }
 }
 
+// ------------- brand edit ------------------
 class EditBrandDialog extends StatefulWidget {
   final BrandModel item;
 
@@ -115,14 +161,21 @@ class EditBrandDialog extends StatefulWidget {
 
 class _EditBrandDialogState extends State<EditBrandDialog> {
   late TextEditingController nameController;
-  late String updatedImagePath;
+  String? updatedImagePath;
+  Uint8List? updatedImageBytes;
+
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
     nameController = TextEditingController(text: widget.item.brandName);
-    updatedImagePath = widget.item.brandImagePath;
+
+    if (kIsWeb) {
+      updatedImageBytes = base64Decode(widget.item.brandImagePath);
+    } else {
+      updatedImagePath = widget.item.brandImagePath;
+    }
   }
 
   @override
@@ -134,6 +187,7 @@ class _EditBrandDialogState extends State<EditBrandDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // name field
             TextFormField(
               controller: nameController,
               style: TextStyle(color: AppColors.textPrimary),
@@ -142,30 +196,58 @@ class _EditBrandDialogState extends State<EditBrandDialog> {
                 labelStyle: TextStyle(color: AppColors.textPrimary),
               ),
               validator:
-                  (value) => NameValidators.validateBrandName(
+                  (value) => NameAndImageValidators.validateBrandName(
                     value,
                     isEdit: true,
                     oldName: widget.item.brandName,
                   ),
             ),
             SizedBox(height: 16.h),
+
+            // image picker & preview
             GestureDetector(
               onTap: () async {
                 final picked = await ImagePicker().pickImage(
                   source: ImageSource.gallery,
                 );
                 if (picked != null) {
-                  setState(() => updatedImagePath = picked.path);
+                  final bytes = await picked.readAsBytes();
+                  if (kIsWeb) {
+                    setState(() => updatedImageBytes = bytes);
+                  } else {
+                    setState(() => updatedImagePath = picked.path);
+                  }
                 }
               },
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10.r),
-                child: Image.file(
-                  File(updatedImagePath),
-                  width: 120.w,
-                  height: 120.h,
-                  fit: BoxFit.cover,
-                ),
+                child:
+                    kIsWeb
+                        ? (updatedImageBytes != null
+                            ? Image.memory(
+                              updatedImageBytes!,
+                              width: 120.w,
+                              height: 120.h,
+                              fit: BoxFit.cover,
+                            )
+                            : Icon(
+                              Icons.image_not_supported,
+                              size: 80,
+                              color: AppColors.textDisabled,
+                            ))
+                        : (updatedImagePath != null &&
+                                File(updatedImagePath!).existsSync()
+                            ? Image.file(
+                              File(updatedImagePath!),
+                              width: 120.w,
+                              height: 120.h,
+                              fit: BoxFit.cover,
+                            )
+                            : Icon(
+                              Icons.image_not_supported,
+                              size: 80,
+                              color: AppColors.textDisabled,
+                            )),
               ),
             ),
           ],
@@ -174,14 +256,20 @@ class _EditBrandDialogState extends State<EditBrandDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text('Cancel', style: TextStyle(color: AppColors.primary)),
+          child: const Text('Cancel'),
         ),
         TextButton(
           onPressed: () async {
             if (!_formKey.currentState!.validate()) return;
 
             widget.item.brandName = nameController.text.trim();
-            widget.item.brandImagePath = updatedImagePath;
+
+            if (kIsWeb) {
+              widget.item.brandImagePath = base64Encode(updatedImageBytes!);
+            } else {
+              widget.item.brandImagePath = updatedImagePath!;
+            }
+
             await showLoadingDialog(
               context,
               message: "Updating...",

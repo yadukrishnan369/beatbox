@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 class SalesUtils {
-  /// Load sales with shimmer
+  // load sales with shimmer
   static Future<void> loadSales() async {
     isSalesLoadingNotifier.value = true;
     await _fetchSortedSalesAndUpdateNotifier();
@@ -14,12 +14,12 @@ class SalesUtils {
     isSalesLoadingNotifier.value = false;
   }
 
-  /// Load sales without shimmer
+  // load sales without shimmer
   static Future<void> loadSalesWithoutShimmer() async {
     await _fetchSortedSalesAndUpdateNotifier();
   }
 
-  /// Filter by search and date range
+  // filter by search and date range
   static Future<void> filterSalesByNameAndDate({
     required String query,
     DateTime? startDate,
@@ -30,7 +30,7 @@ class SalesUtils {
     final box = await Hive.openBox<SalesModel>('salesBox');
     List<SalesModel> filtered = box.values.toList();
 
-    // Filter by search
+    // filter by search
     if (query.trim().isNotEmpty) {
       final lowerQuery = query.trim().toLowerCase();
       filtered =
@@ -40,29 +40,41 @@ class SalesUtils {
           }).toList();
     }
 
-    // Filter by date
+    // filter by date
     if (startDate != null && endDate != null) {
       filtered =
           filtered.where((sale) {
-            final billingDate = sale.billingDate;
-            return billingDate.isAfter(
-                  startDate.subtract(const Duration(days: 1)),
-                ) &&
-                billingDate.isBefore(endDate.add(const Duration(days: 1)));
+            final billingDate = DateTime(
+              sale.billingDate.year,
+              sale.billingDate.month,
+              sale.billingDate.day,
+            );
+
+            final start = DateTime(
+              startDate.year,
+              startDate.month,
+              startDate.day,
+            );
+            final end = DateTime(endDate.year, endDate.month, endDate.day);
+
+            return (billingDate.isAtSameMomentAs(start) ||
+                    billingDate.isAfter(start)) &&
+                (billingDate.isAtSameMomentAs(end) ||
+                    billingDate.isBefore(end));
           }).toList();
     }
 
-    // Sort filtered
+    // sort filtered for latest
     filtered.sort((a, b) => b.billingDate.compareTo(a.billingDate));
 
-    //  Update only filtered list
+    //  update only filtered list
     filteredSalesNotifier.value = [...filtered];
 
     await Future.delayed(const Duration(milliseconds: 300));
     isSalesLoadingNotifier.value = false;
   }
 
-  /// Get today's sales and profit
+  // get todays sales and profit
   static Future<Map<String, double>> getTodaySalesAndProfit() async {
     final box = await Hive.openBox<SalesModel>('salesBox');
     final today = DateTime.now();
@@ -175,8 +187,8 @@ class SalesUtils {
       await loadSalesWithoutShimmer();
       if (!context.mounted) return;
 
-      Navigator.pop(context); // Close details screen
-      // Show success message
+      Navigator.pop(context); // close details screen
+      // show success message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Sale deleted successfully"),

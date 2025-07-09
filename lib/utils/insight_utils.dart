@@ -5,7 +5,7 @@ import 'package:hive/hive.dart';
 DateTime? selectedRangeStart;
 DateTime? selectedRangeEnd;
 
-/// Load all sales to insight
+// load all sales to insight
 Future<void> loadInsightSales() async {
   final box = await Hive.openBox<SalesModel>('salesBox');
 
@@ -19,7 +19,7 @@ Future<void> loadInsightSales() async {
   _updateEmptyState();
 }
 
-/// Filter insight sales by date range
+// filter insight sales by date range
 void filterInsightSalesByRange(DateTime start, DateTime end) {
   selectedRangeStart = start;
   selectedRangeEnd = end;
@@ -47,7 +47,7 @@ void filterInsightSalesByRange(DateTime start, DateTime end) {
   _updateEmptyState();
 }
 
-/// Grouped chart data by date
+// filter chart data by date
 Map<DateTime, Map<String, double>> getInsightChartData() {
   Map<DateTime, Map<String, double>> chartMap = {};
 
@@ -60,18 +60,18 @@ Map<DateTime, Map<String, double>> getInsightChartData() {
     DateTime groupDate;
 
     if (rangeLength <= 7) {
-      // Group by Day
+      // filter by day
       groupDate = DateTime(
         sale.billingDate.year,
         sale.billingDate.month,
         sale.billingDate.day,
       );
     } else if (rangeLength <= 31) {
-      // Group by Week
+      // filter by week
       final date = sale.billingDate;
       groupDate = DateTime(date.year, date.month, date.day - date.weekday + 1);
     } else {
-      // Group by Month
+      // filter by month
       groupDate = DateTime(sale.billingDate.year, sale.billingDate.month);
     }
 
@@ -103,7 +103,7 @@ Map<DateTime, Map<String, double>> getInsightChartData() {
   );
 }
 
-/// Table data grouped by product
+// table data collect by product
 List<Map<String, dynamic>> getInsightTableData() {
   Map<String, Map<String, dynamic>> tableMap = {};
 
@@ -114,7 +114,8 @@ List<Map<String, dynamic>> getInsightTableData() {
       final sell = item.product.salePrice;
       final cost = item.product.purchaseRate;
       final total = sell * qty;
-      final profit = (sell - cost) * qty;
+      final discount = sale.discount;
+      final profit = (sell - cost) * qty - discount;
 
       if (tableMap.containsKey(name)) {
         tableMap[name]!['qty'] += qty;
@@ -134,7 +135,7 @@ List<Map<String, dynamic>> getInsightTableData() {
   return tableMap.values.toList();
 }
 
-/// Check if data is empty and update notifier
+// check if data is empty and update notifier
 void _updateEmptyState() {
   isInsightEmptyNotifier.value = insightSalesNotifier.value.isEmpty;
 }
