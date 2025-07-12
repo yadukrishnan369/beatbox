@@ -3,8 +3,8 @@ import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class FAQSection extends StatelessWidget {
-  const FAQSection({super.key});
+class FAQExpandableWidget extends StatelessWidget {
+  const FAQExpandableWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,5 @@
 import 'package:beatbox/core/app_colors.dart';
-import 'package:beatbox/features/app_settings_info_management/widgets/faq_section_widget.dart';
+import 'package:beatbox/features/app_settings_info_management/widgets/faq_expandable_widget.dart';
 import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -57,7 +57,7 @@ class FAQScreen extends StatelessWidget {
                 SizedBox(height: isWeb ? 20 : 16.h),
 
                 // FAQ widget section
-                const FAQSection(),
+                const FAQExpandableWidget(),
               ],
             ),
           ),

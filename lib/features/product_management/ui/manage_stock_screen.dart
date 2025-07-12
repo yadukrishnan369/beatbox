@@ -1,8 +1,7 @@
 import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/features/product_management/widgets/add_brand_modal.dart';
 import 'package:beatbox/features/product_management/widgets/add_category_modal.dart';
-import 'package:beatbox/features/product_management/widgets/total_sale_card.dart';
-import 'package:beatbox/features/product_management/widgets/total_stock_card.dart';
+import 'package:beatbox/features/product_management/widgets/manage_stock_screen_body_content_widget.dart';
 import 'package:beatbox/routes/app_routes.dart';
 import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
@@ -99,103 +98,14 @@ class _StockManageScreenState extends State<StockManageScreen> {
           ),
           body: SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: isWeb ? 200.w : double.infinity,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 16.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: cardWidth,
-                          height: cardHeight,
-                          child: const TotalStockCard(),
-                        ),
-                        SizedBox(width: 16.w),
-                        SizedBox(
-                          width: cardWidth,
-                          height: cardHeight,
-                          child: const TotalSalesCard(),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 24.h),
-                    Divider(height: 1.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16.h),
-                      child: Text(
-                        'Product Actions',
-                        style: TextStyle(
-                          color: AppColors.textPrimary,
-                          fontSize: isWeb ? 10.sp : 16.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    _productActionItem(
-                      Icons.library_add,
-                      'Add Product',
-                      actionIconSize,
-                      actionTitleFontSize,
-                      trailingIconSize,
-                      () => Navigator.pushNamed(context, AppRoutes.addProduct),
-                    ),
-                    _productActionItem(
-                      Icons.edit,
-                      'Edit/Delete Product',
-                      actionIconSize,
-                      actionTitleFontSize,
-                      trailingIconSize,
-                      () =>
-                          Navigator.pushNamed(context, AppRoutes.updateProduct),
-                    ),
-                    _productActionItem(
-                      Icons.history,
-                      'Sales/Customer History',
-                      actionIconSize,
-                      actionTitleFontSize,
-                      trailingIconSize,
-                      () => Navigator.pushNamed(
-                        context,
-                        AppRoutes.salesAndCustomer,
-                      ),
-                    ),
-                    _productActionItem(
-                      Icons.list_alt,
-                      'Stock Entries',
-                      actionIconSize,
-                      actionTitleFontSize,
-                      trailingIconSize,
-                      () => Navigator.pushNamed(context, AppRoutes.stockEntry),
-                    ),
-                    _productActionItem(
-                      Icons.receipt_long,
-                      'Bill History',
-                      actionIconSize,
-                      actionTitleFontSize,
-                      trailingIconSize,
-                      () => Navigator.pushNamed(context, AppRoutes.billHistory),
-                    ),
-                    _productActionItem(
-                      Icons.apps,
-                      'Brands/Categories',
-                      actionIconSize,
-                      actionTitleFontSize,
-                      trailingIconSize,
-                      () => Navigator.pushNamed(
-                        context,
-                        AppRoutes.brandAndCategory,
-                      ),
-                    ),
-                    SizedBox(height: 80.h),
-                  ],
-                ),
-              ),
+            // manage stock screen body section widget
+            child: ManageStockScreenBodyContent(
+              isWeb: isWeb,
+              cardWidth: cardWidth,
+              cardHeight: cardHeight,
+              actionIconSize: actionIconSize,
+              actionTitleFontSize: actionTitleFontSize,
+              trailingIconSize: trailingIconSize,
             ),
           ),
           bottomNavigationBar: BottomNavigationBar(
@@ -209,38 +119,6 @@ class _StockManageScreenState extends State<StockManageScreen> {
           ),
         );
       },
-    );
-  }
-
-  Widget _productActionItem(
-    IconData icon,
-    String title,
-    double iconSize,
-    double fontSize,
-    double trailingIconSize,
-    VoidCallback onTap,
-  ) {
-    return Card(
-      elevation: 2,
-      margin: EdgeInsets.symmetric(vertical: 6.h),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8.w),
-        child: ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 4.w),
-          leading: Icon(icon, color: AppColors.primary, size: iconSize),
-          title: Text(
-            title,
-            style: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.w500,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          trailing: Icon(Icons.arrow_forward_ios, size: trailingIconSize),
-          onTap: onTap,
-        ),
-      ),
     );
   }
 }

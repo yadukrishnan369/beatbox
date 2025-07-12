@@ -379,7 +379,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: isWeb ? 7.sp : 16.sp,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w900,
                             ),
                           ),
                         ),

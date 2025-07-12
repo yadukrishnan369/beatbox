@@ -4,7 +4,7 @@ import 'package:beatbox/core/app_colors.dart';
 import 'package:beatbox/core/notifiers/brand_update_notifier.dart';
 import 'package:beatbox/features/product_management/controller/brand_controller.dart';
 import 'package:beatbox/features/product_management/model/brand_model.dart';
-import 'package:beatbox/features/product_management/widgets/edit_catogory_brand_dialogs.dart';
+import 'package:beatbox/features/product_management/widgets/edit_brand_dialog.dart';
 import 'package:beatbox/features/product_management/widgets/edit_delete_warning_modal.dart';
 import 'package:beatbox/utils/brand_category_validators_utils.dart';
 import 'package:beatbox/utils/responsive_utils.dart';

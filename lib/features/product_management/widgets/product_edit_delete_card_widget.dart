@@ -91,6 +91,14 @@ class ProductEditDeleteCard extends StatelessWidget {
                           color: AppColors.textDisabled,
                         ),
                       ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        product.productCategory,
+                        style: TextStyle(
+                          fontSize: isWeb ? 14 : 14.sp,
+                          color: AppColors.textDisabled,
+                        ),
+                      ),
                     ],
                   ),
                 ),
