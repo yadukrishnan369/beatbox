@@ -1,3 +1,4 @@
+import 'package:beatbox/features/sales_management/widgets/billing_textFormField_widget.dart';
 import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -105,20 +106,20 @@ class _CustomerInfoSectionState extends State<CustomerInfoSection> {
                 children: [
                   _buildAutocompleteNameField(isWeb),
                   SizedBox(height: isWeb ? 8.h : 12.h),
-                  _buildTextFormField(
-                    isWeb,
-                    "Phone",
-                    "phone number",
-                    widget.phoneController,
-                    BillingUtils.validatePhone,
+                  BillingTextFormField(
+                    isWeb: isWeb,
+                    label: "Phone",
+                    hint: "phone number",
+                    controller: widget.phoneController,
+                    validator: BillingUtils.validatePhone,
                   ),
                   SizedBox(height: isWeb ? 8.h : 12.h),
-                  _buildTextFormField(
-                    isWeb,
-                    "Email",
-                    "email address",
-                    widget.emailController,
-                    BillingUtils.validateEmail,
+                  BillingTextFormField(
+                    isWeb: isWeb,
+                    label: "Email",
+                    hint: "email address",
+                    controller: widget.emailController,
+                    validator: BillingUtils.validateEmail,
                   ),
                 ],
               ),
@@ -225,48 +226,6 @@ class _CustomerInfoSectionState extends State<CustomerInfoSection> {
                 ),
               );
             },
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTextFormField(
-    bool isWeb,
-    String label,
-    String hint,
-    TextEditingController controller,
-    String? Function(String?)? validator,
-  ) {
-    return Row(
-      children: [
-        SizedBox(
-          width: isWeb ? 25.w : 60.w,
-          child: Text(label, style: TextStyle(color: AppColors.textPrimary)),
-        ),
-        SizedBox(width: 12.w),
-        Expanded(
-          child: TextFormField(
-            controller: controller,
-            style: TextStyle(color: AppColors.textPrimary),
-            validator: validator,
-            decoration: InputDecoration(
-              hintText: hint,
-              hintStyle: TextStyle(
-                color: AppColors.textDisabled,
-                fontSize: isWeb ? 6.sp : 14.sp,
-              ),
-              filled: true,
-              fillColor: AppColors.white,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(isWeb ? 3.r : 8.r),
-                borderSide: BorderSide.none,
-              ),
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: isWeb ? 5.w : 12.w,
-                vertical: isWeb ? 3.h : 8.h,
-              ),
-            ),
           ),
         ),
       ],
