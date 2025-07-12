@@ -1,6 +1,7 @@
 import 'dart:io' as io;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:beatbox/features/sales_management/model/sales_model.dart';
 import 'package:beatbox/utils/gst_utils.dart';
@@ -59,7 +60,7 @@ Future<void> generateInvoicePdf(
               pw.SizedBox(height: 8),
               pw.Text('Invoice No: ${bill.invoiceNumber}'),
               pw.Text(
-                'Date: ${bill.billingDate.day}-${bill.billingDate.month}-${bill.billingDate.year}',
+                'Date: ${DateFormat('dd MMM yyyy').format(bill.billingDate)}',
               ),
               pw.Text('Order No: ${bill.orderNumber}'),
               pw.SizedBox(height: 16),

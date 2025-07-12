@@ -125,7 +125,7 @@ class _StockEntryDetailsScreenState extends State<StockEntryDetailsScreen> {
                       ),
                       SizedBox(height: isWeb ? 10.h : 8.h),
                       Text(
-                        'Headset',
+                        product.productCategory,
                         style: TextStyle(
                           fontSize: isWeb ? 7.sp : 16.sp,
                           color: AppColors.textDisabled,

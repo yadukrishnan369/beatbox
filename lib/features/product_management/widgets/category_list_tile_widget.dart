@@ -5,6 +5,8 @@ import 'package:beatbox/core/notifiers/category_update_notifier.dart';
 import 'package:beatbox/features/product_management/controller/category_controller.dart';
 import 'package:beatbox/features/product_management/model/category_model.dart';
 import 'package:beatbox/features/product_management/widgets/edit_catogory_brand_dialogs.dart';
+import 'package:beatbox/features/product_management/widgets/edit_delete_warning_modal.dart';
+import 'package:beatbox/utils/brand_category_validators_utils.dart';
 import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:beatbox/widgets/Loading_widgets/show_loading_dialog.dart';
 import 'package:beatbox/widgets/empty_placeholder.dart';
@@ -105,6 +107,24 @@ class CatogoryListTabTile extends StatelessWidget {
                                     size: isWeb ? 6.sp : 20.sp,
                                   ),
                                   onPressed: () {
+                                    final isUsed =
+                                        NameAndImageValidators.isCategoryUsedInCart(
+                                          item.categoryName,
+                                        );
+                                    if (isUsed) {
+                                      showDialog(
+                                        context: context,
+                                        builder:
+                                            (
+                                              _,
+                                            ) => const EditDeleteWarningDialog(
+                                              title: "Cannot Proceed !",
+                                              message:
+                                                  "This category is used in the cart.\nRemove related products before editing.",
+                                            ),
+                                      );
+                                      return;
+                                    }
                                     showDialog(
                                       context: context,
                                       builder:
@@ -119,6 +139,25 @@ class CatogoryListTabTile extends StatelessWidget {
                                     size: isWeb ? 6.sp : 20.sp,
                                   ),
                                   onPressed: () {
+                                    final isUsed =
+                                        NameAndImageValidators.isCategoryUsedInCart(
+                                          item.categoryName,
+                                        );
+                                    if (isUsed) {
+                                      showDialog(
+                                        context: context,
+                                        builder:
+                                            (
+                                              _,
+                                            ) => const EditDeleteWarningDialog(
+                                              title: "Cannot Proceed !",
+                                              message:
+                                                  "This category is used in the cart.\nRemove related products before deleting.",
+                                            ),
+                                      );
+                                      return;
+                                    }
+
                                     showDialog(
                                       context: context,
                                       builder:

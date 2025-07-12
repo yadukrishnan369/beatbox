@@ -3,6 +3,7 @@ import 'package:beatbox/features/sales_management/model/sales_model.dart';
 import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
 class BillItemCard extends StatelessWidget {
   final SalesModel bill;
@@ -48,7 +49,7 @@ class BillItemCard extends StatelessWidget {
                     ),
                     SizedBox(height: isWeb ? 2.h : 4.h),
                     Text(
-                      'Date of Billing : ${bill.billingDate.day}-${bill.billingDate.month.toString().padLeft(2, '0')}-${bill.billingDate.year}',
+                      'Date of Billing : ${DateFormat('dd MMM yyyy').format(bill.billingDate)}',
                       style: TextStyle(
                         fontSize: isWeb ? 4.sp : 14.sp,
                         fontWeight: FontWeight.w600,

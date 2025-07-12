@@ -4,6 +4,7 @@ import 'package:beatbox/utils/responsive_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:beatbox/features/sales_management/model/sales_model.dart';
+import 'package:intl/intl.dart';
 
 class SaleSummaryCard extends StatelessWidget {
   final SalesModel sale;
@@ -29,14 +30,10 @@ class SaleSummaryCard extends StatelessWidget {
           _buildRow('Invoice ID', sale.invoiceNumber, isWeb),
           _buildRow(
             'Date',
-            '${billingDate.day}-${billingDate.month.toString().padLeft(2, '0')}-${billingDate.year}',
+            DateFormat('dd MMM yyyy').format(billingDate),
             isWeb,
           ),
-          _buildRow(
-            'Time',
-            '${billingDate.hour.toString().padLeft(2, '0')}:${billingDate.minute.toString().padLeft(2, '0')} ${billingDate.hour >= 12 ? 'PM' : 'AM'}',
-            isWeb,
-          ),
+          _buildRow('Time', DateFormat('hh:mm a').format(billingDate), isWeb),
           _buildRow(
             'Total Amount',
             '₹${AmountFormatter.format(sale.subtotal)}',

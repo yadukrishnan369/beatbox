@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:beatbox/features/product_management/controller/brand_controller.dart';
 import 'package:beatbox/features/product_management/controller/category_controller.dart';
+import 'package:beatbox/features/sales_management/controller/cart_controller.dart';
 
 class NameAndImageValidators {
   static String? validateBrandName(
@@ -43,6 +44,15 @@ class NameAndImageValidators {
     return null;
   }
 
+  // check if category exist in cart
+  static bool isCategoryUsedInCart(String categoryName) {
+    return CartController.getCartItems().any(
+      (item) =>
+          item.product.productCategory.trim().toLowerCase() ==
+          categoryName.trim().toLowerCase(),
+    );
+  }
+
   static String? validateCategoryName(
     String? value, {
     bool isEdit = false,
@@ -80,5 +90,14 @@ class NameAndImageValidators {
       return 'Category image is required';
     }
     return null;
+  }
+
+  // check if brand exist in cart
+  static bool isBrandUsedInCart(String brandName) {
+    return CartController.getCartItems().any(
+      (item) =>
+          item.product.productBrand.trim().toLowerCase() ==
+          brandName.trim().toLowerCase(),
+    );
   }
 }
